@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.8-recovered-from-local7
+// @version      local.8.5
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -11669,7 +11669,7 @@ I18N["zh-TW"]["repository/pull"] = { // 倉庫 - 某個合併請求頁面
                 "Apply suggestions": "應用建議",
                     "Suggestions to apply": "待應用的建議",
                     "There was an error trying to commit changes.": "嘗試提交更改時出錯。",
-                
+
                 "This diff has recently been updated.": "該差異最近已更新。",
                 "Refresh and try again.": "刷新並重試。",
 
@@ -16270,7 +16270,7 @@ I18N["zh-TW"]["repository/tasks"] = {
 
         "Diff": "差異",
         "Create pull request": "創建合併請求",
-        
+
         "This pull request was merged. To continue iterating,": "此合併請求已合併。若要繼續迭代，",
             "start a new session": "請開始一個新會話",
     },
@@ -29426,6 +29426,15 @@ I18N["zh-TW"]["repository/agents"] = {
             /^Type is:(issue|pr|open) to filter/,
             /^Type author:@me to search your content$/
         ],
+        HEADER_TOOLTIP_TRANSLATIONS: {
+            "Chat with Copilot": "與 Copilot 聊天",
+            "Create new...": "新建…",
+            "Create new…": "新建…",
+            "All issues": "所有議題",
+            "All pull requests": "所有合併請求",
+            "All repositories": "所有倉庫",
+            "You have unread notifications": "您有未讀通知"
+        },
         TRANS_ENGINES: { // 翻譯引擎配置
             iflyrec: {
                 name: '訊飛聽見',
@@ -29504,6 +29513,8 @@ I18N["zh-TW"]["repository/agents"] = {
         currentURL: window.location.href, // 當前頁面URL
         transEngine: 'iflyrec',  // 當前翻譯引擎
         mutationObserver: null,  // DOM變化觀察器
+        headerTooltipObserver: null, // 右上角 tooltip 專用觀察器
+        headerTooltipPending: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
         dynamicMenus: {},        // 動態菜單ID記錄
         initDone: false,
@@ -29543,6 +29554,7 @@ I18N["zh-TW"]["repository/agents"] = {
         injectStyles();
         setupMenuCommands();
         setupInitTrans();
+        setupHeaderTooltipTranslations();
         setupUrlChangeListener();
         setupTurboEvents();
         State.initDone = true;
@@ -29643,6 +29655,7 @@ I18N["zh-TW"]["repository/agents"] = {
 
         transTitle(); // 翻譯頁面標題
         transBySelector(); // 通過選擇器翻譯特定元素
+        scheduleHeaderTooltipTrans();
 
         // 如果描述翻譯功能啟用，翻譯頁面描述
         if (State.featureSet.enable_transDesc &&
@@ -30098,6 +30111,254 @@ I18N["zh-TW"]["repository/agents"] = {
                 element.textContent = result; // 應用翻譯
             }
         });
+    }
+
+    /**
+     * 設置右上角圖示 tooltip 的精準翻譯。
+     * 這裡只處理固定白名單詞條，避開搜尋欄與 header 的通用遍歷。
+     */
+    function setupHeaderTooltipTranslations() {
+        // Monkey-patch Element.prototype.attachShadow to translate tooltips inside Shadow DOM
+        const originalAttachShadow = Element.prototype.attachShadow;
+        if (originalAttachShadow) {
+            Element.prototype.attachShadow = function (init) {
+                const shadowRoot = originalAttachShadow.call(this, init);
+                
+                // Only observe and translate for tool-tip elements to ensure safety (especially for the search bar)
+                if (this.tagName === 'TOOL-TIP') {
+                    const observer = new MutationObserver(safe(() => {
+                        transHeaderTooltipTextRoot(shadowRoot, CONFIG.HEADER_TOOLTIP_TRANSLATIONS);
+                        shadowRoot.querySelectorAll?.('[aria-label], [title], [data-tooltip], [data-tooltip-text], [data-original-title]').forEach(el => {
+                            transHeaderTooltipAttrs(el, CONFIG.HEADER_TOOLTIP_TRANSLATIONS);
+                        });
+                    }, '陰影 DOM 提示翻譯觀察'));
+                    
+                    observer.observe(shadowRoot, {
+                        childList: true,
+                        subtree: true,
+                        characterData: true
+                    });
+                    
+                    requestAnimationFrame(() => {
+                        transHeaderTooltipTextRoot(shadowRoot, CONFIG.HEADER_TOOLTIP_TRANSLATIONS);
+                        shadowRoot.querySelectorAll?.('[aria-label], [title], [data-tooltip], [data-tooltip-text], [data-original-title]').forEach(el => {
+                            transHeaderTooltipAttrs(el, CONFIG.HEADER_TOOLTIP_TRANSLATIONS);
+                        });
+                    });
+                }
+                
+                return shadowRoot;
+            };
+        }
+
+        function setup() {
+            transHeaderTooltips();
+            setupHeaderTooltipObserver();
+        }
+
+        if (document.readyState === 'interactive' || document.readyState === 'complete') {
+            setup();
+        } else {
+            window.addEventListener('DOMContentLoaded', setup, { once: true });
+        }
+    }
+
+    /**
+     * 右上角 tooltip 是 hover 後動態插入的節點，因此使用獨立 observer 觸發小範圍掃描。
+     */
+    function setupHeaderTooltipObserver() {
+        if (State.headerTooltipObserver || !document.body) return;
+
+        State.headerTooltipObserver = new MutationObserver(
+            safe((mutations) => {
+                if (mutations.some(isPotentialHeaderTooltipMutation)) {
+                    scheduleHeaderTooltipTrans();
+                }
+            }, '右上角提示觀察')
+        );
+
+        State.headerTooltipObserver.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            characterData: true
+        });
+    }
+
+    function isPotentialHeaderTooltipMutation(mutation) {
+        const headerSelector = 'header, [role="banner"], [data-testid="app-header"], .AppHeader, .Header';
+        const tooltipSelector = getHeaderTooltipSelector();
+        const target = getNodeElement(mutation.target);
+
+        if (target?.closest?.(headerSelector)) return true;
+        if (target && isHeaderTooltipElement(target)) return true;
+
+        if (mutation.type === 'characterData') {
+            return hasHeaderTooltipSource(mutation.target?.data);
+        }
+
+        if (mutation.type === 'attributes') {
+            return hasHeaderTooltipSource(target?.getAttribute?.(mutation.attributeName));
+        }
+
+        return Array.from(mutation.addedNodes || []).some(node => {
+            const element = getNodeElement(node);
+            return !!(
+                element?.matches?.(tooltipSelector) ||
+                element?.querySelector?.(tooltipSelector) ||
+                hasHeaderTooltipSource(element?.textContent)
+            );
+        });
+    }
+
+    function scheduleHeaderTooltipTrans() {
+        if (State.headerTooltipPending) return;
+        State.headerTooltipPending = true;
+
+        requestAnimationFrame(() => {
+            State.headerTooltipPending = false;
+            safe(transHeaderTooltips, '右上角提示翻譯')();
+        });
+    }
+
+    function transHeaderTooltips() {
+        const dict = CONFIG.HEADER_TOOLTIP_TRANSLATIONS;
+        const selectors = [
+            'header [aria-label]',
+            'header [title]',
+            '[role="banner"] [aria-label]',
+            '[role="banner"] [title]',
+            '[data-testid="app-header"] [aria-label]',
+            '[data-testid="app-header"] [title]',
+            '.AppHeader [aria-label]',
+            '.AppHeader [title]',
+            '.Header [aria-label]',
+            '.Header [title]',
+            getHeaderTooltipSelector()
+        ].join(', ');
+
+        document.querySelectorAll(selectors).forEach(element => {
+            transHeaderTooltipAttrs(element, dict);
+
+            if (isHeaderTooltipElement(element)) {
+                transHeaderTooltipText(element, dict);
+                transHeaderTooltipShadowText(element, dict);
+            }
+        });
+
+    }
+
+    function isHeaderTooltipElement(element) {
+        return element.matches?.(getHeaderTooltipSelector());
+    }
+
+    function getHeaderTooltipSelector() {
+        return [
+            'tool-tip',
+            '[role="tooltip"]',
+            '[popover]',
+            '[data-tooltip]',
+            '[data-tooltip-text]',
+            '[data-original-title]',
+            '.Tooltip',
+            '.Popover-message',
+            '.Overlay'
+        ].join(', ');
+    }
+
+    function transHeaderTooltipAttrs(element, dict) {
+        [
+            'aria-label',
+            'title',
+            'data-tooltip',
+            'data-tooltip-text',
+            'data-original-title',
+            'data-content'
+        ].forEach(attr => {
+            const value = element.getAttribute?.(attr);
+            const result = getHeaderTooltipTranslation(value, dict);
+            if (result) {
+                element.setAttribute(attr, result);
+            }
+        });
+    }
+
+    function transHeaderTooltipText(element, dict) {
+        const isBroadFloatingSurface = element.matches?.('[popover], .Overlay');
+        transHeaderTooltipTextRoot(element, dict, isBroadFloatingSurface);
+    }
+
+    function transHeaderTooltipShadowText(element, dict) {
+        if (element.shadowRoot) {
+            transHeaderTooltipTextRoot(element.shadowRoot, dict);
+        }
+    }
+
+    function transHeaderTooltipTextRoot(root, dict, requireCompactSurface = false) {
+        if (requireCompactSurface && !isCompactTooltipSurface(root, dict)) return;
+
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+
+        while ((node = walker.nextNode())) {
+            const result = replaceHeaderTooltipText(node.data, dict);
+            if (result && result !== node.data) {
+                node.data = result;
+            }
+        }
+    }
+
+    function isCompactTooltipSurface(root, dict) {
+        const text = root.textContent?.trim().replace(/\xa0|[\s]+/g, ' ');
+        if (!text) return false;
+
+        return Object.keys(dict).some(source => {
+            if (!text.includes(source)) return false;
+            return text.length <= source.length + 12;
+        });
+    }
+
+    function getHeaderTooltipTranslation(text, dict) {
+        if (!text) return false;
+        const trimmed = text.trim().replace(/\xa0|[\s]+/g, ' ');
+        
+        // Exact match first
+        let result = dict[trimmed];
+        if (result) {
+            return text.replace(text.trim(), result);
+        }
+
+        // Substring match
+        let modified = false;
+        let temp = trimmed;
+        Object.entries(dict).forEach(([source, target]) => {
+            if (temp.includes(source)) {
+                temp = temp.replace(source, target);
+                modified = true;
+            }
+        });
+
+        if (modified) {
+            return text.replace(text.trim(), temp);
+        }
+
+        return false;
+    }
+
+    function replaceHeaderTooltipText(text, dict) {
+        if (!text) return false;
+        let result = text;
+
+        Object.entries(dict).forEach(([source, target]) => {
+            result = result.replace(source, target);
+        });
+
+        return result !== text ? result : false;
+    }
+
+    function hasHeaderTooltipSource(text) {
+        if (!text) return false;
+        return Object.keys(CONFIG.HEADER_TOOLTIP_TRANSLATIONS).some(source => text.includes(source));
     }
 
     /**
