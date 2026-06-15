@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.8.5
+// @version      local.8.6
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -29433,7 +29433,9 @@ I18N["zh-TW"]["repository/agents"] = {
             "All issues": "所有議題",
             "All pull requests": "所有合併請求",
             "All repositories": "所有倉庫",
-            "You have unread notifications": "您有未讀通知"
+            "You have unread notifications": "您有未讀通知",
+            "You have no unread notifications": "您沒有未讀通知",
+            "Notifications": "通知"
         },
         TRANS_ENGINES: { // 翻譯引擎配置
             iflyrec: {
@@ -30154,6 +30156,7 @@ I18N["zh-TW"]["repository/agents"] = {
         function setup() {
             transHeaderTooltips();
             setupHeaderTooltipObserver();
+            setupHeaderHoverRescan();
         }
 
         if (document.readyState === 'interactive' || document.readyState === 'complete') {
@@ -30161,6 +30164,31 @@ I18N["zh-TW"]["repository/agents"] = {
         } else {
             window.addEventListener('DOMContentLoaded', setup, { once: true });
         }
+    }
+
+    /**
+     * 監聽 header 區域的 mouseover 事件，在 hover 後重新掃描 tooltip。
+     * tooltip 通常在 hover 後才動態插入 DOM，MutationObserver 可能會在文字填入前觸發，
+     * 因此透過 hover 事件延遲重新掃描以確保翻譯成功。
+     */
+    function setupHeaderHoverRescan() {
+        const headerSelector = 'header, [role="banner"], [data-testid="app-header"], .AppHeader, .Header';
+        let hoverRescanTimer = null;
+
+        document.addEventListener('mouseover', (event) => {
+            const target = event.target;
+            if (!target?.closest) return;
+
+            // 只在 header 區域內觸發
+            if (!target.closest(headerSelector)) return;
+
+            // 防抖：避免高頻觸發
+            if (hoverRescanTimer) clearTimeout(hoverRescanTimer);
+            hoverRescanTimer = setTimeout(() => {
+                hoverRescanTimer = null;
+                safe(transHeaderTooltips, '右上角 hover 提示翻譯')();
+            }, 80);
+        }, { passive: true });
     }
 
     /**
@@ -30234,6 +30262,9 @@ I18N["zh-TW"]["repository/agents"] = {
             '.AppHeader [title]',
             '.Header [aria-label]',
             '.Header [title]',
+            'notification-indicator',
+            '[data-tooltip-global]',
+            '[data-tooltip-none]',
             getHeaderTooltipSelector()
         ].join(', ');
 
@@ -30272,6 +30303,8 @@ I18N["zh-TW"]["repository/agents"] = {
             'title',
             'data-tooltip',
             'data-tooltip-text',
+            'data-tooltip-global',
+            'data-tooltip-none',
             'data-original-title',
             'data-content'
         ].forEach(attr => {
@@ -30284,7 +30317,9 @@ I18N["zh-TW"]["repository/agents"] = {
     }
 
     function transHeaderTooltipText(element, dict) {
-        const isBroadFloatingSurface = element.matches?.('[popover], .Overlay');
+        // <tool-tip> 是真正的 tooltip 元素，不需要 compact surface 檢查
+        const isTooltipTag = element.tagName === 'TOOL-TIP';
+        const isBroadFloatingSurface = !isTooltipTag && element.matches?.('[popover], .Overlay');
         transHeaderTooltipTextRoot(element, dict, isBroadFloatingSurface);
     }
 
