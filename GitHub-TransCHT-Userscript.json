@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.8.6
+// @version      local.8.7
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -30174,6 +30174,7 @@ I18N["zh-TW"]["repository/agents"] = {
     function setupHeaderHoverRescan() {
         const headerSelector = 'header, [role="banner"], [data-testid="app-header"], .AppHeader, .Header';
         let hoverRescanTimer = null;
+        let debugDone = false;
 
         document.addEventListener('mouseover', (event) => {
             const target = event.target;
@@ -30187,8 +30188,172 @@ I18N["zh-TW"]["repository/agents"] = {
             hoverRescanTimer = setTimeout(() => {
                 hoverRescanTimer = null;
                 safe(transHeaderTooltips, '右上角 hover 提示翻譯')();
-            }, 80);
+                safe(aggressiveTooltipScan, '直接 tooltip 掃描')();
+
+                // 第一次 hover 時輸出診斷日誌
+                if (!debugDone) {
+                    debugDone = true;
+                    safe(debugTooltipDump, '診斷 tooltip')();
+                }
+            }, 120);
         }, { passive: true });
+    }
+
+    /**
+     * 診斷函數：輸出所有可能的 tooltip 相關 DOM 資訊到 console，
+     * 便於定位翻譯失效的根本原因。
+     */
+    function debugTooltipDump() {
+        console.group('[GitHub 中文化 Debug] === Tooltip 診斷 ===');
+
+        // 1. 所有 <tool-tip> 元素
+        const tooltips = document.querySelectorAll('tool-tip');
+        console.log(`找到 ${tooltips.length} 個 <tool-tip> 元素`);
+        tooltips.forEach((tt, i) => {
+            console.log(`  tool-tip[${i}]:`, {
+                textContent: tt.textContent?.substring(0, 120),
+                innerHTML: tt.innerHTML?.substring(0, 250),
+                hasShadowRoot: !!tt.shadowRoot,
+                shadowMode: tt.shadowRoot?.mode ?? 'N/A',
+                id: tt.id,
+                for: tt.getAttribute('for'),
+                popover: tt.getAttribute('popover'),
+                ariaLabel: tt.getAttribute('aria-label'),
+                hidden: tt.hidden,
+                dataType: tt.getAttribute('data-type'),
+            });
+            if (tt.shadowRoot) {
+                console.log(`    shadowRoot textContent:`, tt.shadowRoot.textContent?.substring(0, 120));
+                console.log(`    shadowRoot innerHTML:`, tt.shadowRoot.innerHTML?.substring(0, 400));
+            }
+        });
+
+        // 2. [role="tooltip"] 元素
+        const roleTooltips = document.querySelectorAll('[role="tooltip"]');
+        console.log(`找到 ${roleTooltips.length} 個 [role="tooltip"] 元素`);
+        roleTooltips.forEach((el, i) => {
+            console.log(`  [role="tooltip"][${i}]: <${el.tagName.toLowerCase()}>`, {
+                textContent: el.textContent?.substring(0, 120),
+                className: el.className,
+                id: el.id,
+            });
+        });
+
+        // 3. notification-indicator 元素
+        const notifIndicators = document.querySelectorAll('notification-indicator');
+        console.log(`找到 ${notifIndicators.length} 個 notification-indicator 元素`);
+        notifIndicators.forEach((ni, i) => {
+            const attrs = {};
+            Array.from(ni.attributes).forEach(a => attrs[a.name] = a.value);
+            console.log(`  notification-indicator[${i}]:`, attrs);
+        });
+
+        // 4. header 中帶 aria-label 的元素
+        const headerEls = document.querySelectorAll(
+            '.AppHeader [aria-label], header [aria-label], [data-testid="app-header"] [aria-label], [role="banner"] [aria-label]'
+        );
+        console.log(`找到 ${headerEls.length} 個 header [aria-label] 元素`);
+        headerEls.forEach((el, i) => {
+            const label = el.getAttribute('aria-label');
+            if (label && /[a-zA-Z]/.test(label)) {
+                console.log(`  header[aria-label][${i}]: <${el.tagName.toLowerCase()}>`, {
+                    ariaLabel: label,
+                    id: el.id,
+                    dataHotkey: el.getAttribute('data-hotkey'),
+                    title: el.getAttribute('title'),
+                });
+            }
+        });
+
+        console.groupEnd();
+    }
+
+    /**
+     * 暴力掃描：用多種策略直接翻譯 tooltip，覆蓋所有可能的 DOM 結構。
+     */
+    function aggressiveTooltipScan() {
+        const dict = CONFIG.HEADER_TOOLTIP_TRANSLATIONS;
+
+        // 策略 1：掃描所有 <tool-tip> 的 light DOM 文字節點
+        document.querySelectorAll('tool-tip').forEach(tt => {
+            // Light DOM text
+            const walker = document.createTreeWalker(tt, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                let data = node.data;
+                let changed = false;
+                Object.entries(dict).forEach(([en, zh]) => {
+                    if (data.includes(en)) {
+                        data = data.replace(en, zh);
+                        changed = true;
+                    }
+                });
+                if (changed) node.data = data;
+            }
+
+            // Shadow DOM text (if accessible)
+            if (tt.shadowRoot) {
+                const sWalker = document.createTreeWalker(tt.shadowRoot, NodeFilter.SHOW_TEXT);
+                let sNode;
+                while ((sNode = sWalker.nextNode())) {
+                    let data = sNode.data;
+                    let changed = false;
+                    Object.entries(dict).forEach(([en, zh]) => {
+                        if (data.includes(en)) {
+                            data = data.replace(en, zh);
+                            changed = true;
+                        }
+                    });
+                    if (changed) sNode.data = data;
+                }
+            }
+
+            // 翻譯 tool-tip 自身的所有可能屬性
+            transHeaderTooltipAttrs(tt, dict);
+
+            // 找到觸發按鈕 (via for attribute) 並翻譯其 aria-label
+            const forId = tt.getAttribute('for');
+            if (forId) {
+                const trigger = document.getElementById(forId);
+                if (trigger) {
+                    transHeaderTooltipAttrs(trigger, dict);
+                }
+            }
+        });
+
+        // 策略 2：掃描所有 [role="tooltip"] 元素
+        document.querySelectorAll('[role="tooltip"]').forEach(el => {
+            transHeaderTooltipAttrs(el, dict);
+            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                let data = node.data;
+                let changed = false;
+                Object.entries(dict).forEach(([en, zh]) => {
+                    if (data.includes(en)) {
+                        data = data.replace(en, zh);
+                        changed = true;
+                    }
+                });
+                if (changed) node.data = data;
+            }
+        });
+
+        // 策略 3：翻譯 notification-indicator 的所有屬性
+        document.querySelectorAll('notification-indicator').forEach(ni => {
+            transHeaderTooltipAttrs(ni, dict);
+            // 也翻譯其子元素的 aria-label
+            ni.querySelectorAll('[aria-label]').forEach(child => {
+                transHeaderTooltipAttrs(child, dict);
+            });
+        });
+
+        // 策略 4：直接找 header 中的按鈕並翻譯 aria-label
+        document.querySelectorAll(
+            '.AppHeader [aria-label], header [aria-label], [data-testid="app-header"] [aria-label], [role="banner"] [aria-label]'
+        ).forEach(el => {
+            transHeaderTooltipAttrs(el, dict);
+        });
     }
 
     /**
