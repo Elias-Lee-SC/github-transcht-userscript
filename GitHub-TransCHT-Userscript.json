@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.12
+// @version      local.11.24
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -21,6 +21,7 @@
 // @grant        GM_registerMenuCommand
 // @grant        GM_unregisterMenuCommand
 // @grant        GM_notification
+// @grant        unsafeWindow
 // @connect      fanyi.iflyrec.com
 // @supportURL   https://github.com/maboloshi/github-chinese/issues
 // ==/UserScript==
@@ -29581,7 +29582,6 @@ I18N["zh-TW"]["repository/agents"] = {
                 box-shadow: none;
                 vertical-align: middle;
             }
-
             /* 暗色主題適配 - 使用 prefers-color-scheme */
             @media (prefers-color-scheme: dark) {
                 :root {
@@ -29613,6 +29613,7 @@ I18N["zh-TW"]["repository/agents"] = {
         headerTooltipPending: false,
         notificationsPagePending: false,
         dashboardPagePending: false,
+        dashboardContextSearchSeen: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
         dynamicMenus: {},        // 動態菜單ID記錄
         initDone: false,
@@ -29650,9 +29651,11 @@ I18N["zh-TW"]["repository/agents"] = {
     function init() {
         checkI18NLoaded();
         injectStyles();
+        setupDebugHelpers();
         setupMenuCommands();
         setupInitTrans();
         setupHeaderTooltipTranslations();
+        setupDashboardContextProtection();
         setupUrlChangeListener();
         setupTurboEvents();
         State.initDone = true;
@@ -29679,6 +29682,7 @@ I18N["zh-TW"]["repository/agents"] = {
                 safe(traverseNode, '首次遍歷')(document.body);
                 scheduleNotificationsPageTrans();
                 scheduleDashboardPageTrans();
+                scheduleInitialDashboardContextTranslation();
             }
         }
 
@@ -29758,6 +29762,7 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleHeaderTooltipTrans();
         scheduleNotificationsPageTrans();
         scheduleDashboardPageTrans();
+        scheduleInitialDashboardContextTranslation();
 
         // 如果描述翻譯功能啟用，翻譯頁面描述
         if (State.featureSet.enable_transDesc &&
@@ -30431,6 +30436,193 @@ I18N["zh-TW"]["repository/agents"] = {
         );
     }
 
+    function setupDebugHelpers() {
+        window.__ghchtDebugDashboardContext = debugDashboardContextTextNodes;
+
+        if (typeof unsafeWindow !== 'undefined') {
+            unsafeWindow.__ghchtDebugDashboardContext = debugDashboardContextTextNodes;
+        }
+
+        if (typeof GM_registerMenuCommand === 'function') {
+            GM_registerMenuCommand('Debug Dashboard context', debugDashboardContextTextNodes);
+        }
+    }
+
+    function debugDashboardContextTextNodes() {
+        const roots = Array.from(document.querySelectorAll('header, .AppHeader, [data-testid="app-header"], [role="banner"]'));
+        const candidates = [];
+
+        roots.forEach((root, rootIndex) => {
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+
+            while ((node = walker.nextNode())) {
+                const normalized = normalizeHeaderTooltipText(node.data);
+                if (!normalized.includes('Dashboard')) continue;
+
+                const element = getNodeElement(node);
+                if (!element) continue;
+
+                const rect = getTextNodeRect(node);
+                candidates.push({
+                    index: candidates.length,
+                    rootIndex,
+                    matchType: normalized === 'Dashboard' ? 'exact' : 'contains',
+                    text: normalized,
+                    visible: isDebugRectVisible(rect),
+                    rect,
+                    element: describeDebugElement(element),
+                    path: getDebugCssPath(element),
+                    inSearchSurface: isDebugElementInSearchSurface(element),
+                    inCriticalSurface: isDebugElementInCriticalSurface(element),
+                    ancestors: getDebugAncestors(element)
+                });
+            }
+        });
+
+        const table = candidates.map(candidate => ({
+            index: candidate.index,
+            matchType: candidate.matchType,
+            text: candidate.text,
+            visible: candidate.visible,
+            x: Math.round(candidate.rect?.left || 0),
+            y: Math.round(candidate.rect?.top || 0),
+            w: Math.round(candidate.rect?.width || 0),
+            h: Math.round(candidate.rect?.height || 0),
+            inSearchSurface: candidate.inSearchSurface,
+            inCriticalSurface: candidate.inCriticalSurface,
+            element: candidate.element,
+            path: candidate.path
+        }));
+
+        console.group('[GitHub 中文化插件] Dashboard context debug');
+        console.log('URL:', window.location.href);
+        console.log('isDashboardPage:', isDashboardPage());
+        console.log('roots:', roots.map(getDebugCssPath));
+        console.table(table);
+        console.log('Full candidates:', candidates);
+        console.groupEnd();
+
+        return candidates;
+    }
+
+    function getTextNodeRect(node) {
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        const rect = range.getBoundingClientRect();
+        range.detach?.();
+
+        return {
+            left: rect.left,
+            top: rect.top,
+            width: rect.width,
+            height: rect.height,
+            right: rect.right,
+            bottom: rect.bottom
+        };
+    }
+
+    function isDebugRectVisible(rect) {
+        return !!(
+            rect &&
+            rect.width > 0 &&
+            rect.height > 0 &&
+            rect.bottom >= 0 &&
+            rect.right >= 0 &&
+            rect.top <= window.innerHeight &&
+            rect.left <= window.innerWidth
+        );
+    }
+
+    function describeDebugElement(element) {
+        if (!element) return '';
+        const id = element.id ? `#${element.id}` : '';
+        const className = typeof element.className === 'string'
+            ? element.className.trim().replace(/\s+/g, '.')
+            : '';
+        const classPart = className ? `.${className}` : '';
+        const attrs = [
+            'href',
+            'aria-label',
+            'data-testid',
+            'data-target',
+            'role'
+        ].map(attr => {
+            const value = element.getAttribute?.(attr);
+            return value ? `${attr}="${value}"` : '';
+        }).filter(Boolean).join(' ');
+
+        return `${element.tagName.toLowerCase()}${id}${classPart}${attrs ? ` ${attrs}` : ''}`;
+    }
+
+    function getDebugCssPath(element) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return '';
+        const parts = [];
+        let current = element;
+
+        while (current && current.nodeType === Node.ELEMENT_NODE && current !== document.documentElement) {
+            let part = current.tagName.toLowerCase();
+            if (current.id) {
+                part += `#${current.id}`;
+                parts.unshift(part);
+                break;
+            }
+
+            const className = typeof current.className === 'string'
+                ? current.className.trim().split(/\s+/).filter(Boolean).slice(0, 3).join('.')
+                : '';
+            if (className) {
+                part += `.${className}`;
+            }
+
+            const parent = current.parentElement;
+            if (parent) {
+                const sameTagSiblings = Array.from(parent.children).filter(child => child.tagName === current.tagName);
+                if (sameTagSiblings.length > 1) {
+                    part += `:nth-of-type(${sameTagSiblings.indexOf(current) + 1})`;
+                }
+            }
+
+            parts.unshift(part);
+            current = current.parentElement;
+        }
+
+        return parts.join(' > ');
+    }
+
+    function getDebugAncestors(element) {
+        const ancestors = [];
+        let current = element;
+
+        for (let depth = 0; current && depth < 8; depth += 1) {
+            ancestors.push({
+                depth,
+                element: describeDebugElement(current),
+                text: normalizeHeaderTooltipText(current.textContent).slice(0, 120),
+                path: getDebugCssPath(current)
+            });
+            current = current.parentElement;
+        }
+
+        return ancestors;
+    }
+
+    function isDebugElementInSearchSurface(element) {
+        try {
+            return !!element.closest?.(getSearchOverlayRootSelector());
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function isDebugElementInCriticalSurface(element) {
+        try {
+            return !!element.closest?.(CONFIG.CRITICAL_IGNORE_SELECTORS);
+        } catch (e) {
+            return true;
+        }
+    }
+
     function transDashboardPageDynamicText() {
         if (!isDashboardPage()) return;
 
@@ -30446,6 +30638,198 @@ I18N["zh-TW"]["repository/agents"] = {
 
         transDashboardNewRepositoryButtons();
         transDashboardChangelog();
+    }
+
+    function transDashboardContextBreadcrumb() {
+        if (!State.dashboardContextSearchSeen) return;
+        if (isDashboardSearchActive()) return;
+
+        const selector = [
+            'span[class*="contextCrumbLast"]',
+            'span[class*="ContextCrumbLast"]'
+        ].join(', ');
+
+        document.querySelectorAll(selector).forEach(element => {
+            if (!isDashboardContextBreadcrumbCandidate(element)) return;
+
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType !== Node.TEXT_NODE) return;
+                if (normalizeHeaderTooltipText(node.data) === 'Dashboard') {
+                    node.data = node.data.replace(node.data.trim(), '儀表板');
+                }
+            });
+        });
+    }
+
+    function restoreDashboardContextBreadcrumb() {
+        getDashboardContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType !== Node.TEXT_NODE) return;
+                if (normalizeHeaderTooltipText(node.data) === '儀表板') {
+                    node.data = node.data.replace(node.data.trim(), 'Dashboard');
+                }
+            });
+        });
+    }
+
+    function getDashboardContextBreadcrumbElements() {
+        const selector = [
+            'span[class*="contextCrumbLast"]',
+            'span[class*="ContextCrumbLast"]'
+        ].join(', ');
+
+        return Array.from(document.querySelectorAll(selector)).filter(element => {
+            if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+            if (isDebugElementInSearchSurface(element)) return false;
+
+            const text = normalizeHeaderTooltipText(element.textContent);
+            if (text !== 'Dashboard' && text !== '儀表板') return false;
+
+            const rect = element.getBoundingClientRect?.();
+            if (!rect || rect.width <= 0 || rect.height <= 0) return false;
+
+            return (
+                rect.top >= 0 &&
+                rect.top < 120 &&
+                rect.left >= 0 &&
+                rect.width < 180 &&
+                rect.height < 60
+            );
+        });
+    }
+
+    function isDashboardContextBreadcrumbCandidate(element) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+        if (isDebugElementInSearchSurface(element)) return false;
+
+        const text = normalizeHeaderTooltipText(element.textContent);
+        if (text !== 'Dashboard') return false;
+
+        const rect = element.getBoundingClientRect?.();
+        if (!rect || rect.width <= 0 || rect.height <= 0) return false;
+
+        return (
+            rect.top >= 0 &&
+            rect.top < 120 &&
+            rect.left >= 0 &&
+            rect.width < 180 &&
+            rect.height < 60
+        );
+    }
+
+    function setupDashboardContextProtection() {
+        const restoreBeforeInteraction = event => {
+            if (!isDashboardPage()) return;
+            if (isDashboardSearchInteraction(event)) {
+                State.dashboardContextSearchSeen = true;
+            }
+
+            restoreDashboardContextBreadcrumb();
+        };
+
+        const restoreBeforeShortcut = event => {
+            if (!isDashboardPage()) return;
+            if (event.defaultPrevented) return;
+            if (event.key !== '/') return;
+            if (isEditableElement(getNodeElement(event.target))) return;
+
+            State.dashboardContextSearchSeen = true;
+            restoreDashboardContextBreadcrumb();
+        };
+
+        document.addEventListener('pointerdown', restoreBeforeInteraction, true);
+        document.addEventListener('mousedown', restoreBeforeInteraction, true);
+        document.addEventListener('touchstart', restoreBeforeInteraction, true);
+        document.addEventListener('focusin', restoreBeforeInteraction, true);
+        document.addEventListener('keydown', restoreBeforeShortcut, true);
+        document.addEventListener('focusout', scheduleDashboardContextRetranslate, true);
+        document.addEventListener('keyup', scheduleDashboardContextRetranslate, true);
+    }
+
+    function scheduleInitialDashboardContextTranslation() {
+        if (!isDashboardPage()) return;
+
+        [1500, 12000].forEach(delay => {
+            setTimeout(() => {
+                if (!isDashboardPage()) return;
+                if (State.dashboardContextSearchSeen) return;
+                if (isDashboardSearchActive()) return;
+
+                State.dashboardContextSearchSeen = true;
+                safe(transDashboardContextBreadcrumb, '儀表板頂欄延遲初始補翻')();
+            }, delay);
+        });
+    }
+
+    function scheduleDashboardContextRetranslate() {
+        if (!isDashboardPage()) return;
+        if (!State.dashboardContextSearchSeen) return;
+
+        [250, 900, 1800].forEach(delay => {
+            setTimeout(() => {
+                if (!isDashboardSearchActive()) {
+                    safe(transDashboardContextBreadcrumb, '儀表板頂欄補翻')();
+                }
+            }, delay);
+        });
+    }
+
+    function isDashboardSearchInteraction(event) {
+        const element = getNodeElement(event?.target);
+        if (!element) return false;
+
+        const selector = [
+            getSearchOverlayRootSelector(),
+            '[role="search"]',
+            '[role="combobox"]',
+            '[aria-label*="Search"]',
+            '[aria-label*="search"]',
+            '[placeholder*="Search"]',
+            '[placeholder*="search"]',
+            '[data-hotkey="/"]',
+            '[data-target*="qbsearch"]',
+            '[data-target*="query-builder"]',
+            'input[type="search"]',
+            'input[name="q"]'
+        ].join(', ');
+
+        try {
+            return !!(element.matches?.(selector) || element.closest?.(selector));
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function isDashboardSearchActive() {
+        const active = getNodeElement(document.activeElement);
+        if (active && isDashboardSearchInteraction({ target: active })) return true;
+
+        const selector = [
+            '[role="dialog"] input',
+            '[role="combobox"][aria-expanded="true"]',
+            'input[aria-expanded="true"]',
+            '.Overlay input',
+            '.Popover input'
+        ].join(', ');
+
+        try {
+            return Array.from(document.querySelectorAll(selector)).some(element => {
+                const rect = element.getBoundingClientRect?.();
+                return rect && rect.width > 0 && rect.height > 0;
+            });
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function isEditableElement(element) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+
+        try {
+            return !!element.closest?.('input, textarea, select, [contenteditable="true"]');
+        } catch (e) {
+            return true;
+        }
     }
 
     function transDashboardNewRepositoryButtons() {
