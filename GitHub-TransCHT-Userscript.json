@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.10.4
+// @version      local.10.8
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -29443,6 +29443,18 @@ I18N["zh-TW"]["repository/agents"] = {
             "所有合併請求": ["G", "P"]
         },
         HEADER_MENU_TRANSLATIONS: {
+            "Home": "主頁",
+            "All issues": "所有議題",
+            "All pull requests": "所有合併請求",
+            "All repositories": "所有倉庫",
+            "Projects": "專案",
+            "Discussions": "討論",
+            "Codespaces": "程式碼空間",
+            "Explore": "探索",
+            "Marketplace": "市場",
+            "MCP registry": "MCP 互聯",
+            "Top repositories": "熱門倉庫",
+            "Show more": "顯示更多",
             "Ask Copilot...": "詢問 Copilot…",
             "Ask Copilot…": "詢問 Copilot…",
             "In immersive chat": "在沉浸式聊天中",
@@ -30043,7 +30055,13 @@ I18N["zh-TW"]["repository/agents"] = {
         // 根據標簽類型進行不同的翻譯處理
         const tag = node.tagName;
 
-        if (tag === "RELATIVE-TIME") { // 相對時間元素
+        if (
+            tag === "RELATIVE-TIME" ||
+            tag === "TIME-AGO" ||
+            (tag === "TIME" && node.hasAttribute("datetime"))
+        ) { // 相對時間元素
+            transTimeElement(node);
+            bindRelativeTimeElementObserver(node);
             if (node.shadowRoot) {
                 transTimeElement(node.shadowRoot);
             }
@@ -30119,14 +30137,76 @@ I18N["zh-TW"]["repository/agents"] = {
      * @param {Element} element - 時間元素
      */
     function transTimeElement(element) {
-        // 獲取時間文本
-        const text = element.textContent;
-        if (!text) return;
-        // 移除開頭的"on"
-        const result = text.replace(/^on/, "");
-        if (result !== text) {
-            element.textContent = result; // 應用翻譯
+        if (!element) return;
+
+        if (element.nodeType === Node.TEXT_NODE) {
+            const result = transRelativeTimeText(element.data);
+            if (result && result !== element.data) {
+                element.data = result;
+            }
+            return;
         }
+
+        const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+        let node;
+
+        while ((node = walker.nextNode())) {
+            const result = transRelativeTimeText(node.data);
+            if (result && result !== node.data) {
+                node.data = result;
+            }
+        }
+    }
+
+    function transRelativeTimeText(text) {
+        if (!text) return false;
+
+        const trimmed = text.trim();
+        if (!trimmed) return false;
+
+        const withoutOn = trimmed.replace(/^on\s+/i, '');
+        const translated = transRelativeTimeValue(withoutOn);
+        if (!translated || translated === withoutOn) return false;
+
+        return text.replace(trimmed, translated);
+    }
+
+    function transRelativeTimeValue(text) {
+        const rules = I18N?.[CONFIG.LANG]?.public?.["time-regexp"] || [];
+        let result = text;
+
+        for (const [pattern, replacement] of rules) {
+            const next = result.replace(pattern, replacement);
+            if (next !== result) {
+                result = normalizeRelativeTimeTranslation(next);
+                break;
+            }
+        }
+
+        return result !== text ? result : false;
+    }
+
+    function normalizeRelativeTimeTranslation(text) {
+        return String(text).replace(/(\d+)\s*周之前/g, '$1 週之前');
+    }
+
+    function bindRelativeTimeElementObserver(element) {
+        if (!element || element.__ghchtTimeObserver) return;
+
+        element.__ghchtTimeObserver = new MutationObserver(
+            safe(() => {
+                transTimeElement(element);
+                if (element.shadowRoot) {
+                    transTimeElement(element.shadowRoot);
+                }
+            }, '相對時間翻譯觀察')
+        );
+
+        element.__ghchtTimeObserver.observe(element, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
     }
 
     /**
@@ -30176,6 +30256,7 @@ I18N["zh-TW"]["repository/agents"] = {
      */
     function setupHeaderTooltipTranslations() {
         function setup() {
+            removeMisplacedHeaderTooltipShortcuts();
             transHeaderTooltips();
             transHeaderMenus();
             setupHeaderTooltipObserver();
@@ -30303,8 +30384,17 @@ I18N["zh-TW"]["repository/agents"] = {
 
     function transHeaderMenus() {
         const dict = CONFIG.HEADER_MENU_TRANSLATIONS;
-        document.querySelectorAll('[role="menu"], [popover], .Overlay, .Popover-message, .ActionList, .ActionListWrap').forEach(element => {
+        removeMisplacedHeaderTooltipShortcuts();
+        document.querySelectorAll('[role="menu"], [role="dialog"], [aria-modal="true"], modal-dialog, [popover], .Overlay, .Popover-message, .ActionList, .ActionListWrap').forEach(element => {
             transHeaderMenuSurface(element, dict);
+        });
+    }
+
+    function removeMisplacedHeaderTooltipShortcuts() {
+        document.querySelectorAll('.ghcht-tooltip-shortcut').forEach(element => {
+            if (!isInsideToolTipElement(element)) {
+                element.remove();
+            }
         });
     }
 
@@ -30514,6 +30604,7 @@ I18N["zh-TW"]["repository/agents"] = {
     function isHeaderTooltipShortcutTarget(element) {
         if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
         if (isIgnoredHeaderTooltipSurface(element)) return false;
+        if (isHeaderNavigationMenuSurface(element)) return false;
 
         const text = normalizeHeaderTooltipText(element.textContent);
         if (!text) return false;
@@ -30545,6 +30636,7 @@ I18N["zh-TW"]["repository/agents"] = {
     function isHeaderTooltipSurfaceCandidate(element, dict) {
         if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
         if (isIgnoredHeaderTooltipSurface(element)) return false;
+        if (isHeaderNavigationMenuSurface(element)) return false;
 
         const text = normalizeHeaderTooltipText(element.textContent);
         if (!text) return false;
@@ -30565,6 +30657,31 @@ I18N["zh-TW"]["repository/agents"] = {
         }
 
         return true;
+    }
+
+    function isHeaderNavigationMenuSurface(element) {
+        const menuSelector = [
+            '[role="menu"]',
+            '[role="menuitem"]',
+            '[role="dialog"]',
+            '[aria-modal="true"]',
+            'modal-dialog',
+            '.ActionList',
+            '.ActionListWrap'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(menuSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function isInsideToolTipElement(element) {
+        return !!(
+            element?.matches?.('tool-tip') ||
+            element?.closest?.('tool-tip')
+        );
     }
 
     function isHeaderMenuSurfaceCandidate(element, dict) {
@@ -30683,7 +30800,7 @@ I18N["zh-TW"]["repository/agents"] = {
     }
 
     function hasHeaderTooltipCandidateText(text) {
-        return hasHeaderTooltipSource(text) || hasHeaderTooltipShortcutTargetText(text);
+        return hasHeaderTooltipSource(text);
     }
 
     function hasHeaderMenuSource(text) {
