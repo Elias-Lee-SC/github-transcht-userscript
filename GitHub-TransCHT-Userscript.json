@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.4
+// @version      local.11.5
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -30264,6 +30264,7 @@ I18N["zh-TW"]["repository/agents"] = {
     function transNotificationsPageDynamicText() {
         if (!isNotificationsPage()) return;
         transNotificationsHeaderTitle();
+        transNotificationsControlLabels();
         transNotificationsRelativeTimes();
     }
 
@@ -30294,6 +30295,40 @@ I18N["zh-TW"]["repository/agents"] = {
         document.querySelectorAll('[data-testid*="notification"], [id*="notification"], .notifications-list, main').forEach(root => {
             transRelativeTimeTextInRoot(root);
         });
+    }
+
+    function transNotificationsControlLabels() {
+        document.querySelectorAll('main, [data-testid*="notification"], [id*="notification"], .notifications-list').forEach(root => {
+            transNotificationControlLabelText(root);
+        });
+    }
+
+    function transNotificationControlLabelText(root) {
+        if (!root) return false;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        let translated = false;
+
+        while ((node = walker.nextNode())) {
+            if (shouldSkipNotificationPatchTextNode(node)) continue;
+
+            const result = replaceNotificationControlLabelText(node.data);
+            if (result && result !== node.data) {
+                node.data = result;
+                translated = true;
+            }
+        }
+
+        return translated;
+    }
+
+    function replaceNotificationControlLabelText(text) {
+        if (!text) return false;
+        const result = text
+            .replace(/Sort by:/g, '排序：')
+            .replace(/Group by:/g, '分組：');
+
+        return result !== text ? result : false;
     }
 
     function transExactTextInRoot(root, dict) {
