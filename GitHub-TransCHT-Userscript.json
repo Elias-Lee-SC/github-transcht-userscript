@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.10.0
+// @version      local.10.2
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -29495,15 +29495,16 @@ I18N["zh-TW"]["repository/agents"] = {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                min-width: 1.5em;
-                min-height: 1.5em;
-                margin-left: 0.35em;
-                padding: 0 0.4em;
+                min-width: 1.25em;
+                height: 1.25em;
+                margin-left: 0.28em;
+                padding: 0 0.28em;
                 border: 0;
-                border-radius: 6px;
+                border-radius: 4px;
                 background: rgba(139, 148, 158, 0.55);
                 color: inherit;
-                font: inherit;
+                font-family: inherit;
+                font-size: 0.86em;
                 font-weight: 600;
                 line-height: 1;
                 box-shadow: none;
