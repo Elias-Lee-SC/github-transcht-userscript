@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.10.9
+// @version      local.11.1
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -29495,6 +29495,14 @@ I18N["zh-TW"]["repository/agents"] = {
             "Search syntax tips": "搜尋語法提示",
             "Give feedback": "回饋"
         },
+        NOTIFICATION_SEARCH_TRANSLATIONS: {
+            "Search notifications": "搜尋通知",
+            "Suggested filters": "建議篩選",
+            "filter by repository": "按倉庫篩選",
+            "filter by status or discussion type": "按狀態或評論類型篩選",
+            "filter by notification reason": "按通知原因篩選",
+            "filter by notification author": "按通知作者篩選"
+        },
         TRANS_ENGINES: { // 翻譯引擎配置
             iflyrec: {
                 name: '訊飛聽見',
@@ -29594,6 +29602,7 @@ I18N["zh-TW"]["repository/agents"] = {
         mutationObserver: null,  // DOM變化觀察器
         headerTooltipObserver: null, // 右上角 tooltip 專用觀察器
         headerTooltipPending: false,
+        notificationsPagePending: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
         dynamicMenus: {},        // 動態菜單ID記錄
         initDone: false,
@@ -29658,6 +29667,7 @@ I18N["zh-TW"]["repository/agents"] = {
             updatePageConfig('首次載入');
             if (State.pageConfig) {
                 safe(traverseNode, '首次遍歷')(document.body);
+                scheduleNotificationsPageTrans();
             }
         }
 
@@ -29735,6 +29745,7 @@ I18N["zh-TW"]["repository/agents"] = {
         transTitle(); // 翻譯頁面標題
         transBySelector(); // 通過選擇器翻譯特定元素
         scheduleHeaderTooltipTrans();
+        scheduleNotificationsPageTrans();
 
         // 如果描述翻譯功能啟用，翻譯頁面描述
         if (State.featureSet.enable_transDesc &&
@@ -29964,6 +29975,8 @@ I18N["zh-TW"]["repository/agents"] = {
         topNodes.forEach(node => {
             traverseNode(node);
         });
+
+        scheduleNotificationsPageTrans();
     }
 
     /* =========================== DOM 遍歷與節點處理 =========================== */
@@ -30219,6 +30232,134 @@ I18N["zh-TW"]["repository/agents"] = {
         });
     }
 
+    function scheduleNotificationsPageTrans() {
+        if (!isNotificationsPage()) return;
+        if (State.notificationsPagePending) return;
+        State.notificationsPagePending = true;
+
+        [0, 100, 350, 900, 1600].forEach(delay => {
+            setTimeout(() => {
+                safe(transNotificationsPageDynamicText, '通知頁動態補翻')();
+                if (delay === 1600) {
+                    State.notificationsPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function isNotificationsPage() {
+        return (
+            State.pageConfig?.currentPageType === 'notifications' ||
+            /^\/notifications(?:\/|$)/.test(window.location.pathname)
+        );
+    }
+
+    function transNotificationsPageDynamicText() {
+        if (!isNotificationsPage()) return;
+        transNotificationsHeaderTitle();
+        transNotificationsRelativeTimes();
+    }
+
+    function transNotificationsHeaderTitle() {
+        [
+            'header',
+            '[role="banner"]',
+            '.AppHeader',
+            '[data-testid="app-header"]'
+        ].forEach(selector => {
+            document.querySelectorAll(selector).forEach(root => {
+                transExactTextInRoot(root, {
+                    "Notifications": "通知"
+                });
+            });
+        });
+    }
+
+    function transNotificationsRelativeTimes() {
+        document.querySelectorAll('relative-time, time-ago, time[datetime]').forEach(element => {
+            transTimeElement(element);
+            bindRelativeTimeElementObserver(element);
+            if (element.shadowRoot) {
+                transTimeElement(element.shadowRoot);
+            }
+        });
+
+        document.querySelectorAll('[data-testid*="notification"], [id*="notification"], .notifications-list, main').forEach(root => {
+            transRelativeTimeTextInRoot(root);
+        });
+    }
+
+    function transExactTextInRoot(root, dict) {
+        if (!root) return false;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        let translated = false;
+
+        while ((node = walker.nextNode())) {
+            if (shouldSkipNotificationPatchTextNode(node)) continue;
+
+            const trimmed = normalizeHeaderTooltipText(node.data);
+            const result = dict[trimmed];
+            if (result && result !== trimmed) {
+                node.data = node.data.replace(node.data.trim(), result);
+                translated = true;
+            }
+        }
+
+        return translated;
+    }
+
+    function transRelativeTimeTextInRoot(root) {
+        if (!root) return false;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        let translated = false;
+
+        while ((node = walker.nextNode())) {
+            if (shouldSkipNotificationPatchTextNode(node)) continue;
+            if (!isRelativeTimeCandidateText(node.data)) continue;
+
+            const result = transRelativeTimeText(node.data);
+            if (result && result !== node.data) {
+                node.data = result;
+                translated = true;
+            }
+        }
+
+        return translated;
+    }
+
+    function isRelativeTimeCandidateText(text) {
+        const normalized = normalizeHeaderTooltipText(text);
+        if (!normalized) return false;
+
+        return /^(?:just now|now|yesterday|last (?:week|month|year)|(?:an?|\d+) (?:second|minute|hour|day|week|month|year)s? ago)$/i.test(normalized);
+    }
+
+    function shouldSkipNotificationPatchTextNode(node) {
+        const parent = getNodeElement(node);
+        if (!parent) return true;
+
+        const ignoredSelector = [
+            'input',
+            'textarea',
+            'select',
+            'option',
+            'script',
+            'style',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]'
+        ].join(', ');
+
+        try {
+            return !!parent.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
     /**
      * 翻譯元素的單個屬性
      * @param {Object} target - 元素對象或元素數據集
@@ -30270,6 +30411,7 @@ I18N["zh-TW"]["repository/agents"] = {
             transHeaderTooltips();
             transHeaderMenus();
             transSearchOverlay();
+            transNotificationSearch();
             setupHeaderTooltipObserver();
         }
 
@@ -30299,7 +30441,7 @@ I18N["zh-TW"]["repository/agents"] = {
             subtree: true,
             characterData: true,
             attributes: true,
-            attributeFilter: ['class', 'hidden', 'open', 'popover', 'style', 'aria-hidden']
+            attributeFilter: ['class', 'hidden', 'open', 'popover', 'style', 'aria-hidden', 'placeholder']
         });
     }
 
@@ -30307,15 +30449,16 @@ I18N["zh-TW"]["repository/agents"] = {
         const translated = transHeaderTooltipMutation(mutation);
         const menuTranslated = transHeaderMenuMutation(mutation);
         const searchOverlayTranslated = transSearchOverlayMutation(mutation);
+        const notificationSearchTranslated = transNotificationSearchMutation(mutation);
         const target = getNodeElement(mutation.target);
 
-        if (translated || menuTranslated || searchOverlayTranslated) return true;
+        if (translated || menuTranslated || searchOverlayTranslated || notificationSearchTranslated) return true;
         if (target?.closest?.('tool-tip')) return true;
 
         if (mutation.type === 'characterData') {
             return (
                 hasHeaderTooltipCandidateText(mutation.target?.data) && !!target?.closest?.('tool-tip')
-            ) || hasHeaderMenuSource(mutation.target?.data) || hasSearchOverlaySource(mutation.target?.data);
+            ) || hasHeaderMenuSource(mutation.target?.data) || hasSearchOverlaySource(mutation.target?.data) || hasNotificationSearchSource(mutation.target?.data);
         }
 
         return Array.from(mutation.addedNodes || []).some(node => {
@@ -30325,7 +30468,8 @@ I18N["zh-TW"]["repository/agents"] = {
                 element?.querySelector?.('tool-tip') ||
                 hasHeaderTooltipCandidateText(element?.textContent) ||
                 hasHeaderMenuSource(element?.textContent) ||
-                hasSearchOverlaySource(element?.textContent)
+                hasSearchOverlaySource(element?.textContent) ||
+                hasNotificationSearchSource(element?.textContent)
             );
         });
     }
@@ -30372,12 +30516,14 @@ I18N["zh-TW"]["repository/agents"] = {
             safe(transHeaderTooltips, '右上角提示翻譯')();
             safe(transHeaderMenus, '右上角選單翻譯')();
             safe(transSearchOverlay, '搜尋彈層翻譯')();
+            safe(transNotificationSearch, '通知搜尋欄翻譯')();
         });
 
         setTimeout(() => {
             safe(transHeaderTooltips, '右上角提示延遲翻譯')();
             safe(transHeaderMenus, '右上角選單延遲翻譯')();
             safe(transSearchOverlay, '搜尋彈層延遲翻譯')();
+            safe(transNotificationSearch, '通知搜尋欄延遲翻譯')();
         }, 50);
 
         setTimeout(() => {
@@ -30385,6 +30531,7 @@ I18N["zh-TW"]["repository/agents"] = {
             safe(transHeaderTooltips, '右上角提示最終翻譯')();
             safe(transHeaderMenus, '右上角選單最終翻譯')();
             safe(transSearchOverlay, '搜尋彈層最終翻譯')();
+            safe(transNotificationSearch, '通知搜尋欄最終翻譯')();
         }, 150);
     }
 
@@ -30431,6 +30578,57 @@ I18N["zh-TW"]["repository/agents"] = {
                 });
             }
         });
+
+        return translated;
+    }
+
+    function transNotificationSearch() {
+        getNotificationSearchInputs().forEach(input => {
+            transNotificationSearchInput(input);
+            const root = findNotificationSearchRoot(input);
+            if (root) {
+                transNotificationSearchRoot(root);
+            }
+        });
+    }
+
+    function transNotificationSearchMutation(mutation) {
+        let translated = false;
+        const target = getNodeElement(mutation.target);
+
+        if (target && (mutation.type === 'characterData' || mutation.type === 'attributes')) {
+            translated = transNotificationSearchElement(target) || translated;
+        }
+
+        Array.from(mutation.addedNodes || []).forEach(node => {
+            const element = getNodeElement(node);
+            if (!element) return;
+            translated = transNotificationSearchElement(element) || translated;
+        });
+
+        return translated;
+    }
+
+    function transNotificationSearchElement(element) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+        let translated = false;
+
+        if (isNotificationSearchInput(element)) {
+            translated = transNotificationSearchInput(element) || translated;
+        }
+
+        element.querySelectorAll?.('input').forEach(input => {
+            if (isNotificationSearchInput(input)) {
+                translated = transNotificationSearchInput(input) || translated;
+            }
+        });
+
+        const root = findNotificationSearchRoot(element);
+        if (root) {
+            translated = transNotificationSearchRoot(root) || translated;
+        } else if (isNotificationSearchSurface(element) && hasNotificationSearchSource(element.textContent)) {
+            translated = transNotificationSearchRoot(element) || translated;
+        }
 
         return translated;
     }
@@ -30985,6 +31183,145 @@ I18N["zh-TW"]["repository/agents"] = {
         if (!text) return false;
         const normalized = normalizeHeaderTooltipText(text);
         return Object.keys(CONFIG.SEARCH_OVERLAY_TRANSLATIONS).some(source => normalized.includes(source));
+    }
+
+    function getNotificationSearchInputs() {
+        const selector = [
+            'input[placeholder="Search notifications"]',
+            'input[placeholder="搜尋通知"]',
+            'input[aria-label="Search notifications"]',
+            'input[aria-label="搜尋通知"]'
+        ].join(', ');
+
+        try {
+            return Array.from(document.querySelectorAll(selector));
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function isNotificationSearchInput(element) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+        if (element.tagName !== 'INPUT') return false;
+
+        const placeholder = normalizeHeaderTooltipText(element.getAttribute('placeholder'));
+        const ariaLabel = normalizeHeaderTooltipText(element.getAttribute('aria-label'));
+
+        return (
+            placeholder === 'Search notifications' ||
+            placeholder === '搜尋通知' ||
+            ariaLabel === 'Search notifications' ||
+            ariaLabel === '搜尋通知'
+        );
+    }
+
+    function transNotificationSearchInput(input) {
+        if (!isNotificationSearchInput(input)) return false;
+
+        return [
+            'placeholder',
+            'title'
+        ].reduce((changed, attr) => {
+            const value = input.getAttribute(attr);
+            const result = getNotificationSearchTranslation(value);
+            if (result && result !== value) {
+                input.setAttribute(attr, result);
+                return true;
+            }
+            return changed;
+        }, false);
+    }
+
+    function findNotificationSearchRoot(element) {
+        let current = element;
+
+        for (let depth = 0; current && depth < 8; depth += 1) {
+            if (current.nodeType !== Node.ELEMENT_NODE) return null;
+
+            if (isNotificationSearchInput(current)) return current.parentElement || current;
+            if (current.querySelector?.('input[placeholder="Search notifications"], input[placeholder="搜尋通知"], input[aria-label="Search notifications"], input[aria-label="搜尋通知"]')) {
+                return current;
+            }
+            if (isNotificationSearchSurface(current) && hasNotificationSearchSource(current.textContent)) {
+                return current;
+            }
+
+            current = current.parentElement;
+        }
+
+        return null;
+    }
+
+    function isNotificationSearchSurface(element) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+        if (element === document.body || element === document.documentElement) return false;
+
+        const text = normalizeHeaderTooltipText(element.textContent);
+        if (!text || text.length > 900) return false;
+
+        const rect = element.getBoundingClientRect?.();
+        if (rect && rect.width > 0 && rect.height > 0) {
+            if (rect.width > 1800 || rect.height > 760) return false;
+        }
+
+        return true;
+    }
+
+    function transNotificationSearchRoot(root) {
+        if (!root) return false;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        let translated = false;
+
+        while ((node = walker.nextNode())) {
+            if (shouldSkipNotificationSearchTextNode(node)) continue;
+            const result = getNotificationSearchTranslation(node.data);
+            if (result && result !== node.data) {
+                node.data = result;
+                translated = true;
+            }
+        }
+
+        return translated;
+    }
+
+    function shouldSkipNotificationSearchTextNode(node) {
+        const parent = getNodeElement(node);
+        if (!parent) return true;
+
+        const ignoredSelector = [
+            'input',
+            'textarea',
+            'select',
+            'option',
+            'script',
+            'style',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]'
+        ].join(', ');
+
+        try {
+            return !!parent.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function getNotificationSearchTranslation(text) {
+        if (!text) return false;
+        const trimmed = normalizeHeaderTooltipText(text);
+        const result = CONFIG.NOTIFICATION_SEARCH_TRANSLATIONS[trimmed];
+        if (!result) return false;
+
+        return text.replace(text.trim(), result);
+    }
+
+    function hasNotificationSearchSource(text) {
+        if (!text) return false;
+        const normalized = normalizeHeaderTooltipText(text);
+        return Object.keys(CONFIG.NOTIFICATION_SEARCH_TRANSLATIONS).some(source => normalized.includes(source));
     }
 
     function normalizeHeaderTooltipText(text) {
