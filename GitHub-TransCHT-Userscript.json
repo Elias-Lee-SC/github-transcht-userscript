@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.10.2
+// @version      local.10.3
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -29435,7 +29435,8 @@ I18N["zh-TW"]["repository/agents"] = {
             "All repositories": "所有倉庫",
             "You have unread notifications": "您有未讀通知",
             "You have no unread notifications": "您沒有未讀通知",
-            "Notifications": "通知"
+            "Notifications": "通知",
+            "Open user navigation menu": "打開用戶導航選單"
         },
         HEADER_TOOLTIP_SHORTCUTS: {
             "所有議題": ["G", "I"],
