@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.25
+// @version      local.11.29
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -29613,6 +29613,7 @@ I18N["zh-TW"]["repository/agents"] = {
         headerTooltipPending: false,
         notificationsPagePending: false,
         dashboardPagePending: false,
+        dashboardShortcutMenuPending: false,
         dashboardContextSearchSeen: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
         dynamicMenus: {},        // 動態菜單ID記錄
@@ -29656,6 +29657,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupInitTrans();
         setupHeaderTooltipTranslations();
         setupDashboardContextProtection();
+        setupDashboardShortcutMenuTranslations();
         setupUrlChangeListener();
         setupTurboEvents();
         State.initDone = true;
@@ -30640,8 +30642,120 @@ I18N["zh-TW"]["repository/agents"] = {
             });
         });
 
+        transDashboardShortcutMenus();
         transDashboardNewRepositoryButtons();
         transDashboardChangelog();
+    }
+
+    function transDashboardShortcutMenus() {
+        const dict = getDashboardShortcutMenuTranslations();
+
+        const selector = [
+            'main [role="menu"]',
+            'main [role="listbox"]',
+            'main [role="menuitem"]',
+            'main [role="option"]',
+            '[role="menu"]',
+            '[role="listbox"]',
+            '[role="menuitem"]',
+            '[role="option"]',
+            'anchored-position'
+        ].join(', ');
+
+        document.querySelectorAll(selector).forEach(element => {
+            if (!isDashboardShortcutMenuCandidate(element, dict)) return;
+            transExactTextInRoot(element, dict);
+        });
+
+        document.querySelectorAll('body *').forEach(element => {
+            transDashboardShortcutMenuDirectText(element, dict);
+        });
+    }
+
+    function getDashboardShortcutMenuTranslations() {
+        return {
+            "Create a profile README": "創建個人資料 README",
+            "Generate a simple calculator": "生成簡易計算器",
+            "Make a Pong game": "製作 Pong 遊戲",
+            "Design a Mermaid architecture overview": "設計 Mermaid 架構概覽",
+            "Basic Git commands": "基本 Git 命令",
+            "Git branching": "Git 分支",
+            "Advanced Git commands": "高級 Git 命令",
+            "My open pull requests": "我開啟的合併請求",
+            "Summarize my latest PR": "總結我最近的 PR"
+        };
+    }
+
+    function setupDashboardShortcutMenuTranslations() {
+        const schedule = () => {
+            if (!isDashboardPage()) return;
+            scheduleDashboardShortcutMenuTrans();
+        };
+
+        document.addEventListener('pointerup', schedule, true);
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('focusin', schedule, true);
+        document.addEventListener('keyup', schedule, true);
+    }
+
+    function scheduleDashboardShortcutMenuTrans() {
+        if (State.dashboardShortcutMenuPending) return;
+        State.dashboardShortcutMenuPending = true;
+
+        [0, 5, 25, 75, 200].forEach(delay => {
+            setTimeout(() => {
+                safe(transDashboardShortcutMenus, '儀表板快捷選單補翻')();
+                if (delay === 200) {
+                    State.dashboardShortcutMenuPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function transDashboardShortcutMenuDirectText(element, dict) {
+        if (!isDashboardShortcutMenuElementVisible(element)) return false;
+        let translated = false;
+
+        Array.from(element.childNodes || []).forEach(node => {
+            if (node.nodeType !== Node.TEXT_NODE) return;
+            if (shouldSkipNotificationPatchTextNode(node)) return;
+
+            const source = normalizeHeaderTooltipText(node.data);
+            const result = dict[source];
+            if (!result || result === source) return;
+
+            node.data = node.data.replace(node.data.trim(), result);
+            translated = true;
+        });
+
+        return translated;
+    }
+
+    function isDashboardShortcutMenuCandidate(element, dict) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+        if (shouldIgnoreNode(element, CONFIG.CRITICAL_IGNORE_SELECTORS)) return false;
+
+        const text = normalizeHeaderTooltipText(element.textContent);
+        if (!text) return false;
+        if (!Object.keys(dict).some(source => text.includes(source))) return false;
+
+        return isDashboardShortcutMenuElementVisible(element);
+    }
+
+    function isDashboardShortcutMenuElementVisible(element) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+        if (shouldIgnoreNode(element, CONFIG.CRITICAL_IGNORE_SELECTORS)) return false;
+
+        const rect = element.getBoundingClientRect?.();
+        return !!(
+            rect &&
+            rect.width > 0 &&
+            rect.height > 0 &&
+            rect.bottom >= 0 &&
+            rect.right >= 0 &&
+            rect.top <= window.innerHeight &&
+            rect.left <= window.innerWidth
+        );
     }
 
     function transDashboardContextBreadcrumb() {
