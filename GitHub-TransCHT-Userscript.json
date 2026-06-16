@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.1
+// @version      local.11.3
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -29496,8 +29496,13 @@ I18N["zh-TW"]["repository/agents"] = {
             "Give feedback": "回饋"
         },
         NOTIFICATION_SEARCH_TRANSLATIONS: {
+            "Search": "搜尋",
             "Search notifications": "搜尋通知",
             "Suggested filters": "建議篩選",
+            "Submit search": "提交搜尋",
+            "Submit Search": "提交搜尋",
+            "Types": "類型",
+            "Autocomplete": "自動完成",
             "filter by repository": "按倉庫篩選",
             "filter by status or discussion type": "按狀態或評論類型篩選",
             "filter by notification reason": "按通知原因篩選",
@@ -30623,6 +30628,10 @@ I18N["zh-TW"]["repository/agents"] = {
             }
         });
 
+        if (hasNotificationSearchSource(element.textContent)) {
+            translated = transNotificationSearchMatchedText(element) || translated;
+        }
+
         const root = findNotificationSearchRoot(element);
         if (root) {
             translated = transNotificationSearchRoot(root) || translated;
@@ -31269,6 +31278,24 @@ I18N["zh-TW"]["repository/agents"] = {
 
     function transNotificationSearchRoot(root) {
         if (!root) return false;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        let translated = false;
+
+        while ((node = walker.nextNode())) {
+            if (shouldSkipNotificationSearchTextNode(node)) continue;
+            const result = getNotificationSearchTranslation(node.data);
+            if (result && result !== node.data) {
+                node.data = result;
+                translated = true;
+            }
+        }
+
+        return translated;
+    }
+
+    function transNotificationSearchMatchedText(root) {
+        if (!root || root === document.body || root === document.documentElement) return false;
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
         let node;
         let translated = false;
