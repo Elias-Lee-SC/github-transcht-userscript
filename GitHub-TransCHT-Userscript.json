@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.10.8
+// @version      local.10.9
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -29485,6 +29485,16 @@ I18N["zh-TW"]["repository/agents"] = {
             "Free": "免費",
             "Sign out": "退出"
         },
+        SEARCH_OVERLAY_TRANSLATIONS: {
+            "Owners": "所有者",
+            "Repositories": "倉庫",
+            "Jump to": "跳轉到",
+            "Copilot": "Copilot",
+            "Chat with Copilot": "與 Copilot 聊天",
+            "Start a new Copilot thread": "啟動新的 Copilot 對話",
+            "Search syntax tips": "搜尋語法提示",
+            "Give feedback": "回饋"
+        },
         TRANS_ENGINES: { // 翻譯引擎配置
             iflyrec: {
                 name: '訊飛聽見',
@@ -30259,6 +30269,7 @@ I18N["zh-TW"]["repository/agents"] = {
             removeMisplacedHeaderTooltipShortcuts();
             transHeaderTooltips();
             transHeaderMenus();
+            transSearchOverlay();
             setupHeaderTooltipObserver();
         }
 
@@ -30295,15 +30306,16 @@ I18N["zh-TW"]["repository/agents"] = {
     function isPotentialHeaderTooltipMutation(mutation) {
         const translated = transHeaderTooltipMutation(mutation);
         const menuTranslated = transHeaderMenuMutation(mutation);
+        const searchOverlayTranslated = transSearchOverlayMutation(mutation);
         const target = getNodeElement(mutation.target);
 
-        if (translated || menuTranslated) return true;
+        if (translated || menuTranslated || searchOverlayTranslated) return true;
         if (target?.closest?.('tool-tip')) return true;
 
         if (mutation.type === 'characterData') {
             return (
                 hasHeaderTooltipCandidateText(mutation.target?.data) && !!target?.closest?.('tool-tip')
-            ) || hasHeaderMenuSource(mutation.target?.data);
+            ) || hasHeaderMenuSource(mutation.target?.data) || hasSearchOverlaySource(mutation.target?.data);
         }
 
         return Array.from(mutation.addedNodes || []).some(node => {
@@ -30312,7 +30324,8 @@ I18N["zh-TW"]["repository/agents"] = {
                 element?.matches?.('tool-tip') ||
                 element?.querySelector?.('tool-tip') ||
                 hasHeaderTooltipCandidateText(element?.textContent) ||
-                hasHeaderMenuSource(element?.textContent)
+                hasHeaderMenuSource(element?.textContent) ||
+                hasSearchOverlaySource(element?.textContent)
             );
         });
     }
@@ -30358,17 +30371,20 @@ I18N["zh-TW"]["repository/agents"] = {
         requestAnimationFrame(() => {
             safe(transHeaderTooltips, '右上角提示翻譯')();
             safe(transHeaderMenus, '右上角選單翻譯')();
+            safe(transSearchOverlay, '搜尋彈層翻譯')();
         });
 
         setTimeout(() => {
             safe(transHeaderTooltips, '右上角提示延遲翻譯')();
             safe(transHeaderMenus, '右上角選單延遲翻譯')();
+            safe(transSearchOverlay, '搜尋彈層延遲翻譯')();
         }, 50);
 
         setTimeout(() => {
             State.headerTooltipPending = false;
             safe(transHeaderTooltips, '右上角提示最終翻譯')();
             safe(transHeaderMenus, '右上角選單最終翻譯')();
+            safe(transSearchOverlay, '搜尋彈層最終翻譯')();
         }, 150);
     }
 
@@ -30388,6 +30404,35 @@ I18N["zh-TW"]["repository/agents"] = {
         document.querySelectorAll('[role="menu"], [role="dialog"], [aria-modal="true"], modal-dialog, [popover], .Overlay, .Popover-message, .ActionList, .ActionListWrap').forEach(element => {
             transHeaderMenuSurface(element, dict);
         });
+    }
+
+    function transSearchOverlay() {
+        forEachSearchOverlayRoot(root => {
+            transSearchOverlayRoot(root);
+        });
+    }
+
+    function transSearchOverlayMutation(mutation) {
+        let translated = false;
+        const target = getNodeElement(mutation.target);
+
+        if (target) {
+            translated = transNearestSearchOverlayRoot(target) || translated;
+        }
+
+        Array.from(mutation.addedNodes || []).forEach(node => {
+            const element = getNodeElement(node);
+            if (!element) return;
+            translated = transNearestSearchOverlayRoot(element) || translated;
+
+            if (element.querySelectorAll) {
+                element.querySelectorAll(getSearchOverlayRootSelector()).forEach(root => {
+                    translated = transSearchOverlayRoot(root) || translated;
+                });
+            }
+        });
+
+        return translated;
     }
 
     function removeMisplacedHeaderTooltipShortcuts() {
@@ -30807,6 +30852,139 @@ I18N["zh-TW"]["repository/agents"] = {
         if (!text) return false;
         const normalized = normalizeHeaderTooltipText(text);
         return Object.keys(CONFIG.HEADER_MENU_TRANSLATIONS).some(source => normalized.includes(source));
+    }
+
+    function getSearchOverlayRootSelector() {
+        return [
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '#command-palette-pjax-container',
+            '.js-command-palette',
+            '[data-target*="command-palette"]',
+            '[data-target*="qbsearch-input"]',
+            '[data-target*="query-builder"]',
+            '[class*="QueryBuilder"]'
+        ].join(', ');
+    }
+
+    function forEachSearchOverlayRoot(callback) {
+        const selector = getSearchOverlayRootSelector();
+        const visited = new WeakSet();
+
+        document.querySelectorAll(selector).forEach(root => {
+            visitSearchOverlayRoot(root, callback, visited);
+        });
+    }
+
+    function visitSearchOverlayRoot(root, callback, visited) {
+        if (!root || visited.has(root)) return;
+        visited.add(root);
+        callback(root);
+
+        if (root.shadowRoot) {
+            callback(root.shadowRoot);
+        }
+
+        root.querySelectorAll?.('*').forEach(child => {
+            if (child.shadowRoot) {
+                visitSearchOverlayRoot(child.shadowRoot, callback, visited);
+            }
+        });
+    }
+
+    function transNearestSearchOverlayRoot(element) {
+        const root = findSearchOverlayRoot(element);
+        if (!root) return false;
+
+        let translated = transSearchOverlayRoot(root);
+        if (root.shadowRoot) {
+            translated = transSearchOverlayRoot(root.shadowRoot) || translated;
+        }
+
+        return translated;
+    }
+
+    function findSearchOverlayRoot(element) {
+        const selector = getSearchOverlayRootSelector();
+        let current = element;
+
+        while (current && current !== document && current !== document.documentElement) {
+            try {
+                if (current.matches?.(selector)) return current;
+                const closest = current.closest?.(selector);
+                if (closest) return closest;
+            } catch (e) {
+                return null;
+            }
+
+            if (current.parentElement) {
+                current = current.parentElement;
+                continue;
+            }
+
+            const rootNode = current.getRootNode?.();
+            current = rootNode?.host || null;
+        }
+
+        return null;
+    }
+
+    function transSearchOverlayRoot(root) {
+        if (!root) return false;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        let translated = false;
+
+        while ((node = walker.nextNode())) {
+            if (shouldSkipSearchOverlayTextNode(node)) continue;
+            const result = getSearchOverlayTranslation(node.data);
+            if (result && result !== node.data) {
+                node.data = result;
+                translated = true;
+            }
+        }
+
+        return translated;
+    }
+
+    function shouldSkipSearchOverlayTextNode(node) {
+        const parent = getNodeElement(node);
+        if (!parent) return true;
+
+        const ignoredSelector = [
+            'input',
+            'textarea',
+            'select',
+            'option',
+            'script',
+            'style',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]'
+        ].join(', ');
+
+        try {
+            return !!parent.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function getSearchOverlayTranslation(text) {
+        if (!text) return false;
+        const trimmed = normalizeHeaderTooltipText(text);
+        const result = CONFIG.SEARCH_OVERLAY_TRANSLATIONS[trimmed];
+        if (!result) return false;
+
+        return text.replace(text.trim(), result);
+    }
+
+    function hasSearchOverlaySource(text) {
+        if (!text) return false;
+        const normalized = normalizeHeaderTooltipText(text);
+        return Object.keys(CONFIG.SEARCH_OVERLAY_TRANSLATIONS).some(source => normalized.includes(source));
     }
 
     function normalizeHeaderTooltipText(text) {
