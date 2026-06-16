@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.8.7
+// @version      local.8.8
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -30174,7 +30174,7 @@ I18N["zh-TW"]["repository/agents"] = {
     function setupHeaderHoverRescan() {
         const headerSelector = 'header, [role="banner"], [data-testid="app-header"], .AppHeader, .Header';
         let hoverRescanTimer = null;
-        let debugDone = false;
+        let debugCount = 0;
 
         document.addEventListener('mouseover', (event) => {
             const target = event.target;
@@ -30190,80 +30190,149 @@ I18N["zh-TW"]["repository/agents"] = {
                 safe(transHeaderTooltips, '右上角 hover 提示翻譯')();
                 safe(aggressiveTooltipScan, '直接 tooltip 掃描')();
 
-                // 第一次 hover 時輸出診斷日誌
-                if (!debugDone) {
-                    debugDone = true;
+                // 前 3 次 hover 時輸出診斷日誌（確保能捕捉到 tooltip 可見時的狀態）
+                if (debugCount < 3) {
+                    debugCount++;
+                    console.log(`[GitHub 中文化] hover 診斷 #${debugCount} (hover target: <${target.tagName?.toLowerCase()}> class="${target.className?.substring?.(0, 40)}")`);
                     safe(debugTooltipDump, '診斷 tooltip')();
                 }
-            }, 120);
+            }, 200); // 增加延遲確保 tooltip 已完全渲染
         }, { passive: true });
     }
 
     /**
-     * 診斷函數：輸出所有可能的 tooltip 相關 DOM 資訊到 console，
-     * 便於定位翻譯失效的根本原因。
+     * 診斷函數 v2：深度遞迴搜索所有 shadow root，定位 tooltip 元素的真實位置。
      */
     function debugTooltipDump() {
-        console.group('[GitHub 中文化 Debug] === Tooltip 診斷 ===');
+        console.group('[GitHub 中文化 Debug v2] === Tooltip 深度診斷 ===');
 
-        // 1. 所有 <tool-tip> 元素
-        const tooltips = document.querySelectorAll('tool-tip');
-        console.log(`找到 ${tooltips.length} 個 <tool-tip> 元素`);
-        tooltips.forEach((tt, i) => {
-            console.log(`  tool-tip[${i}]:`, {
-                textContent: tt.textContent?.substring(0, 120),
-                innerHTML: tt.innerHTML?.substring(0, 250),
-                hasShadowRoot: !!tt.shadowRoot,
-                shadowMode: tt.shadowRoot?.mode ?? 'N/A',
-                id: tt.id,
-                for: tt.getAttribute('for'),
-                popover: tt.getAttribute('popover'),
-                ariaLabel: tt.getAttribute('aria-label'),
-                hidden: tt.hidden,
-                dataType: tt.getAttribute('data-type'),
-            });
-            if (tt.shadowRoot) {
-                console.log(`    shadowRoot textContent:`, tt.shadowRoot.textContent?.substring(0, 120));
-                console.log(`    shadowRoot innerHTML:`, tt.shadowRoot.innerHTML?.substring(0, 400));
-            }
-        });
-
-        // 2. [role="tooltip"] 元素
-        const roleTooltips = document.querySelectorAll('[role="tooltip"]');
-        console.log(`找到 ${roleTooltips.length} 個 [role="tooltip"] 元素`);
-        roleTooltips.forEach((el, i) => {
-            console.log(`  [role="tooltip"][${i}]: <${el.tagName.toLowerCase()}>`, {
-                textContent: el.textContent?.substring(0, 120),
-                className: el.className,
-                id: el.id,
+        // 1. 深度搜索所有 shadow root 中的 tool-tip 元素
+        console.log('--- 深度搜索 shadow root 中的 <tool-tip> ---');
+        const allTooltips = [];
+        function walkForTooltips(root, path) {
+            try {
+                const elements = root.querySelectorAll('*');
+                for (const el of elements) {
+                    if (el.tagName === 'TOOL-TIP') {
+                        allTooltips.push({ element: el, path: path + ' > tool-tip', text: el.textContent?.trim()?.substring(0, 80) });
+                    }
+                    if (el.shadowRoot) {
+                        walkForTooltips(el.shadowRoot, path + ' > ' + el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + ' > shadow');
+                    }
+                }
+            } catch (e) { /* ignore */ }
+        }
+        walkForTooltips(document, 'document');
+        console.log(`深度搜索找到 ${allTooltips.length} 個 <tool-tip>:`);
+        allTooltips.forEach((item, i) => {
+            console.log(`  [${i}] path: ${item.path}`);
+            console.log(`       text: "${item.text}"`, {
+                for: item.element.getAttribute('for'),
+                popover: item.element.getAttribute('popover'),
+                shadowRoot: !!item.element.shadowRoot,
             });
         });
 
-        // 3. notification-indicator 元素
-        const notifIndicators = document.querySelectorAll('notification-indicator');
-        console.log(`找到 ${notifIndicators.length} 個 notification-indicator 元素`);
-        notifIndicators.forEach((ni, i) => {
-            const attrs = {};
-            Array.from(ni.attributes).forEach(a => attrs[a.name] = a.value);
-            console.log(`  notification-indicator[${i}]:`, attrs);
+        // 2. 搜索 data-hotkey="g i", "g p", "g n" 的元素（Issues/PR/Notifications 按鈕）
+        console.log('--- 搜索 data-hotkey 按鈕 (g i / g p / g n) ---');
+        function walkForHotkeys(root, path) {
+            try {
+                const elements = root.querySelectorAll('[data-hotkey]');
+                for (const el of elements) {
+                    const hotkey = el.getAttribute('data-hotkey');
+                    if (['g i', 'g p', 'g n'].includes(hotkey)) {
+                        console.log(`  找到 <${el.tagName.toLowerCase()}> data-hotkey="${hotkey}" at: ${path}`, {
+                            id: el.id,
+                            ariaLabel: el.getAttribute('aria-label'),
+                            title: el.getAttribute('title'),
+                            className: el.className?.substring?.(0, 60),
+                            textContent: el.textContent?.trim()?.substring(0, 60),
+                        });
+                        // 找附近的 tool-tip
+                        const nextSibling = el.nextElementSibling;
+                        if (nextSibling) {
+                            console.log(`    nextSibling: <${nextSibling.tagName.toLowerCase()}>`, {
+                                text: nextSibling.textContent?.trim()?.substring(0, 60),
+                                id: nextSibling.id,
+                            });
+                        }
+                        const parent = el.parentElement;
+                        if (parent) {
+                            const parentTooltips = parent.querySelectorAll('tool-tip');
+                            console.log(`    parent 內的 tool-tip 數: ${parentTooltips.length}`);
+                            parentTooltips.forEach(tt => {
+                                console.log(`      tool-tip: "${tt.textContent?.trim()?.substring(0, 60)}" for="${tt.getAttribute('for')}"`);
+                            });
+                        }
+                    }
+                }
+                // 繼續搜索 shadow root
+                const all = root.querySelectorAll('*');
+                for (const el of all) {
+                    if (el.shadowRoot) {
+                        walkForHotkeys(el.shadowRoot, path + ' > ' + el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + ' > shadow');
+                    }
+                }
+            } catch (e) { /* ignore */ }
+        }
+        walkForHotkeys(document, 'document');
+
+        // 3. 搜索所有含有目標文字的文字節點（light DOM only，XPath 無法進 shadow）
+        console.log('--- XPath 搜索目標文字節點 (light DOM) ---');
+        ['All issues', 'All pull requests', 'You have unread notifications'].forEach(text => {
+            try {
+                const xpath = `//text()[contains(., '${text}')]`;
+                const result = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+                console.log(`  "${text}": ${result.snapshotLength} 個 light DOM 文字節點`);
+                for (let i = 0; i < Math.min(result.snapshotLength, 3); i++) {
+                    const node = result.snapshotItem(i);
+                    const p = node.parentElement;
+                    console.log(`    parent: <${p?.tagName?.toLowerCase()}> id="${p?.id}" class="${p?.className?.substring?.(0, 50)}"`);
+                }
+            } catch (e) { console.log(`  "${text}": XPath 錯誤`, e.message); }
         });
 
-        // 4. header 中帶 aria-label 的元素
-        const headerEls = document.querySelectorAll(
-            '.AppHeader [aria-label], header [aria-label], [data-testid="app-header"] [aria-label], [role="banner"] [aria-label]'
-        );
-        console.log(`找到 ${headerEls.length} 個 header [aria-label] 元素`);
-        headerEls.forEach((el, i) => {
-            const label = el.getAttribute('aria-label');
-            if (label && /[a-zA-Z]/.test(label)) {
-                console.log(`  header[aria-label][${i}]: <${el.tagName.toLowerCase()}>`, {
-                    ariaLabel: label,
-                    id: el.id,
-                    dataHotkey: el.getAttribute('data-hotkey'),
-                    title: el.getAttribute('title'),
-                });
+        // 4. 深度搜索 shadow root 中含目標文字的文字節點
+        console.log('--- 深度搜索 shadow root 中的目標文字 ---');
+        const targets = ['All issues', 'All pull requests', 'You have unread notifications'];
+        function walkForText(root, path) {
+            try {
+                const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+                let node;
+                while ((node = walker.nextNode())) {
+                    for (const target of targets) {
+                        if (node.data?.includes(target)) {
+                            const p = node.parentElement || node.parentNode;
+                            console.log(`  找到 "${target}" at: ${path}`);
+                            console.log(`    parent: <${p?.tagName?.toLowerCase() || p?.nodeName}> id="${p?.id}" class="${p?.className?.substring?.(0, 50)}"`);
+                            console.log(`    nodeData: "${node.data.trim().substring(0, 80)}"`);
+                        }
+                    }
+                }
+                // Recurse into shadow roots
+                const elements = root.querySelectorAll('*');
+                for (const el of elements) {
+                    if (el.shadowRoot) {
+                        walkForText(el.shadowRoot, path + ' > ' + el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + ' > shadow');
+                    }
+                }
+            } catch (e) { /* ignore */ }
+        }
+        walkForText(document, 'document');
+
+        // 5. 列出所有含 shadow root 的元素摘要
+        console.log('--- 含 shadow root 的元素摘要 ---');
+        let shadowCount = 0;
+        document.querySelectorAll('*').forEach(el => {
+            if (el.shadowRoot) {
+                shadowCount++;
+                const childCount = el.shadowRoot.querySelectorAll('*').length;
+                if (childCount > 5) {
+                    console.log(`  <${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}> shadow 含 ${childCount} 個子元素`);
+                }
             }
         });
+        console.log(`共 ${shadowCount} 個元素有 shadowRoot`);
 
         console.groupEnd();
     }
