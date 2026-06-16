@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.29
+// @version      local.11.34
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -29614,6 +29614,7 @@ I18N["zh-TW"]["repository/agents"] = {
         notificationsPagePending: false,
         dashboardPagePending: false,
         dashboardShortcutMenuPending: false,
+        dashboardFloatingTooltipPending: false,
         dashboardContextSearchSeen: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
         dynamicMenus: {},        // 動態菜單ID記錄
@@ -29993,6 +29994,9 @@ I18N["zh-TW"]["repository/agents"] = {
         // 僅遍歷頂層節點
         topNodes.forEach(node => {
             traverseNode(node);
+            if (isDashboardPage()) {
+                transDashboardFloatingTooltipNode(node);
+            }
         });
 
         scheduleNotificationsPageTrans();
@@ -30643,6 +30647,7 @@ I18N["zh-TW"]["repository/agents"] = {
         });
 
         transDashboardShortcutMenus();
+        transDashboardPromptPlaceholder();
         transDashboardNewRepositoryButtons();
         transDashboardChangelog();
     }
@@ -30670,10 +30675,53 @@ I18N["zh-TW"]["repository/agents"] = {
         document.querySelectorAll('body *').forEach(element => {
             transDashboardShortcutMenuDirectText(element, dict);
         });
+
+        transDashboardRepositoryPickerSearchPlaceholders();
+    }
+
+    function transDashboardFloatingTooltips() {
+        const dict = getDashboardFloatingTooltipTranslations();
+        const selector = [
+            'tool-tip',
+            '[role="tooltip"]',
+            '[data-testid*="tooltip"]',
+            '[class*="Tooltip"]',
+            '[class*="tooltip"]',
+            '[popover]',
+            '.Popover',
+            '.Popover-message',
+            '.Overlay'
+        ].join(', ');
+
+        document.querySelectorAll(selector).forEach(element => {
+            if (!isDashboardFloatingTooltipCandidate(element, dict)) return;
+            transDashboardFloatingTooltipText(element, dict);
+        });
+
+        document.querySelectorAll('body *').forEach(element => {
+            if (!isDashboardFloatingTooltipCandidate(element, dict)) return;
+            transDashboardFloatingTooltipText(element, dict);
+        });
+    }
+
+    function getDashboardFloatingTooltipTranslations() {
+        return {
+            "Add files, and spaces": "新增文件和空間",
+            "Send now": "立即發送",
+            "Remove": "移除",
+            "Attachments options": "附件選項"
+        };
     }
 
     function getDashboardShortcutMenuTranslations() {
         return {
+            "Ask": "詢問",
+            "Agent": "AI 代理",
+            "Models": "模型",
+            "Fast and cost-efficient": "快速、經濟高效",
+            "Versatile and highly intelligent": "多功能、高智能",
+            "Most powerful at complex tasks": "在複雜任務中最強大",
+            "Select a repository": "選擇倉庫",
             "Create a profile README": "創建個人資料 README",
             "Generate a simple calculator": "生成簡易計算器",
             "Make a Pong game": "製作 Pong 遊戲",
@@ -30691,8 +30739,14 @@ I18N["zh-TW"]["repository/agents"] = {
             if (!isDashboardPage()) return;
             scheduleDashboardShortcutMenuTrans();
         };
+        const scheduleTooltip = () => {
+            if (!isDashboardPage()) return;
+            scheduleDashboardFloatingTooltipTrans();
+        };
 
         document.addEventListener('pointerup', schedule, true);
+        document.addEventListener('pointerover', scheduleTooltip, true);
+        document.addEventListener('mouseover', scheduleTooltip, true);
         document.addEventListener('click', schedule, true);
         document.addEventListener('focusin', schedule, true);
         document.addEventListener('keyup', schedule, true);
@@ -30707,6 +30761,20 @@ I18N["zh-TW"]["repository/agents"] = {
                 safe(transDashboardShortcutMenus, '儀表板快捷選單補翻')();
                 if (delay === 200) {
                     State.dashboardShortcutMenuPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleDashboardFloatingTooltipTrans() {
+        if (State.dashboardFloatingTooltipPending) return;
+        State.dashboardFloatingTooltipPending = true;
+
+        [0, 5, 25, 75, 200, 500].forEach(delay => {
+            setTimeout(() => {
+                safe(transDashboardFloatingTooltips, '儀表板浮動提示補翻')();
+                if (delay === 500) {
+                    State.dashboardFloatingTooltipPending = false;
                 }
             }, delay);
         });
@@ -30729,6 +30797,167 @@ I18N["zh-TW"]["repository/agents"] = {
         });
 
         return translated;
+    }
+
+    function transDashboardPromptPlaceholder() {
+        const source = 'Ask anything or type @ to add context';
+        const target = '詢問任何問題或輸入 @ 來新增上下文';
+
+        document.querySelectorAll('main [placeholder], main [aria-placeholder], main [data-placeholder], main [aria-label]').forEach(element => {
+            [
+                'placeholder',
+                'aria-placeholder',
+                'data-placeholder',
+                'aria-label'
+            ].forEach(attr => {
+                const value = element.getAttribute?.(attr);
+                if (normalizeHeaderTooltipText(value) === source) {
+                    element.setAttribute(attr, target);
+                }
+            });
+        });
+
+        document.querySelectorAll('main *').forEach(element => {
+            if (!isDashboardPromptPlaceholderCandidate(element, source)) return;
+
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType !== Node.TEXT_NODE) return;
+                if (normalizeHeaderTooltipText(node.data) === source) {
+                    node.data = node.data.replace(node.data.trim(), target);
+                }
+            });
+        });
+    }
+
+    function isDashboardPromptPlaceholderCandidate(element, source) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+        if (shouldIgnoreNode(element, CONFIG.CRITICAL_IGNORE_SELECTORS)) return false;
+        if (!normalizeHeaderTooltipText(element.textContent).includes(source)) return false;
+
+        const rect = element.getBoundingClientRect?.();
+        return !!(
+            rect &&
+            rect.width > 0 &&
+            rect.height > 0 &&
+            rect.width < 1200 &&
+            rect.height < 220 &&
+            rect.bottom >= 0 &&
+            rect.right >= 0 &&
+            rect.top <= window.innerHeight &&
+            rect.left <= window.innerWidth
+        );
+    }
+
+    function transDashboardRepositoryPickerSearchPlaceholders() {
+        document.querySelectorAll('input[placeholder="Search"]').forEach(input => {
+            if (!isDashboardRepositoryPickerSearchInput(input)) return;
+            input.setAttribute('placeholder', '搜尋');
+        });
+    }
+
+    function isDashboardRepositoryPickerSearchInput(input) {
+        if (!input || input.nodeType !== Node.ELEMENT_NODE) return false;
+        if (!isDashboardShortcutMenuElementVisible(input)) return false;
+
+        try {
+            if (input.closest?.('header, [role="banner"], qbsearch-input, query-builder, react-app[app-name="command-palette"], #command-palette-pjax-container, .js-command-palette')) {
+                return false;
+            }
+        } catch (e) {
+            return false;
+        }
+
+        let current = input.parentElement;
+        for (let depth = 0; current && depth < 8; depth += 1) {
+            const text = normalizeHeaderTooltipText(current.textContent);
+            if (text.includes('Select a repository') || text.includes('選擇倉庫')) {
+                return true;
+            }
+            current = current.parentElement;
+        }
+
+        return false;
+    }
+
+    function transDashboardFloatingTooltipText(root, dict) {
+        if (!root) return false;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        let translated = false;
+
+        while ((node = walker.nextNode())) {
+            const parent = getNodeElement(node);
+            if (!parent || parent.closest?.('kbd, code, pre, script, style')) continue;
+
+            const result = replaceHeaderTooltipText(node.data, dict);
+            if (result && result !== node.data) {
+                node.data = result;
+                translated = true;
+            }
+        }
+
+        return translated;
+    }
+
+    function transDashboardFloatingTooltipNode(node) {
+        const dict = getDashboardFloatingTooltipTranslations();
+        const element = getNodeElement(node);
+        if (!element) return false;
+        let translated = false;
+
+        if (isDashboardFloatingTooltipCandidate(element, dict)) {
+            translated = transDashboardFloatingTooltipText(element, dict) || translated;
+        }
+
+        element.querySelectorAll?.('*').forEach(child => {
+            if (!isDashboardFloatingTooltipCandidate(child, dict)) return;
+            translated = transDashboardFloatingTooltipText(child, dict) || translated;
+        });
+
+        return translated;
+    }
+
+    function isDashboardFloatingTooltipCandidate(element, dict) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+        if (!isDashboardShortcutMenuElementVisible(element)) return false;
+
+        const text = normalizeHeaderTooltipText(element.textContent);
+        if (!text) return false;
+
+        let matchedSource = '';
+        const hasSource = Object.keys(dict).some(source => {
+            if (text !== source && !text.includes(source)) return false;
+            matchedSource = source;
+            return true;
+        });
+        if (!hasSource) return false;
+        if (text.length > Math.max(80, matchedSource.length + 18)) return false;
+
+        const rect = element.getBoundingClientRect?.();
+        if (!rect || rect.width > 560 || rect.height > 120) return false;
+
+        const likelyTooltipSelector = [
+            'tool-tip',
+            '[role="tooltip"]',
+            '[data-testid*="tooltip"]',
+            '[class*="Tooltip"]',
+            '[class*="tooltip"]',
+            '[popover]',
+            '.Popover',
+            '.Popover-message',
+            '.Overlay'
+        ].join(', ');
+
+        try {
+            if (element.matches?.(likelyTooltipSelector) || element.closest?.(likelyTooltipSelector)) {
+                return true;
+            }
+
+            const style = window.getComputedStyle?.(element);
+            return style && ['absolute', 'fixed'].includes(style.position);
+        } catch (e) {
+            return false;
+        }
     }
 
     function isDashboardShortcutMenuCandidate(element, dict) {
