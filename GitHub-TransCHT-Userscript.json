@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.8.9
+// @version      local.9.8
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -30120,95 +30120,9 @@ I18N["zh-TW"]["repository/agents"] = {
      * 這裡只處理固定白名單詞條，避開搜尋欄與 header 的通用遍歷。
      */
     function setupHeaderTooltipTranslations() {
-        // Monkey-patch Element.prototype.attachShadow to translate tooltips inside Shadow DOM
-        const originalAttachShadow = Element.prototype.attachShadow;
-        if (originalAttachShadow) {
-            Element.prototype.attachShadow = function (init) {
-                const shadowRoot = originalAttachShadow.call(this, init);
-                const hostTag = this.tagName;
-                
-                if (hostTag === 'TOOL-TIP') {
-                    // 直接觀察 tool-tip 自身的 shadow root（翻譯 slot 投影的文字）
-                    const observer = new MutationObserver(safe(() => {
-                        transHeaderTooltipTextRoot(shadowRoot, CONFIG.HEADER_TOOLTIP_TRANSLATIONS);
-                        shadowRoot.querySelectorAll?.('[aria-label], [title], [data-tooltip], [data-tooltip-text], [data-original-title]').forEach(el => {
-                            transHeaderTooltipAttrs(el, CONFIG.HEADER_TOOLTIP_TRANSLATIONS);
-                        });
-                    }, '陰影 DOM 提示翻譯觀察'));
-                    
-                    observer.observe(shadowRoot, {
-                        childList: true,
-                        subtree: true,
-                        characterData: true
-                    });
-                    
-                    requestAnimationFrame(() => {
-                        transHeaderTooltipTextRoot(shadowRoot, CONFIG.HEADER_TOOLTIP_TRANSLATIONS);
-                        shadowRoot.querySelectorAll?.('[aria-label], [title], [data-tooltip], [data-tooltip-text], [data-original-title]').forEach(el => {
-                            transHeaderTooltipAttrs(el, CONFIG.HEADER_TOOLTIP_TRANSLATIONS);
-                        });
-                    });
-                } else {
-                    // 對所有其他 shadow root：觀察是否有 tool-tip 被動態加入
-                    // 這是關鍵 — tooltip 元素可能在其他自定義元素的 shadow DOM 中
-                    const observer = new MutationObserver(safe((mutations) => {
-                        const dict = CONFIG.HEADER_TOOLTIP_TRANSLATIONS;
-                        for (const mutation of mutations) {
-                            for (const addedNode of mutation.addedNodes) {
-                                if (addedNode.nodeType !== Node.ELEMENT_NODE) continue;
-                                
-                                // 翻譯新加入的 tool-tip 元素
-                                if (addedNode.tagName === 'TOOL-TIP') {
-                                    translateToolTipElement(addedNode, dict);
-                                }
-                                // 搜索新加入節點內部的 tool-tip
-                                addedNode.querySelectorAll?.('tool-tip')?.forEach(tt => {
-                                    translateToolTipElement(tt, dict);
-                                });
-                            }
-                            
-                            // 也處理 characterData 變更（tooltip 文字更新）
-                            if (mutation.type === 'characterData') {
-                                const parent = mutation.target?.parentElement;
-                                if (parent?.tagName === 'TOOL-TIP') {
-                                    translateToolTipElement(parent, dict);
-                                }
-                            }
-                        }
-                    }, '陰影 DOM tool-tip 攔截'));
-                    
-                    observer.observe(shadowRoot, {
-                        childList: true,
-                        subtree: true,
-                        characterData: true
-                    });
-                }
-                
-                return shadowRoot;
-            };
-        }
-
-        /**
-         * 翻譯單個 tool-tip 元素（光照 DOM 文字 + 屬性）
-         */
-        function translateToolTipElement(tt, dict) {
-            // 翻譯 light DOM 文字節點
-            const walker = document.createTreeWalker(tt, NodeFilter.SHOW_TEXT);
-            let node;
-            while ((node = walker.nextNode())) {
-                const result = replaceHeaderTooltipText(node.data, dict);
-                if (result && result !== node.data) {
-                    node.data = result;
-                }
-            }
-            // 翻譯屬性
-            transHeaderTooltipAttrs(tt, dict);
-        }
-
         function setup() {
             transHeaderTooltips();
             setupHeaderTooltipObserver();
-            setupHeaderHoverRescan();
         }
 
         if (document.readyState === 'interactive' || document.readyState === 'complete') {
@@ -30216,282 +30130,6 @@ I18N["zh-TW"]["repository/agents"] = {
         } else {
             window.addEventListener('DOMContentLoaded', setup, { once: true });
         }
-    }
-
-    /**
-     * 監聽 header 區域的 mouseover 事件，在 hover 後重新掃描 tooltip。
-     * tooltip 通常在 hover 後才動態插入 DOM，MutationObserver 可能會在文字填入前觸發，
-     * 因此透過 hover 事件延遲重新掃描以確保翻譯成功。
-     */
-    function setupHeaderHoverRescan() {
-        const headerSelector = 'header, [role="banner"], [data-testid="app-header"], .AppHeader, .Header';
-        let hoverRescanTimer = null;
-        let debugCount = 0;
-
-        document.addEventListener('mouseover', (event) => {
-            const target = event.target;
-            if (!target?.closest) return;
-
-            // 只在 header 區域內觸發
-            if (!target.closest(headerSelector)) return;
-
-            // 防抖：避免高頻觸發
-            if (hoverRescanTimer) clearTimeout(hoverRescanTimer);
-            hoverRescanTimer = setTimeout(() => {
-                hoverRescanTimer = null;
-                safe(transHeaderTooltips, '右上角 hover 提示翻譯')();
-                safe(aggressiveTooltipScan, '直接 tooltip 掃描')();
-
-                // 前 3 次 hover 時輸出診斷日誌（確保能捕捉到 tooltip 可見時的狀態）
-                if (debugCount < 3) {
-                    debugCount++;
-                    console.log(`[GitHub 中文化] hover 診斷 #${debugCount} (hover target: <${target.tagName?.toLowerCase()}> class="${target.className?.substring?.(0, 40)}")`);
-                    safe(debugTooltipDump, '診斷 tooltip')();
-                }
-            }, 200); // 增加延遲確保 tooltip 已完全渲染
-        }, { passive: true });
-    }
-
-    /**
-     * 診斷函數 v2：深度遞迴搜索所有 shadow root，定位 tooltip 元素的真實位置。
-     */
-    function debugTooltipDump() {
-        console.group('[GitHub 中文化 Debug v2] === Tooltip 深度診斷 ===');
-
-        // 1. 深度搜索所有 shadow root 中的 tool-tip 元素
-        console.log('--- 深度搜索 shadow root 中的 <tool-tip> ---');
-        const allTooltips = [];
-        function walkForTooltips(root, path) {
-            try {
-                const elements = root.querySelectorAll('*');
-                for (const el of elements) {
-                    if (el.tagName === 'TOOL-TIP') {
-                        allTooltips.push({ element: el, path: path + ' > tool-tip', text: el.textContent?.trim()?.substring(0, 80) });
-                    }
-                    if (el.shadowRoot) {
-                        walkForTooltips(el.shadowRoot, path + ' > ' + el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + ' > shadow');
-                    }
-                }
-            } catch (e) { /* ignore */ }
-        }
-        walkForTooltips(document, 'document');
-        console.log(`深度搜索找到 ${allTooltips.length} 個 <tool-tip>:`);
-        allTooltips.forEach((item, i) => {
-            console.log(`  [${i}] path: ${item.path}`);
-            console.log(`       text: "${item.text}"`, {
-                for: item.element.getAttribute('for'),
-                popover: item.element.getAttribute('popover'),
-                shadowRoot: !!item.element.shadowRoot,
-            });
-        });
-
-        // 2. 搜索 data-hotkey="g i", "g p", "g n" 的元素（Issues/PR/Notifications 按鈕）
-        console.log('--- 搜索 data-hotkey 按鈕 (g i / g p / g n) ---');
-        function walkForHotkeys(root, path) {
-            try {
-                const elements = root.querySelectorAll('[data-hotkey]');
-                for (const el of elements) {
-                    const hotkey = el.getAttribute('data-hotkey');
-                    if (['g i', 'g p', 'g n'].includes(hotkey)) {
-                        console.log(`  找到 <${el.tagName.toLowerCase()}> data-hotkey="${hotkey}" at: ${path}`, {
-                            id: el.id,
-                            ariaLabel: el.getAttribute('aria-label'),
-                            title: el.getAttribute('title'),
-                            className: el.className?.substring?.(0, 60),
-                            textContent: el.textContent?.trim()?.substring(0, 60),
-                        });
-                        // 找附近的 tool-tip
-                        const nextSibling = el.nextElementSibling;
-                        if (nextSibling) {
-                            console.log(`    nextSibling: <${nextSibling.tagName.toLowerCase()}>`, {
-                                text: nextSibling.textContent?.trim()?.substring(0, 60),
-                                id: nextSibling.id,
-                            });
-                        }
-                        const parent = el.parentElement;
-                        if (parent) {
-                            const parentTooltips = parent.querySelectorAll('tool-tip');
-                            console.log(`    parent 內的 tool-tip 數: ${parentTooltips.length}`);
-                            parentTooltips.forEach(tt => {
-                                console.log(`      tool-tip: "${tt.textContent?.trim()?.substring(0, 60)}" for="${tt.getAttribute('for')}"`);
-                            });
-                        }
-                    }
-                }
-                // 繼續搜索 shadow root
-                const all = root.querySelectorAll('*');
-                for (const el of all) {
-                    if (el.shadowRoot) {
-                        walkForHotkeys(el.shadowRoot, path + ' > ' + el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + ' > shadow');
-                    }
-                }
-            } catch (e) { /* ignore */ }
-        }
-        walkForHotkeys(document, 'document');
-
-        // 3. 搜索所有含有目標文字的文字節點（light DOM only，XPath 無法進 shadow）
-        console.log('--- XPath 搜索目標文字節點 (light DOM) ---');
-        ['All issues', 'All pull requests', 'You have unread notifications'].forEach(text => {
-            try {
-                const xpath = `//text()[contains(., '${text}')]`;
-                const result = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-                console.log(`  "${text}": ${result.snapshotLength} 個 light DOM 文字節點`);
-                for (let i = 0; i < Math.min(result.snapshotLength, 3); i++) {
-                    const node = result.snapshotItem(i);
-                    const p = node.parentElement;
-                    console.log(`    parent: <${p?.tagName?.toLowerCase()}> id="${p?.id}" class="${p?.className?.substring?.(0, 50)}"`);
-                }
-            } catch (e) { console.log(`  "${text}": XPath 錯誤`, e.message); }
-        });
-
-        // 4. 深度搜索 shadow root 中含目標文字的文字節點
-        console.log('--- 深度搜索 shadow root 中的目標文字 ---');
-        const targets = ['All issues', 'All pull requests', 'You have unread notifications'];
-        function walkForText(root, path) {
-            try {
-                const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-                let node;
-                while ((node = walker.nextNode())) {
-                    for (const target of targets) {
-                        if (node.data?.includes(target)) {
-                            const p = node.parentElement || node.parentNode;
-                            console.log(`  找到 "${target}" at: ${path}`);
-                            console.log(`    parent: <${p?.tagName?.toLowerCase() || p?.nodeName}> id="${p?.id}" class="${p?.className?.substring?.(0, 50)}"`);
-                            console.log(`    nodeData: "${node.data.trim().substring(0, 80)}"`);
-                        }
-                    }
-                }
-                // Recurse into shadow roots
-                const elements = root.querySelectorAll('*');
-                for (const el of elements) {
-                    if (el.shadowRoot) {
-                        walkForText(el.shadowRoot, path + ' > ' + el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + ' > shadow');
-                    }
-                }
-            } catch (e) { /* ignore */ }
-        }
-        walkForText(document, 'document');
-
-        // 5. 列出所有含 shadow root 的元素摘要
-        console.log('--- 含 shadow root 的元素摘要 ---');
-        let shadowCount = 0;
-        document.querySelectorAll('*').forEach(el => {
-            if (el.shadowRoot) {
-                shadowCount++;
-                const childCount = el.shadowRoot.querySelectorAll('*').length;
-                if (childCount > 5) {
-                    console.log(`  <${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}> shadow 含 ${childCount} 個子元素`);
-                }
-            }
-        });
-        console.log(`共 ${shadowCount} 個元素有 shadowRoot`);
-
-        console.groupEnd();
-    }
-
-    /**
-     * 暴力掃描：遞迴搜索整個 DOM 樹（包括所有 shadow root），
-     * 找到並翻譯所有 tool-tip 元素和目標文字節點。
-     */
-    function aggressiveTooltipScan() {
-        const dict = CONFIG.HEADER_TOOLTIP_TRANSLATIONS;
-
-        /**
-         * 翻譯一個 tool-tip 元素（light DOM + shadow DOM 文字 + 屬性）
-         */
-        function translateToolTip(tt) {
-            // Light DOM text
-            const walker = document.createTreeWalker(tt, NodeFilter.SHOW_TEXT);
-            let node;
-            while ((node = walker.nextNode())) {
-                let data = node.data;
-                let changed = false;
-                Object.entries(dict).forEach(([en, zh]) => {
-                    if (data.includes(en)) {
-                        data = data.replace(en, zh);
-                        changed = true;
-                    }
-                });
-                if (changed) node.data = data;
-            }
-
-            // Shadow DOM text (if accessible)
-            if (tt.shadowRoot) {
-                const sWalker = document.createTreeWalker(tt.shadowRoot, NodeFilter.SHOW_TEXT);
-                let sNode;
-                while ((sNode = sWalker.nextNode())) {
-                    let data = sNode.data;
-                    let changed = false;
-                    Object.entries(dict).forEach(([en, zh]) => {
-                        if (data.includes(en)) {
-                            data = data.replace(en, zh);
-                            changed = true;
-                        }
-                    });
-                    if (changed) sNode.data = data;
-                }
-            }
-
-            // 翻譯 tool-tip 自身的所有可能屬性
-            transHeaderTooltipAttrs(tt, dict);
-
-            // 找到觸發按鈕 (via for attribute) 並翻譯其 aria-label
-            const forId = tt.getAttribute('for');
-            if (forId) {
-                // 搜索 light DOM 和同一 shadow root 中的觸發按鈕
-                const trigger = document.getElementById(forId) ||
-                                tt.getRootNode()?.getElementById?.(forId);
-                if (trigger) {
-                    transHeaderTooltipAttrs(trigger, dict);
-                }
-            }
-        }
-
-        /**
-         * 遞迴走訪 DOM 樹（包含所有 shadow root），
-         * 翻譯所有找到的 tool-tip 元素。
-         */
-        function walkAndTranslate(root) {
-            try {
-                // 找到此層級的所有 tool-tip 元素
-                root.querySelectorAll('tool-tip').forEach(translateToolTip);
-
-                // 也翻譯 [role="tooltip"] 元素
-                root.querySelectorAll('[role="tooltip"]').forEach(el => {
-                    transHeaderTooltipAttrs(el, dict);
-                    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-                    let node;
-                    while ((node = walker.nextNode())) {
-                        let data = node.data;
-                        let changed = false;
-                        Object.entries(dict).forEach(([en, zh]) => {
-                            if (data.includes(en)) {
-                                data = data.replace(en, zh);
-                                changed = true;
-                            }
-                        });
-                        if (changed) node.data = data;
-                    }
-                });
-
-                // 翻譯 [aria-label] 元素
-                root.querySelectorAll('[aria-label]').forEach(el => {
-                    const label = el.getAttribute('aria-label');
-                    const result = getHeaderTooltipTranslation(label, dict);
-                    if (result) el.setAttribute('aria-label', result);
-                });
-
-                // 遞迴進入所有子元素的 shadow root
-                root.querySelectorAll('*').forEach(el => {
-                    if (el.shadowRoot) {
-                        walkAndTranslate(el.shadowRoot);
-                    }
-                });
-            } catch (e) { /* ignore errors from closed shadow roots */ }
-        }
-
-        // 從 document 開始遞迴走訪整個 DOM 樹
-        walkAndTranslate(document);
     }
 
     /**
@@ -30511,35 +30149,48 @@ I18N["zh-TW"]["repository/agents"] = {
         State.headerTooltipObserver.observe(document.body, {
             childList: true,
             subtree: true,
+            characterData: true,
             attributes: true,
-            characterData: true
+            attributeFilter: ['class', 'hidden', 'open', 'popover', 'style', 'aria-hidden']
         });
     }
 
     function isPotentialHeaderTooltipMutation(mutation) {
-        const headerSelector = 'header, [role="banner"], [data-testid="app-header"], .AppHeader, .Header';
-        const tooltipSelector = getHeaderTooltipSelector();
+        const translated = transHeaderTooltipMutation(mutation);
         const target = getNodeElement(mutation.target);
 
-        if (target?.closest?.(headerSelector)) return true;
-        if (target && isHeaderTooltipElement(target)) return true;
+        if (translated) return true;
+        if (target?.closest?.('tool-tip')) return true;
 
         if (mutation.type === 'characterData') {
-            return hasHeaderTooltipSource(mutation.target?.data);
-        }
-
-        if (mutation.type === 'attributes') {
-            return hasHeaderTooltipSource(target?.getAttribute?.(mutation.attributeName));
+            return hasHeaderTooltipSource(mutation.target?.data) && !!target?.closest?.('tool-tip');
         }
 
         return Array.from(mutation.addedNodes || []).some(node => {
             const element = getNodeElement(node);
             return !!(
-                element?.matches?.(tooltipSelector) ||
-                element?.querySelector?.(tooltipSelector) ||
+                element?.matches?.('tool-tip') ||
+                element?.querySelector?.('tool-tip') ||
                 hasHeaderTooltipSource(element?.textContent)
             );
         });
+    }
+
+    function transHeaderTooltipMutation(mutation) {
+        const dict = CONFIG.HEADER_TOOLTIP_TRANSLATIONS;
+        let translated = false;
+
+        if (mutation.type === 'characterData') {
+            translated = transNearestHeaderTooltipSurface(getNodeElement(mutation.target), dict) || translated;
+        } else if (mutation.type === 'attributes') {
+            translated = transNearestHeaderTooltipSurface(getNodeElement(mutation.target), dict) || translated;
+        }
+
+        Array.from(mutation.addedNodes || []).forEach(node => {
+            translated = transHeaderTooltipSurfaceNode(node, dict) || translated;
+        });
+
+        return translated;
     }
 
     function scheduleHeaderTooltipTrans() {
@@ -30547,77 +30198,44 @@ I18N["zh-TW"]["repository/agents"] = {
         State.headerTooltipPending = true;
 
         requestAnimationFrame(() => {
-            State.headerTooltipPending = false;
             safe(transHeaderTooltips, '右上角提示翻譯')();
         });
+
+        setTimeout(() => {
+            safe(transHeaderTooltips, '右上角提示延遲翻譯')();
+        }, 50);
+
+        setTimeout(() => {
+            State.headerTooltipPending = false;
+            safe(transHeaderTooltips, '右上角提示最終翻譯')();
+        }, 150);
     }
 
     function transHeaderTooltips() {
         const dict = CONFIG.HEADER_TOOLTIP_TRANSLATIONS;
-        const selectors = [
-            'header [aria-label]',
-            'header [title]',
-            '[role="banner"] [aria-label]',
-            '[role="banner"] [title]',
-            '[data-testid="app-header"] [aria-label]',
-            '[data-testid="app-header"] [title]',
-            '.AppHeader [aria-label]',
-            '.AppHeader [title]',
-            '.Header [aria-label]',
-            '.Header [title]',
-            'notification-indicator',
-            '[data-tooltip-global]',
-            '[data-tooltip-none]',
-            getHeaderTooltipSelector()
-        ].join(', ');
-
-        document.querySelectorAll(selectors).forEach(element => {
+        document.querySelectorAll('tool-tip').forEach(element => {
             transHeaderTooltipAttrs(element, dict);
-
-            if (isHeaderTooltipElement(element)) {
-                transHeaderTooltipText(element, dict);
-                transHeaderTooltipShadowText(element, dict);
-            }
+            transHeaderTooltipText(element, dict);
+            bindHeaderTooltipElementObserver(element);
         });
 
-        // 遞迴搜索 shadow root 中的 tool-tip 元素
-        // 這是關鍵：某些 tool-tip 元素可能藏在其他自定義元素的 shadow DOM 中
-        function walkShadowRoots(root) {
-            try {
-                root.querySelectorAll('*').forEach(el => {
-                    if (el.shadowRoot) {
-                        // 在此 shadow root 中搜索 tool-tip
-                        el.shadowRoot.querySelectorAll('tool-tip').forEach(tt => {
-                            transHeaderTooltipAttrs(tt, dict);
-                            transHeaderTooltipText(tt, dict);
-                            transHeaderTooltipShadowText(tt, dict);
-                        });
-                        // 繼續遞迴
-                        walkShadowRoots(el.shadowRoot);
-                    }
-                });
-            } catch (e) { /* ignore */ }
-        }
-        walkShadowRoots(document);
-
     }
 
-    function isHeaderTooltipElement(element) {
-        return element.matches?.(getHeaderTooltipSelector());
-    }
+    function bindHeaderTooltipElementObserver(element) {
+        if (element.__ghchtTooltipObserver) return;
 
-    function getHeaderTooltipSelector() {
-        return [
-            'tool-tip',
-            '[role="tooltip"]',
-            '[popover]',
-            '[data-tooltip]',
-            '[data-tooltip-text]',
-            '[data-original-title]',
-            '.Tooltip',
-            '.Popover-message',
-            '.Overlay'
-        ].join(', ');
+        element.__ghchtTooltipObserver = new MutationObserver(
+            safe(() => {
+                transHeaderTooltipAttrs(element, CONFIG.HEADER_TOOLTIP_TRANSLATIONS);
+                transHeaderTooltipText(element, CONFIG.HEADER_TOOLTIP_TRANSLATIONS);
+            }, 'tool-tip 元素翻譯觀察')
+        );
+
+        element.__ghchtTooltipObserver.observe(element, {
+            childList: true,
+            subtree: true,
+            characterData: true
+        });
     }
 
     function transHeaderTooltipAttrs(element, dict) {
@@ -30640,21 +30258,11 @@ I18N["zh-TW"]["repository/agents"] = {
     }
 
     function transHeaderTooltipText(element, dict) {
-        // <tool-tip> 是真正的 tooltip 元素，不需要 compact surface 檢查
-        const isTooltipTag = element.tagName === 'TOOL-TIP';
-        const isBroadFloatingSurface = !isTooltipTag && element.matches?.('[popover], .Overlay');
-        transHeaderTooltipTextRoot(element, dict, isBroadFloatingSurface);
+        if (element.tagName !== 'TOOL-TIP') return;
+        transHeaderTooltipTextRoot(element, dict);
     }
 
-    function transHeaderTooltipShadowText(element, dict) {
-        if (element.shadowRoot) {
-            transHeaderTooltipTextRoot(element.shadowRoot, dict);
-        }
-    }
-
-    function transHeaderTooltipTextRoot(root, dict, requireCompactSurface = false) {
-        if (requireCompactSurface && !isCompactTooltipSurface(root, dict)) return;
-
+    function transHeaderTooltipTextRoot(root, dict) {
         const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
         let node;
 
@@ -30666,39 +30274,103 @@ I18N["zh-TW"]["repository/agents"] = {
         }
     }
 
-    function isCompactTooltipSurface(root, dict) {
-        const text = root.textContent?.trim().replace(/\xa0|[\s]+/g, ' ');
+    function transHeaderTooltipSurfaceNode(node, dict) {
+        const element = getNodeElement(node);
+        if (!element || !hasHeaderTooltipSource(element.textContent)) return false;
+
+        if (element.matches?.('tool-tip')) {
+            transHeaderTooltipAttrs(element, dict);
+            transHeaderTooltipText(element, dict);
+            bindHeaderTooltipElementObserver(element);
+            return true;
+        }
+
+        let translated = transNearestHeaderTooltipSurface(element, dict);
+
+        if (!translated && element.querySelectorAll) {
+            element.querySelectorAll('*').forEach(child => {
+                translated = transHeaderTooltipSurface(child, dict) || translated;
+            });
+        }
+
+        return translated;
+    }
+
+    function transNearestHeaderTooltipSurface(element, dict) {
+        if (!element) return false;
+
+        let current = element;
+        while (current && current !== document.body && current !== document.documentElement) {
+            if (transHeaderTooltipSurface(current, dict)) return true;
+            current = current.parentElement;
+        }
+
+        return false;
+    }
+
+    function transHeaderTooltipSurface(element, dict) {
+        if (!isHeaderTooltipSurfaceCandidate(element, dict)) return false;
+        transHeaderTooltipTextRoot(element, dict);
+        transHeaderTooltipAttrs(element, dict);
+        return true;
+    }
+
+    function isHeaderTooltipSurfaceCandidate(element, dict) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+        if (isIgnoredHeaderTooltipSurface(element)) return false;
+
+        const text = normalizeHeaderTooltipText(element.textContent);
         if (!text) return false;
 
-        return Object.keys(dict).some(source => {
+        let matchedSource = '';
+        const hasSource = Object.keys(dict).some(source => {
             if (!text.includes(source)) return false;
-            return text.length <= source.length + 12;
+            matchedSource = source;
+            return true;
         });
+        if (!hasSource) return false;
+
+        if (text.length > Math.max(80, matchedSource.length + 18)) return false;
+
+        const rect = element.getBoundingClientRect?.();
+        if (rect && rect.width > 0 && rect.height > 0) {
+            if (rect.width > 560 || rect.height > 120) return false;
+        }
+
+        return true;
+    }
+
+    function isIgnoredHeaderTooltipSurface(element) {
+        const ignoredSelector = [
+            'input',
+            'textarea',
+            'select',
+            'button',
+            '[contenteditable="true"]',
+            '[role="search"]',
+            '[role="combobox"]',
+            '[aria-label^="Search"]',
+            '[placeholder*="Search"]',
+            '[data-target*="query-builder"]',
+            '[data-target*="qbsearch"]',
+            '[data-testid*="search"]',
+            'qbsearch-input',
+            '.QueryBuilder',
+            '#query-builder-test-results'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
     }
 
     function getHeaderTooltipTranslation(text, dict) {
         if (!text) return false;
         const trimmed = text.trim().replace(/\xa0|[\s]+/g, ' ');
-        
-        // Exact match first
-        let result = dict[trimmed];
-        if (result) {
-            return text.replace(text.trim(), result);
-        }
-
-        // Substring match
-        let modified = false;
-        let temp = trimmed;
-        Object.entries(dict).forEach(([source, target]) => {
-            if (temp.includes(source)) {
-                temp = temp.replace(source, target);
-                modified = true;
-            }
-        });
-
-        if (modified) {
-            return text.replace(text.trim(), temp);
-        }
+        const result = replaceHeaderTooltipText(trimmed, dict);
+        if (result) return text.replace(text.trim(), result);
 
         return false;
     }
@@ -30708,15 +30380,27 @@ I18N["zh-TW"]["repository/agents"] = {
         let result = text;
 
         Object.entries(dict).forEach(([source, target]) => {
-            result = result.replace(source, target);
+            const escapedSource = escapeRegExp(source);
+            const escapedTarget = escapeRegExp(target);
+            result = result.replace(new RegExp(`${escapedSource}\\s*${escapedTarget}|${escapedTarget}\\s*${escapedSource}`, 'g'), target);
+            result = result.replace(new RegExp(escapedSource, 'g'), target);
         });
 
         return result !== text ? result : false;
     }
 
+    function escapeRegExp(text) {
+        return String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
     function hasHeaderTooltipSource(text) {
         if (!text) return false;
-        return Object.keys(CONFIG.HEADER_TOOLTIP_TRANSLATIONS).some(source => text.includes(source));
+        const normalized = normalizeHeaderTooltipText(text);
+        return Object.keys(CONFIG.HEADER_TOOLTIP_TRANSLATIONS).some(source => normalized.includes(source));
+    }
+
+    function normalizeHeaderTooltipText(text) {
+        return String(text || '').trim().replace(/\xa0|[\s]+/g, ' ');
     }
 
     /**
