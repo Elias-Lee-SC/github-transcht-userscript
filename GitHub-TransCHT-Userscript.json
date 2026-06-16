@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.9.8
+// @version      local.10.0
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -29437,6 +29437,10 @@ I18N["zh-TW"]["repository/agents"] = {
             "You have no unread notifications": "您沒有未讀通知",
             "Notifications": "通知"
         },
+        HEADER_TOOLTIP_SHORTCUTS: {
+            "所有議題": ["G", "I"],
+            "所有合併請求": ["G", "P"]
+        },
         TRANS_ENGINES: { // 翻譯引擎配置
             iflyrec: {
                 name: '訊飛聽見',
@@ -29486,6 +29490,24 @@ I18N["zh-TW"]["repository/agents"] = {
             .translation-content {
                 margin-top: 5px;
                 white-space: pre-wrap;
+            }
+            .ghcht-tooltip-shortcut {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 1.5em;
+                min-height: 1.5em;
+                margin-left: 0.35em;
+                padding: 0 0.4em;
+                border: 0;
+                border-radius: 6px;
+                background: rgba(139, 148, 158, 0.55);
+                color: inherit;
+                font: inherit;
+                font-weight: 600;
+                line-height: 1;
+                box-shadow: none;
+                vertical-align: middle;
             }
 
             /* 暗色主題適配 - 使用 prefers-color-scheme */
@@ -30163,7 +30185,7 @@ I18N["zh-TW"]["repository/agents"] = {
         if (target?.closest?.('tool-tip')) return true;
 
         if (mutation.type === 'characterData') {
-            return hasHeaderTooltipSource(mutation.target?.data) && !!target?.closest?.('tool-tip');
+            return hasHeaderTooltipCandidateText(mutation.target?.data) && !!target?.closest?.('tool-tip');
         }
 
         return Array.from(mutation.addedNodes || []).some(node => {
@@ -30171,7 +30193,7 @@ I18N["zh-TW"]["repository/agents"] = {
             return !!(
                 element?.matches?.('tool-tip') ||
                 element?.querySelector?.('tool-tip') ||
-                hasHeaderTooltipSource(element?.textContent)
+                hasHeaderTooltipCandidateText(element?.textContent)
             );
         });
     }
@@ -30228,6 +30250,7 @@ I18N["zh-TW"]["repository/agents"] = {
             safe(() => {
                 transHeaderTooltipAttrs(element, CONFIG.HEADER_TOOLTIP_TRANSLATIONS);
                 transHeaderTooltipText(element, CONFIG.HEADER_TOOLTIP_TRANSLATIONS);
+                ensureHeaderTooltipShortcut(element);
             }, 'tool-tip 元素翻譯觀察')
         );
 
@@ -30260,6 +30283,7 @@ I18N["zh-TW"]["repository/agents"] = {
     function transHeaderTooltipText(element, dict) {
         if (element.tagName !== 'TOOL-TIP') return;
         transHeaderTooltipTextRoot(element, dict);
+        ensureHeaderTooltipShortcut(element);
     }
 
     function transHeaderTooltipTextRoot(root, dict) {
@@ -30276,7 +30300,7 @@ I18N["zh-TW"]["repository/agents"] = {
 
     function transHeaderTooltipSurfaceNode(node, dict) {
         const element = getNodeElement(node);
-        if (!element || !hasHeaderTooltipSource(element.textContent)) return false;
+        if (!element || !hasHeaderTooltipCandidateText(element.textContent)) return false;
 
         if (element.matches?.('tool-tip')) {
             transHeaderTooltipAttrs(element, dict);
@@ -30309,10 +30333,89 @@ I18N["zh-TW"]["repository/agents"] = {
     }
 
     function transHeaderTooltipSurface(element, dict) {
-        if (!isHeaderTooltipSurfaceCandidate(element, dict)) return false;
-        transHeaderTooltipTextRoot(element, dict);
-        transHeaderTooltipAttrs(element, dict);
+        const shouldTranslate = isHeaderTooltipSurfaceCandidate(element, dict);
+        const shouldEnsureShortcut = isHeaderTooltipShortcutTarget(element);
+        if (!shouldTranslate && !shouldEnsureShortcut) return false;
+
+        if (shouldTranslate) {
+            transHeaderTooltipTextRoot(element, dict);
+            transHeaderTooltipAttrs(element, dict);
+        }
+
+        return ensureHeaderTooltipShortcut(element) || shouldTranslate;
+    }
+
+    function ensureHeaderTooltipShortcut(element) {
+        if (!isHeaderTooltipShortcutTarget(element)) return false;
+
+        const text = normalizeHeaderTooltipText(element.textContent);
+        const label = Object.keys(CONFIG.HEADER_TOOLTIP_SHORTCUTS).find(target => {
+            return text === target || text.startsWith(target);
+        });
+        if (!label) return false;
+
+        const keys = CONFIG.HEADER_TOOLTIP_SHORTCUTS[label];
+        if (hasHeaderTooltipShortcut(element, label, keys)) {
+            return false;
+        }
+
+        element.appendChild(document.createTextNode(' '));
+        keys.forEach(key => {
+            const badge = document.createElement('kbd');
+            badge.textContent = key;
+            badge.setAttribute('data-ghcht-tooltip-shortcut', 'true');
+            badge.className = 'ghcht-tooltip-shortcut';
+            element.appendChild(badge);
+        });
+
         return true;
+    }
+
+    function hasHeaderTooltipShortcut(element, label, keys) {
+        if (element.querySelector?.('[data-ghcht-tooltip-shortcut]')) return true;
+
+        const kbdText = Array.from(element.querySelectorAll?.('kbd') || [])
+            .map(kbd => normalizeHeaderTooltipText(kbd.textContent))
+            .join('');
+        if (kbdText === keys.join('')) return true;
+
+        const text = normalizeHeaderTooltipText(element.textContent);
+        const compactSuffix = text.startsWith(label)
+            ? text.slice(label.length).replace(/\s+/g, '')
+            : '';
+
+        return compactSuffix.includes(keys.join(''));
+    }
+
+    function isHeaderTooltipShortcutTarget(element) {
+        if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+        if (isIgnoredHeaderTooltipSurface(element)) return false;
+
+        const text = normalizeHeaderTooltipText(element.textContent);
+        if (!text) return false;
+
+        const label = Object.keys(CONFIG.HEADER_TOOLTIP_SHORTCUTS).find(item => {
+            return text === item || text.startsWith(item);
+        });
+        if (!label) return false;
+
+        if (text.length > label.length + 6) return false;
+
+        const rect = element.getBoundingClientRect?.();
+        if (rect && rect.width > 0 && rect.height > 0) {
+            if (rect.width > 560 || rect.height > 120) return false;
+        }
+
+        return true;
+    }
+
+    function hasHeaderTooltipShortcutTargetText(text) {
+        const normalized = normalizeHeaderTooltipText(text);
+        if (!normalized) return false;
+
+        return Object.keys(CONFIG.HEADER_TOOLTIP_SHORTCUTS).some(label => {
+            return normalized === label || normalized.startsWith(label);
+        });
     }
 
     function isHeaderTooltipSurfaceCandidate(element, dict) {
@@ -30397,6 +30500,10 @@ I18N["zh-TW"]["repository/agents"] = {
         if (!text) return false;
         const normalized = normalizeHeaderTooltipText(text);
         return Object.keys(CONFIG.HEADER_TOOLTIP_TRANSLATIONS).some(source => normalized.includes(source));
+    }
+
+    function hasHeaderTooltipCandidateText(text) {
+        return hasHeaderTooltipSource(text) || hasHeaderTooltipShortcutTargetText(text);
     }
 
     function normalizeHeaderTooltipText(text) {
