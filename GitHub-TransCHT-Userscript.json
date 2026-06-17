@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.50
+// @version      local.11.53
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -9962,17 +9962,17 @@ I18N["zh-TW"]["repository/issues"] = { // 倉庫 - 議題頁面
                 // 排序
                     "Created on": "創建時間",
                     "Comments": "評論",
-                    "Total comments": "評論數",
-                    "Reactions": "看法數",
-                    "Total reactions": "總看法數",
-                    "Thumbs up": "點贊",
-                    "Thumbs down": "點踩",
+                    "Total comments": "評論總數",
+                    "Reactions": "回應",
+                    "Total reactions": "回應總數",
+                    "Thumbs up": "讚",
+                    "Thumbs down": "倒讚",
                     "Rocket": "火箭",
                     "Hooray": "歡呼",
-                    "Eyes": "追蹤",
-                    "Heart": "比心",
+                    "Eyes": "眼睛",
+                    "Heart": "愛心",
                     "Laugh": "大笑",
-                    "Confused": "拒絕",
+                    "Confused": "困惑",
                     "Ascending": "遞增",
                     "Descending": "遞減",
 
@@ -21378,12 +21378,12 @@ I18N["zh-TW"]["issues"] = { // 議題頁面
 
         "Pull Requests": "合併請求", // pulls
 
-        "Assigned to me": "分配給您",
-        "Created by me": "由您創建",
+        "Assigned to me": "分配給我",
+        "Created by me": "由我創建",
 
         "Created": "已創建",
         "Assigned": "已分配",
-        "Mentioned": "提到的",
+        "Mentioned": "提及我的",
             "Issues mentioning you": "提及您的議題",
             "Pull Requests mentioning you": "提及您的合併請求", // pulls
         "Review requests": "審查請求", // pulls
@@ -21392,7 +21392,7 @@ I18N["zh-TW"]["issues"] = { // 議題頁面
         "Views": "視圖",
             "Untitled view": "未命名的視圖",
             "All views": "所有視圖",
-            "Create view": "創建視圖",
+            "Create view": "新建視圖",
                 "Build powerful views to keep track of work": "構建強大的視圖來跟蹤工作",
                 "Create your own views to quickly find and access your work.": "創建您自己的視圖以快速查找和訪問您的工作。",
                 "You have unsaved changes": "您有未保存的更改",
@@ -21740,9 +21740,9 @@ I18N["zh-TW"]["issues"] = { // 議題頁面
     "title": {
         "static": {
             // issues
-            "Assigned to me": "分配給您",
-            "Created by me": "由您創建",
-            "Mentioned": "提到的",
+            "Assigned to me": "分配給我",
+            "Created by me": "由我創建",
+            "Mentioned": "提及我的",
             "Recent Activity": "最近活動",
             "View": "視圖",
 
@@ -29623,6 +29623,7 @@ I18N["zh-TW"]["repository/agents"] = {
         headerTooltipObserver: null, // 右上角 tooltip 專用觀察器
         headerTooltipPending: false,
         notificationsPagePending: false,
+        issuesPagePending: false,
         newRepositoryPagePending: false,
         newRepositoryImportPagePending: false,
         newRepositoryVisibilityPending: false,
@@ -29672,6 +29673,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupMenuCommands();
         setupInitTrans();
         setupNewRepositoryPageInteractions();
+        setupIssuesPageInteractions();
         setupHeaderTooltipTranslations();
         setupDashboardContextProtection();
         setupDashboardShortcutMenuTranslations();
@@ -29700,6 +29702,7 @@ I18N["zh-TW"]["repository/agents"] = {
             if (State.pageConfig) {
                 safe(traverseNode, '首次遍歷')(document.body);
                 scheduleNotificationsPageTrans();
+                scheduleIssuesPageTrans();
                 scheduleNewRepositoryPageTrans();
                 scheduleNewRepositoryImportPageTrans();
                 scheduleDashboardPageTrans();
@@ -29782,6 +29785,7 @@ I18N["zh-TW"]["repository/agents"] = {
         transBySelector(); // 通過選擇器翻譯特定元素
         scheduleHeaderTooltipTrans();
         scheduleNotificationsPageTrans();
+        scheduleIssuesPageTrans();
         scheduleNewRepositoryPageTrans();
         scheduleNewRepositoryImportPageTrans();
         scheduleDashboardPageTrans();
@@ -30021,6 +30025,7 @@ I18N["zh-TW"]["repository/agents"] = {
         });
 
         scheduleNotificationsPageTrans();
+        scheduleIssuesPageTrans();
         scheduleNewRepositoryImportPageTrans();
         scheduleDashboardPageTrans();
     }
@@ -30298,6 +30303,132 @@ I18N["zh-TW"]["repository/agents"] = {
             State.pageConfig?.currentPageType === 'notifications' ||
             /^\/notifications(?:\/|$)/.test(window.location.pathname)
         );
+    }
+
+    function scheduleIssuesPageTrans() {
+        if (!isIssuesPage()) return;
+        if (State.issuesPagePending) return;
+        State.issuesPagePending = true;
+
+        [0, 100, 350, 900, 1600, 3000].forEach(delay => {
+            setTimeout(() => {
+                safe(transIssuesPageDynamicText, '議題頁動態補翻')();
+                if (delay === 3000) {
+                    State.issuesPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function isIssuesPage() {
+        return (
+            State.pageConfig?.currentPageType === 'issues' ||
+            /^\/issues(?:\/|$)/.test(window.location.pathname)
+        );
+    }
+
+    function transIssuesPageDynamicText() {
+        if (!isIssuesPage() || !document.body) return false;
+        const dict = {
+            "Issues": "議題",
+            "Assigned to me": "分配給我",
+            "Created by me": "由我創建",
+            "Mentioned": "提及我的",
+            "Recent activity": "最近活動",
+            "Views": "視圖",
+            "Create view": "新建視圖",
+            "New issue": "新建議題",
+            "0 results": "0 個結果",
+            "Updated": "最近更新",
+            "Sort by": "排序方式",
+            "Created on": "創建時間",
+            "Last updated": "最近更新",
+            "Total comments": "評論總數",
+            "Best match": "最佳匹配",
+            "Reactions": "回應",
+            "Total reactions": "回應總數",
+            "Thumbs up": "讚",
+            "Thumbs down": "倒讚",
+            "Rocket": "火箭",
+            "Hooray": "歡呼",
+            "Eyes": "眼睛",
+            "Heart": "愛心",
+            "Laugh": "大笑",
+            "Confused": "困惑",
+            "Order": "順序",
+            "Oldest": "最早",
+            "Newest": "最新",
+            "No results": "無結果",
+            "Try adjusting your search filters.": "請嘗試調整搜尋篩選條件。"
+        };
+        const visited = new WeakSet();
+        let translated = false;
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+            translated = transExactTextInRoot(root, dict) || translated;
+
+            root.querySelectorAll?.('*').forEach(element => {
+                ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text'].forEach(attr => {
+                    const source = normalizeHeaderTooltipText(element.getAttribute?.(attr));
+                    const result = dict[source];
+                    if (!result) return;
+
+                    element.setAttribute(attr, result);
+                    translated = true;
+                });
+
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+        };
+
+        visit(document.body);
+        return translated;
+    }
+
+    function setupIssuesPageInteractions() {
+        const scheduleTooltip = event => {
+            if (!isIssuesPage()) return;
+            const element = getNodeElement(event.target);
+            const control = element?.closest?.('button, [role="button"], [role="menuitem"], [aria-label], [title]');
+            if (!control) return;
+
+            const labels = [
+                control.getAttribute?.('aria-label'),
+                control.getAttribute?.('title'),
+                control.getAttribute?.('data-tooltip'),
+                control.getAttribute?.('data-tooltip-text'),
+                control.textContent
+            ].map(normalizeHeaderTooltipText);
+
+            const sources = ['Create view', '新建視圖', 'Reactions', '回應'];
+            if (!labels.some(label => sources.includes(label))) return;
+            scheduleIssuesPageInteractionTrans();
+        };
+
+        const scheduleDynamicSurface = event => {
+            if (!isIssuesPage()) return;
+            const isPointerOpen = event.type === 'pointerdown';
+            const isKeyboardOpen = event.type === 'keyup' && ['Enter', ' ', 'ArrowDown'].includes(event.key);
+            if (!isPointerOpen && !isKeyboardOpen) return;
+            scheduleIssuesPageInteractionTrans();
+        };
+
+        document.addEventListener('pointerover', scheduleTooltip, true);
+        document.addEventListener('focusin', scheduleTooltip, true);
+        document.addEventListener('pointerdown', scheduleDynamicSurface, true);
+        document.addEventListener('keyup', scheduleDynamicSurface, true);
+    }
+
+    function scheduleIssuesPageInteractionTrans() {
+        [0, 1, 5, 15, 35, 75, 150, 300, 600].forEach(delay => {
+            setTimeout(() => {
+                safe(transIssuesPageDynamicText, '議題頁互動內容補翻')();
+            }, delay);
+        });
     }
 
     function scheduleNewRepositoryPageTrans() {
