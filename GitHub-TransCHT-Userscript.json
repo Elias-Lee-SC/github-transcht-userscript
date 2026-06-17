@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.46
+// @version      local.11.50
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -8674,15 +8674,19 @@ I18N["zh-TW"]["page-new-repo"] = {// 倉庫 - 新建/導入/複刻倉庫
                 "If enabled, all branches from the template repository will be included.": "如果啟用，將包含來自範本倉庫的所有分支。",
 
         // 導入倉庫 第一頁 https://github.com/new/import
+            "Import repository": "導入倉庫",
             "Import your project to GitHub": "將您的專案導入到 GitHub",
-                "Import all the files, including revision history, from another version control system.": "導入的所有文件，包括修訂歷史記錄，來自其他版本控制系統。",
+                "Import all the files, including revision history, from another version control system.": "從另一個版本控制系統導入所有文件，包括修訂歷史記錄。",
                 "Support for importing Mercurial, Subversion and Team Foundation Version Control (TFVC) repositories ended on April 12, 2024. For more details, see the": "對導入 Mercurial、Subversion 和 Team Foundation 版本控制 (TFVC) 倉庫的支持已結束於 2024 年 4 月 12 日。有關詳細訊息，請參閱",
+                "Support for importing Mercurial, Subversion and Team Foundation Version Control (TFVC) repositories ended on April 12, 2024. For more details, see the changelog.": "GitHub 已於 2024 年 4 月 12 日停止支援導入 Mercurial、Subversion 和 Team Foundation Version Control (TFVC) 倉庫。詳情請參閱更新日誌。",
                 "changelog": "更新日誌",
 
-            "Your source repository details": "您源倉庫的詳情",
+            "Your source repository details": "來源倉庫詳情",
             "The URL for your source repository": "您源倉庫的 URL",
+            "The URL for your source repository *": "來源倉庫 URL *",
                 "Learn more about the types of": "瞭解更多關於",
                 "importing git repositories": "導入 Git 倉庫",
+                "Learn more about importing git repositories.": "深入瞭解如何導入 Git 倉庫。",
 
             "Please enter your credentials if required for cloning your remote repository.": "如果需要複製遠程倉庫，請輸入您的憑據。",
             "Your username for your source repository": "源倉庫用戶名",
@@ -29620,6 +29624,7 @@ I18N["zh-TW"]["repository/agents"] = {
         headerTooltipPending: false,
         notificationsPagePending: false,
         newRepositoryPagePending: false,
+        newRepositoryImportPagePending: false,
         newRepositoryVisibilityPending: false,
         dashboardPagePending: false,
         dashboardShortcutMenuPending: false,
@@ -29696,6 +29701,7 @@ I18N["zh-TW"]["repository/agents"] = {
                 safe(traverseNode, '首次遍歷')(document.body);
                 scheduleNotificationsPageTrans();
                 scheduleNewRepositoryPageTrans();
+                scheduleNewRepositoryImportPageTrans();
                 scheduleDashboardPageTrans();
                 scheduleInitialDashboardContextTranslation();
             }
@@ -29777,6 +29783,7 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleHeaderTooltipTrans();
         scheduleNotificationsPageTrans();
         scheduleNewRepositoryPageTrans();
+        scheduleNewRepositoryImportPageTrans();
         scheduleDashboardPageTrans();
         scheduleInitialDashboardContextTranslation();
 
@@ -30014,6 +30021,7 @@ I18N["zh-TW"]["repository/agents"] = {
         });
 
         scheduleNotificationsPageTrans();
+        scheduleNewRepositoryImportPageTrans();
         scheduleDashboardPageTrans();
     }
 
@@ -30314,6 +30322,109 @@ I18N["zh-TW"]["repository/agents"] = {
         );
     }
 
+    function scheduleNewRepositoryImportPageTrans() {
+        if (!isNewRepositoryImportPage()) return;
+        if (State.newRepositoryImportPagePending) return;
+        State.newRepositoryImportPagePending = true;
+
+        [0, 100, 350, 900, 1600, 3000, 5000].forEach(delay => {
+            setTimeout(() => {
+                safe(transNewRepositoryImportPageText, '導入倉庫頁動態補翻')();
+                if (delay === 5000) {
+                    State.newRepositoryImportPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function isNewRepositoryImportPage() {
+        return (
+            State.pageConfig?.currentPageType === 'new/import' &&
+            window.location.pathname === '/new/import'
+        );
+    }
+
+    function transNewRepositoryImportPageText() {
+        if (!isNewRepositoryImportPage() || !document.body) return false;
+        const dict = {
+            "Import repository": "導入倉庫",
+            "Import your project to GitHub": "將您的專案導入到 GitHub",
+            "Import all the files, including revision history, from another version control system.": "從另一個版本控制系統導入所有文件，包括修訂歷史記錄。",
+            "Required fields are marked with an asterisk (*).": "帶星號 (*) 的為必填項。",
+            "Support for importing Mercurial, Subversion and Team Foundation Version Control (TFVC) repositories ended on April 12, 2024. For more details, see the": "GitHub 已於 2024 年 4 月 12 日停止支援導入 Mercurial、Subversion 和 Team Foundation Version Control (TFVC) 倉庫。詳情請參閱",
+            "Support for importing Mercurial, Subversion and Team Foundation Version Control (TFVC) repositories ended on April 12, 2024. For more details, see the changelog.": "GitHub 已於 2024 年 4 月 12 日停止支援導入 Mercurial、Subversion 和 Team Foundation Version Control (TFVC) 倉庫。詳情請參閱更新日誌。",
+            "changelog": "更新日誌",
+            "Your source repository details": "來源倉庫詳情",
+            "The URL for your source repository": "來源倉庫 URL",
+            "The URL for your source repository *": "來源倉庫 URL *",
+            "Learn more about": "深入瞭解",
+            "importing git repositories": "導入 Git 倉庫",
+            "Learn more about importing git repositories.": "深入瞭解如何導入 Git 倉庫。",
+            "Please enter your credentials if required for cloning your remote repository.": "如果複製遠端倉庫需要憑據，請在此輸入。",
+            "Your username for your source repository": "來源倉庫用戶名",
+            "Your access token or password for your source repository": "來源倉庫的訪問令牌或密碼",
+            "Your new repository details": "新倉庫詳情",
+            "Owner": "所有者",
+            "Owner *": "所有者 *",
+            "Repository name": "倉庫名稱",
+            "Repository name *": "倉庫名稱 *",
+            "Public": "公共",
+            "Anyone on the internet can see this repository. You choose who can commit.": "任何人都可以看到此倉庫，您可以選擇誰能提交。",
+            "Private": "私有",
+            "You choose who can see and commit to this repository.": "您可以選擇誰能查看並提交到此倉庫。",
+            "You are creating a public repository in your personal account.": "您正在個人帳戶中創建公共倉庫。",
+            "You are creating a private repository in your personal account.": "您正在個人帳戶中創建私有倉庫。",
+            "Cancel": "取消",
+            "Begin import": "開始導入"
+        };
+        const visited = new WeakSet();
+        let translated = false;
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+            translated = transExactTextInRoot(root, dict) || translated;
+
+            root.querySelectorAll?.('*').forEach(element => {
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+        };
+
+        visit(document.body);
+        translated = transNewRepositoryImportOwnerSearchPlaceholder() || translated;
+        return translated;
+    }
+
+    function transNewRepositoryImportOwnerSearchPlaceholder() {
+        if (!isNewRepositoryImportPage() || !document.body) return false;
+        const visited = new WeakSet();
+        let translated = false;
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+
+            root.querySelectorAll?.('input[placeholder], textarea[placeholder]').forEach(element => {
+                const placeholder = element.getAttribute('placeholder');
+                if (placeholder !== 'Search owners' && placeholder !== 'Search Owners') return;
+
+                element.setAttribute('placeholder', '搜尋所有者');
+                translated = true;
+            });
+
+            root.querySelectorAll?.('*').forEach(element => {
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+        };
+
+        visit(document.body);
+        return translated;
+    }
+
     function transNewRepositoryPageDynamicText() {
         if (!isNewRepositoryPage() || !document.body) return;
         const visited = new WeakSet();
@@ -30343,14 +30454,29 @@ I18N["zh-TW"]["repository/agents"] = {
     }
 
     function setupNewRepositoryPageInteractions() {
-        const schedule = () => {
-            if (!isNewRepositoryPage()) return;
-            scheduleNewRepositoryVisibilityTrans();
+        const schedule = event => {
+            if (isNewRepositoryPage()) {
+                scheduleNewRepositoryVisibilityTrans();
+            } else if (isNewRepositoryImportPage()) {
+                const isPointerOpen = event.type === 'pointerdown';
+                const isKeyboardOpen = event.type === 'keyup' && ['Enter', ' ', 'ArrowDown'].includes(event.key);
+                if (!isPointerOpen && !isKeyboardOpen) return;
+                scheduleNewRepositoryImportInteractionTrans();
+            }
         };
 
+        document.addEventListener('pointerdown', schedule, true);
         document.addEventListener('pointerup', schedule, true);
         document.addEventListener('click', schedule, true);
         document.addEventListener('keyup', schedule, true);
+    }
+
+    function scheduleNewRepositoryImportInteractionTrans() {
+        [0, 1, 5, 15, 35, 75, 150, 300, 600].forEach(delay => {
+            setTimeout(() => {
+                safe(transNewRepositoryImportPageText, '導入倉庫互動內容補翻')();
+            }, delay);
+        });
     }
 
     function scheduleNewRepositoryVisibilityTrans() {
