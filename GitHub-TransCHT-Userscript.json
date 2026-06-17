@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.42
+// @version      local.11.46
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -8578,6 +8578,7 @@ I18N["zh-TW"]["page-new-repo"] = {// 倉庫 - 新建/導入/複刻倉庫
         ...I18N["zh-TW"]["repository-public"]["static"],
 
         // 新建倉庫 https://github.com/new
+            "New repository": "新建倉庫",
             "Create a new repository": "新建倉庫",
                 "A repository contains all project files, including the revision history.": "倉庫包含專案中的所有文件，包括修訂歷史記錄。",
                 "Already have a project repository elsewhere?": "在其他地方已有倉庫？",
@@ -8758,31 +8759,35 @@ I18N["zh-TW"]["page-new-repo"] = {// 倉庫 - 新建/導入/複刻倉庫
             "Switch back to classic experience": "回到經典頁面",
             "Repositories contain a project's files and version history.": "倉庫包含專案的文件和版本歷史。",
             "Have a project elsewhere?": "在其他地方已有倉庫？",
+            "Repositories contain a project's files and version history. Have a project elsewhere?": "倉庫包含專案的文件和版本歷史。在其他地方已有倉庫？",
 
-            "General": "通常",
+            "General": "一般",
+                "Owner *": "所有者 *",
+                "Repository name *": "倉庫名稱 *",
                 "Great repository names are short and memorable. How about": "好的倉庫名稱應該簡單且容易記憶。這個怎麼樣：",
 
             "Configuration": "配置",
                 "Choose visibility": "選擇可見性",
+                "Choose visibility *": "選擇可見性 *",
                     "Choose who can see and commit to this repository": "選擇誰可以查看並提交此倉庫",
                 "Start with a template": "使用範本開始",
                     "Templates pre-configure your repository with files.": "範本會用文件預先配置您的倉庫。",
-                "Add README": "新增自述文件",
-                    "READMEs can be used as longer descriptions.": "自述文件可以用作更長的描述。",
-                    "About READMEs": "關於自述文件",
+                "Add README": "新增 README",
+                    "READMEs can be used as longer descriptions.": "README 可用於提供更詳細的描述。",
+                    "About READMEs": "關於 README",
                 // gitignore
                     ".gitignore tells git which files not to track.": ".gitignore 告訴 git 不追蹤哪些文件。",
                     "About ignoring files": "關於忽略文件",
 
                     "Choose a .gitignore template": "選擇 .gitignore 範本",
                         "Search templates": "搜尋範本",
-                        "No .gitignore": "無",
+                        "No .gitignore": "不使用 .gitignore",
                 "Add license": "新增許可證",
                     "Licenses explain how others can use your code.": "許可證解釋其他人如何使用您的程式碼。",
                     "About licenses": "關於許可證",
 
-                    "Search licenses": "選擇許可證",
-                    "No license": "無",
+                    "Search licenses": "搜尋許可證",
+                    "No license": "不使用許可證",
                 "Connect GitHub Apps": "連接 GitHub 應用",
                     "Connect this repository to apps": "將此倉庫連接到",
                     "is subscribed to": "訂閱的應用",
@@ -8811,6 +8816,7 @@ I18N["zh-TW"]["page-new-repo"] = {// 倉庫 - 新建/導入/複刻倉庫
         [/Auto-installed by ([^ ]+)/, "由 $1 自動安裝"],
         [/(\d+) apps? selected/, "已選擇 $1 個應用"],
         [/The repository ([^ ]+) already exists on this account/, "倉庫 $1 已存在於此帳戶"],
+        [/(\d+) \/ (\d+) characters/, "$1 / $2 個字符"],
         ...I18N["zh-TW"]["repository-public"]["regexp"],
         // [/, and (\d+) more/, "，以及其他 $1 個組織"], // 用戶 浮動訊息卡
         // [/(\d+) repositor(y|ies)/, "$1 個倉庫"], // 組織  浮動訊息卡
@@ -29613,6 +29619,8 @@ I18N["zh-TW"]["repository/agents"] = {
         headerTooltipObserver: null, // 右上角 tooltip 專用觀察器
         headerTooltipPending: false,
         notificationsPagePending: false,
+        newRepositoryPagePending: false,
+        newRepositoryVisibilityPending: false,
         dashboardPagePending: false,
         dashboardShortcutMenuPending: false,
         dashboardFloatingTooltipPending: false,
@@ -29658,6 +29666,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupDebugHelpers();
         setupMenuCommands();
         setupInitTrans();
+        setupNewRepositoryPageInteractions();
         setupHeaderTooltipTranslations();
         setupDashboardContextProtection();
         setupDashboardShortcutMenuTranslations();
@@ -29686,6 +29695,7 @@ I18N["zh-TW"]["repository/agents"] = {
             if (State.pageConfig) {
                 safe(traverseNode, '首次遍歷')(document.body);
                 scheduleNotificationsPageTrans();
+                scheduleNewRepositoryPageTrans();
                 scheduleDashboardPageTrans();
                 scheduleInitialDashboardContextTranslation();
             }
@@ -29766,6 +29776,7 @@ I18N["zh-TW"]["repository/agents"] = {
         transBySelector(); // 通過選擇器翻譯特定元素
         scheduleHeaderTooltipTrans();
         scheduleNotificationsPageTrans();
+        scheduleNewRepositoryPageTrans();
         scheduleDashboardPageTrans();
         scheduleInitialDashboardContextTranslation();
 
@@ -30279,6 +30290,135 @@ I18N["zh-TW"]["repository/agents"] = {
             State.pageConfig?.currentPageType === 'notifications' ||
             /^\/notifications(?:\/|$)/.test(window.location.pathname)
         );
+    }
+
+    function scheduleNewRepositoryPageTrans() {
+        if (!isNewRepositoryPage()) return;
+        if (State.newRepositoryPagePending) return;
+        State.newRepositoryPagePending = true;
+
+        [0, 100, 350, 900, 1600, 3000, 5000].forEach(delay => {
+            setTimeout(() => {
+                safe(transNewRepositoryPageDynamicText, '新建倉庫頁動態補翻')();
+                if (delay === 5000) {
+                    State.newRepositoryPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function isNewRepositoryPage() {
+        return (
+            State.pageConfig?.currentPageType === 'new' &&
+            window.location.pathname === '/new'
+        );
+    }
+
+    function transNewRepositoryPageDynamicText() {
+        if (!isNewRepositoryPage() || !document.body) return;
+        const visited = new WeakSet();
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+            traverseNode(root);
+
+            root.querySelectorAll?.('*').forEach(element => {
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+        };
+
+        visit(document.body);
+
+        document.querySelectorAll('header, .AppHeader, [role="banner"]').forEach(root => {
+            transExactTextInRoot(root, {
+                "New repository": "新建倉庫"
+            });
+        });
+
+        transNewRepositoryVisibilityText();
+        transNewRepositoryPickerText();
+    }
+
+    function setupNewRepositoryPageInteractions() {
+        const schedule = () => {
+            if (!isNewRepositoryPage()) return;
+            scheduleNewRepositoryVisibilityTrans();
+        };
+
+        document.addEventListener('pointerup', schedule, true);
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('keyup', schedule, true);
+    }
+
+    function scheduleNewRepositoryVisibilityTrans() {
+        if (State.newRepositoryVisibilityPending) return;
+        State.newRepositoryVisibilityPending = true;
+
+        [0, 5, 25, 75, 200, 500].forEach(delay => {
+            setTimeout(() => {
+                safe(transNewRepositoryVisibilityText, '新建倉庫可見性補翻')();
+                safe(transNewRepositoryPickerText, '新建倉庫下拉選單補翻')();
+                if (delay === 500) {
+                    State.newRepositoryVisibilityPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function transNewRepositoryVisibilityText() {
+        if (!isNewRepositoryPage() || !document.body) return false;
+        const dict = {
+            "Public": "公共",
+            "Anyone on the internet can see this repository. You choose who can commit.": "任何人都可以看到這個倉庫，您可以選擇誰能提交。",
+            "Private": "私有",
+            "You choose who can see and commit to this repository.": "您可以選擇誰可以查看並提交到該倉庫。"
+        };
+        const visited = new WeakSet();
+        let translated = false;
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+            translated = transExactTextInRoot(root, dict) || translated;
+
+            root.querySelectorAll?.('*').forEach(element => {
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+        };
+
+        visit(document.body);
+        return translated;
+    }
+
+    function transNewRepositoryPickerText() {
+        if (!isNewRepositoryPage() || !document.body) return false;
+        const dict = {
+            "Choose an owner": "選擇所有者",
+            "Choose a .gitignore template": "選擇 .gitignore 範本",
+            "Choose a license": "選擇許可證"
+        };
+        const placeholders = {
+            "Search owners": "搜尋所有者",
+            "Search templates": "搜尋範本",
+            "Search licenses": "搜尋許可證"
+        };
+        let translated = transExactTextInRoot(document.body, dict);
+
+        document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(element => {
+            const source = element.getAttribute('placeholder');
+            const result = placeholders[source];
+            if (!result) return;
+
+            element.setAttribute('placeholder', result);
+            translated = true;
+        });
+
+        return translated;
     }
 
     function transNotificationsPageDynamicText() {
