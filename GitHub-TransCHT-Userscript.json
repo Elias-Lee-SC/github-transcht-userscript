@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.65
+// @version      local.11.73
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -21905,37 +21905,63 @@ I18N["zh-TW"]["pulls"] = { // 合併請求頁面
 
 I18N["zh-TW"]["repos"] = {
     "static": {
+        "Repositories": "倉庫",
         "My contributions": "我的貢獻",
         "My repositories": "我的倉庫",
         "My forks": "我的複刻",
         "Adminable by me": "我可管理",
+        "Admin access": "管理員權限",
+        "New repository": "新建倉庫",
 
         "Views": "視圖",
-            "Create view": "新建",
+            "No saved views": "沒有保存的視圖",
+            "Create view": "新建視圖",
                 "Icon": "圖示",
+                "Change icon": "更改圖示",
+                "Title": "標題",
+                "Title *": "標題 *",
                 "Description": "描述",
+                "Add a description": "新增描述",
                 "Query": "查詢",
+                "Query *": "查詢 *",
 
-                "Save view": "保存",
+                "Cancel": "取消",
+                "Save view": "保存視圖",
+                "Title can not be empty": "標題不能為空",
+                "Query can not be empty": "查詢不能為空",
+                "Saved view menu": "已保存視圖選單",
+                "Edit view": "編輯視圖",
+                "Delete": "刪除",
+                "Delete view": "刪除視圖",
+                "Close": "關閉",
 
         // 搜尋欄
             "Clear filter": "清除篩選",
-            "Comfortable display density": "舒適視圖",
-            "Compact display density": "緊湊視圖",
+            "Comfortable display density": "舒適顯示密度",
+            "Compact display density": "緊湊顯示密度",
 
         // 篩選框
             "Relevance": "相關性",
             "Last pushed": "最後推送",
             "Name": "名稱",
+            "Stars": "星標",
 
-            "Ascending": "遞增",
-            "Descending": "遞減",
+            "Ascending": "升序",
+            "Descending": "降序",
+
+            "Private": "私有",
+            "Public": "公共",
+            "Repository settings": "倉庫設置",
+
+            "ProTip!": "專業提示！",
+            "When viewing an organization's repositories, you can use the props. filter to filter by custom property.": "查看組織的倉庫時，您可以使用 props. 篩選器按自訂屬性進行篩選。",
 
         "Updated": "更新於",
     },
     "regexp": [
         [/(\d+) repositor(y|ies)/, "$1 個倉庫"],
-        [/([^ ]+)’s past year of commit activity/, "近幾年 $1 的提交活動"],
+        [/^(.+?)[’']s past year of commit activity$/, "$1 過去一年的提交活動"],
+        [/^Are you sure you want to delete view ['‘](.+)['’]\?$/, "確定要刪除視圖「$1」嗎？"],
     ],
 };
 
@@ -29660,6 +29686,7 @@ I18N["zh-TW"]["repository/agents"] = {
         notificationsPagePending: false,
         issuesPagePending: false,
         pullsPagePending: false,
+        reposPagePending: false,
         newRepositoryPagePending: false,
         newRepositoryImportPagePending: false,
         newRepositoryVisibilityPending: false,
@@ -29669,6 +29696,7 @@ I18N["zh-TW"]["repository/agents"] = {
         dashboardLoadingMorePending: false,
         dashboardContextSearchSeen: false,
         pullsContextSearchSeen: false,
+        reposContextSearchSeen: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
         dynamicMenus: {},        // 動態菜單ID記錄
         initDone: false,
@@ -29712,9 +29740,11 @@ I18N["zh-TW"]["repository/agents"] = {
         setupNewRepositoryPageInteractions();
         setupIssuesPageInteractions();
         setupPullsPageInteractions();
+        setupReposPageInteractions();
         setupHeaderTooltipTranslations();
         setupDashboardContextProtection();
         setupPullsContextProtection();
+        setupReposContextProtection();
         setupDashboardShortcutMenuTranslations();
         setupUrlChangeListener();
         setupTurboEvents();
@@ -29743,11 +29773,13 @@ I18N["zh-TW"]["repository/agents"] = {
                 scheduleNotificationsPageTrans();
                 scheduleIssuesPageTrans();
                 schedulePullsPageTrans();
+                scheduleReposPageTrans();
                 scheduleNewRepositoryPageTrans();
                 scheduleNewRepositoryImportPageTrans();
                 scheduleDashboardPageTrans();
                 scheduleInitialDashboardContextTranslation();
                 scheduleInitialPullsContextTranslation();
+                scheduleInitialReposContextTranslation();
             }
         }
 
@@ -29831,11 +29863,13 @@ I18N["zh-TW"]["repository/agents"] = {
         }
         scheduleIssuesPageTrans();
         schedulePullsPageTrans();
+        scheduleReposPageTrans();
         scheduleNewRepositoryPageTrans();
         scheduleNewRepositoryImportPageTrans();
         scheduleDashboardPageTrans();
         scheduleInitialDashboardContextTranslation();
         scheduleInitialPullsContextTranslation();
+        scheduleInitialReposContextTranslation();
 
         // 如果描述翻譯功能啟用，翻譯頁面描述
         if (State.featureSet.enable_transDesc &&
@@ -30076,6 +30110,7 @@ I18N["zh-TW"]["repository/agents"] = {
         }
         scheduleIssuesPageTrans();
         schedulePullsPageTrans();
+        scheduleReposPageTrans();
         scheduleNewRepositoryImportPageTrans();
         scheduleDashboardPageTrans();
     }
@@ -30315,22 +30350,38 @@ I18N["zh-TW"]["repository/agents"] = {
     }
 
     function bindRelativeTimeElementObserver(element) {
-        if (!element || element.__ghchtTimeObserver) return;
+        if (!element) return;
 
-        element.__ghchtTimeObserver = new MutationObserver(
-            safe(() => {
-                transTimeElement(element);
-                if (element.shadowRoot) {
+        if (!element.__ghchtTimeObserver) {
+            element.__ghchtTimeObserver = new MutationObserver(
+                safe(() => {
+                    transTimeElement(element);
+                    if (element.shadowRoot) {
+                        transTimeElement(element.shadowRoot);
+                    }
+                }, '相對時間翻譯觀察')
+            );
+
+            element.__ghchtTimeObserver.observe(element, {
+                childList: true,
+                subtree: true,
+                characterData: true
+            });
+        }
+
+        if (element.shadowRoot && !element.__ghchtShadowTimeObserver) {
+            element.__ghchtShadowTimeObserver = new MutationObserver(
+                safe(() => {
                     transTimeElement(element.shadowRoot);
-                }
-            }, '相對時間翻譯觀察')
-        );
+                }, '相對時間 Shadow DOM 翻譯觀察')
+            );
 
-        element.__ghchtTimeObserver.observe(element, {
-            childList: true,
-            subtree: true,
-            characterData: true
-        });
+            element.__ghchtShadowTimeObserver.observe(element.shadowRoot, {
+                childList: true,
+                subtree: true,
+                characterData: true
+            });
+        }
     }
 
     function scheduleNotificationsPageTrans() {
@@ -31045,6 +31096,481 @@ I18N["zh-TW"]["repository/agents"] = {
             setTimeout(() => {
                 if (!isDashboardSearchActive()) {
                     safe(transPullsContextBreadcrumb, '合併請求頂欄補翻')();
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleReposPageTrans() {
+        if (!isReposPage()) return;
+        if (State.reposPagePending) return;
+        State.reposPagePending = true;
+
+        [0, 100, 350, 900, 1600, 3000].forEach(delay => {
+            setTimeout(() => {
+                safe(transReposPageDynamicText, '倉庫頁動態補翻')();
+                if (delay === 3000) {
+                    State.reposPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function isReposPage() {
+        return (
+            State.pageConfig?.currentPageType === 'repos' ||
+            /^\/repos(?:\/|$)/.test(window.location.pathname)
+        );
+    }
+
+    function transReposPageDynamicText() {
+        if (!isReposPage() || !document.body) return false;
+
+        const dict = {
+            "Repositories": "倉庫",
+            "My contributions": "我的貢獻",
+            "My repositories": "我的倉庫",
+            "My forks": "我的複刻",
+            "Admin access": "管理員權限",
+            "Views": "視圖",
+            "No saved views": "沒有保存的視圖",
+            "Create view": "新建視圖",
+            "Icon": "圖示",
+            "Change icon": "更改圖示",
+            "Title": "標題",
+            "Title *": "標題 *",
+            "Description": "描述",
+            "Add a description": "新增描述",
+            "Query": "查詢",
+            "Query *": "查詢 *",
+            "Cancel": "取消",
+            "Save view": "保存視圖",
+            "Title can not be empty": "標題不能為空",
+            "Query can not be empty": "查詢不能為空",
+            "Saved view menu": "已保存視圖選單",
+            "Edit view": "編輯視圖",
+            "Delete": "刪除",
+            "Delete view": "刪除視圖",
+            "Close": "關閉",
+            "New repository": "新建倉庫",
+            "Relevance": "相關性",
+            "Last pushed": "最後推送",
+            "Name": "名稱",
+            "Stars": "星標",
+            "Clear filter": "清除篩選",
+            "Comfortable display density": "舒適顯示密度",
+            "Compact display density": "緊湊顯示密度",
+            "Private": "私有",
+            "Public": "公共",
+            "Ascending": "升序",
+            "Descending": "降序",
+            "Updated": "更新於",
+            "Updated on": "更新於",
+            "Repository settings": "倉庫設置",
+            "ProTip!": "專業提示！",
+            "When viewing an organization's repositories, you can use the props. filter to filter by custom property.": "查看組織的倉庫時，您可以使用 props. 篩選器按自訂屬性進行篩選。"
+        };
+        const proTipTranslations = [
+            {
+                source: 'Using a comma within certain filters will aggregate the results. For example: language:Go,Ruby will show all repositories that have either Go or Ruby as their primary language.',
+                fragments: {
+                    'Using a comma within certain filters will aggregate the results. For example:': '在某些篩選條件中使用逗號可彙總結果。例如：',
+                    'will show all repositories that have either Go or Ruby as their primary language.': '將顯示以 Go 或 Ruby 作為主要語言的所有倉庫。'
+                }
+            },
+            {
+                source: "When viewing an organization's repositories, you can use the props. filter to filter by custom property.",
+                fragments: {
+                    "When viewing an organization's repositories, you can use the": '查看組織的倉庫時，您可以使用',
+                    'filter to filter by custom property.': '篩選器按自訂屬性進行篩選。',
+                    "When viewing an organization's repositories, you can use the props. filter to filter by custom property.": '查看組織的倉庫時，您可以使用 props. 篩選器按自訂屬性進行篩選。'
+                }
+            }
+        ];
+        const monthNumbers = {
+            January: 1, February: 2, March: 3, April: 4,
+            May: 5, June: 6, July: 7, August: 8,
+            September: 9, October: 10, November: 11, December: 12,
+            Jan: 1, Feb: 2, Mar: 3, Apr: 4, Jun: 6,
+            Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12
+        };
+        const ignoredSelector = [
+            'header',
+            '[role="banner"]',
+            '.AppHeader',
+            '.Header',
+            'query-builder',
+            'qbsearch-input',
+            'react-app[app-name="command-palette"]',
+            'script',
+            'style',
+            'code',
+            'pre',
+            'kbd',
+            'input',
+            'textarea',
+            'select',
+            'option',
+            '[contenteditable="true"]'
+        ].join(', ');
+        const visited = new WeakSet();
+        let translated = false;
+
+        const transReposDynamicPhrase = source => {
+            const countMatch = source.match(/^([\d,]+) repositories?$/i);
+            if (countMatch) {
+                return `${countMatch[1]} 個倉庫`;
+            }
+
+            const metricMatch = source.match(/^([\d,.]+) (forks?|stars?|issues?|pull requests?)$/i);
+            if (metricMatch) {
+                const label = {
+                    fork: '複刻', forks: '複刻',
+                    star: '星標', stars: '星標',
+                    issue: '議題', issues: '議題',
+                    'pull request': '合併請求', 'pull requests': '合併請求'
+                }[metricMatch[2].toLowerCase()];
+                return `${metricMatch[1]} 個${label}`;
+            }
+
+            const dateMatch = source.match(/^Updated on ([A-Za-z]+) (\d{1,2})(?:, (\d{4}))?$/);
+            if (dateMatch && monthNumbers[dateMatch[1]]) {
+                const [, month, day, year] = dateMatch;
+                return year
+                    ? `更新於 ${year} 年 ${monthNumbers[month]} 月 ${day} 日`
+                    : `更新於 ${monthNumbers[month]} 月 ${day} 日`;
+            }
+
+            const dateOnlyMatch = source.match(/^(?:on )?([A-Za-z]+) (\d{1,2})(?:, (\d{4}))?$/);
+            if (dateOnlyMatch && monthNumbers[dateOnlyMatch[1]]) {
+                const [, month, day, year] = dateOnlyMatch;
+                return year
+                    ? `${year} 年 ${monthNumbers[month]} 月 ${day} 日`
+                    : `${monthNumbers[month]} 月 ${day} 日`;
+            }
+
+            const relativeMatch = source.match(/^Updated (.+)$/);
+            if (relativeMatch) {
+                const time = transRelativeTimeValue(relativeMatch[1]);
+                if (time) return `更新於 ${time}`;
+            }
+
+            const activityMatch = source.match(/^(.+?)[’']s past year of commit activity$/);
+            if (activityMatch) {
+                return `${activityMatch[1]} 過去一年的提交活動`;
+            }
+
+            const deleteViewMatch = source.match(/^Are you sure you want to delete view ['‘](.+)['’]\?$/);
+            if (deleteViewMatch) {
+                return `確定要刪除視圖「${deleteViewMatch[1]}」嗎？`;
+            }
+
+            return false;
+        };
+
+        const shouldSkip = node => {
+            const element = getNodeElement(node);
+            if (!element) return true;
+            try {
+                return !!element.closest?.(ignoredSelector);
+            } catch (e) {
+                return true;
+            }
+        };
+
+        const transDeleteDialogSentence = root => {
+            const candidates = [];
+            if (root.nodeType === Node.ELEMENT_NODE) candidates.push(root);
+            root.querySelectorAll?.('*').forEach(element => candidates.push(element));
+
+            for (const element of candidates) {
+                if (shouldSkip(element)) continue;
+                const source = String(element.textContent || '').replace(/\s+/g, ' ').trim();
+                const match = source.match(/^Are you sure you want to delete view ['‘](.+)['’]\?$/);
+                if (!match) continue;
+
+                const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+                const textNodes = [];
+                let node;
+                while ((node = walker.nextNode())) {
+                    if (node.data.trim()) textNodes.push(node);
+                }
+                if (!textNodes.length) continue;
+
+                textNodes[0].data = `確定要刪除視圖「${match[1]}」嗎？`;
+                textNodes.slice(1).forEach(textNode => {
+                    textNode.data = '';
+                });
+                translated = true;
+                return;
+            }
+        };
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+
+            transDeleteDialogSentence(root);
+
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                if (shouldSkip(node)) continue;
+                const source = normalizeHeaderTooltipText(node.data);
+                const result = dict[source] || transReposDynamicPhrase(source) || (isRelativeTimeCandidateText(source) ? transRelativeTimeValue(source) : false);
+                if (!result || result === source) continue;
+
+                node.data = node.data.replace(node.data.trim(), result);
+                translated = true;
+            }
+
+            root.querySelectorAll?.('*').forEach(element => {
+                if (shouldSkip(element)) return;
+                ['aria-label', 'aria-placeholder', 'title', 'placeholder', 'data-placeholder', 'data-tooltip', 'data-tooltip-text'].forEach(attr => {
+                    const source = normalizeHeaderTooltipText(element.getAttribute?.(attr));
+                    const result = dict[source] || transReposDynamicPhrase(source) || (isRelativeTimeCandidateText(source) ? transRelativeTimeValue(source) : false);
+                    if (!result || result === source) return;
+
+                    element.setAttribute(attr, result);
+                    translated = true;
+                });
+
+                if (element.shadowRoot) visit(element.shadowRoot);
+            });
+
+            if (root.shadowRoot) visit(root.shadowRoot);
+        };
+
+        const roots = new Set(document.querySelectorAll('main, [role="main"], aside'));
+        document.querySelectorAll('a[href="/repos"], a[href^="/repos/"]').forEach(link => {
+            const navigation = link.closest?.('nav, aside, [role="navigation"]');
+            if (navigation) roots.add(navigation);
+        });
+        roots.forEach(visit);
+
+        document.querySelectorAll('main *, [role="main"] *').forEach(container => {
+            const content = String(container.textContent || '').replace(/\s+/g, ' ').trim();
+            const title = content.startsWith('ProTip!')
+                ? 'ProTip!'
+                : (content.startsWith('專業提示！') ? '專業提示！' : '');
+            if (!title) return;
+
+            const body = content.slice(title.length).trim();
+            const knownTip = proTipTranslations.find(item => item.source === body);
+            if (!knownTip) return;
+
+            const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                const source = node.data.trim();
+                const result = source === 'ProTip!'
+                    ? '專業提示！'
+                    : knownTip.fragments[source];
+                if (result) {
+                    node.data = node.data.replace(source, result);
+                    translated = true;
+                }
+            }
+        });
+
+        document.querySelectorAll([
+            'main relative-time',
+            'main time-ago',
+            'main time[datetime]',
+            '[role="main"] relative-time',
+            '[role="main"] time-ago',
+            '[role="main"] time[datetime]'
+        ].join(', ')).forEach(element => {
+            transTimeElement(element);
+            bindRelativeTimeElementObserver(element);
+            if (element.shadowRoot) {
+                transTimeElement(element.shadowRoot);
+            }
+        });
+
+        const dynamicSurfaces = [
+            '[role="menu"]',
+            '[role="listbox"]',
+            '[role="dialog"]',
+            '[aria-modal="true"]',
+            'dialog',
+            'dialog-helper',
+            'modal-dialog',
+            '[popover]',
+            'anchored-position',
+            '.Overlay',
+            '.Overlay-backdrop',
+            '.Popover-message',
+            '.ActionList',
+            'tool-tip',
+            '[role="tooltip"]'
+        ].join(', ');
+        document.querySelectorAll(dynamicSurfaces).forEach(surface => {
+            if (!surface.closest?.('header, [role="banner"], .AppHeader, .Header')) {
+                visit(surface);
+            }
+        });
+
+        document.querySelectorAll('[aria-label], [title], [data-tooltip], [data-tooltip-text]').forEach(control => {
+            if (shouldSkip(control)) return;
+            ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text'].forEach(attr => {
+                const source = normalizeHeaderTooltipText(control.getAttribute?.(attr));
+                const result = dict[source] || transReposDynamicPhrase(source) || (isRelativeTimeCandidateText(source) ? transRelativeTimeValue(source) : false);
+                if (!result || result === source) return;
+
+                control.setAttribute(attr, result);
+                translated = true;
+            });
+        });
+
+        const formAttributeDict = {
+            "Title": "標題",
+            "Add a description": "新增描述"
+        };
+        document.querySelectorAll('main input, main textarea, [role="main"] input, [role="main"] textarea').forEach(field => {
+            ['placeholder', 'aria-placeholder', 'aria-label', 'data-placeholder'].forEach(attr => {
+                const source = normalizeHeaderTooltipText(field.getAttribute?.(attr));
+                const result = formAttributeDict[source];
+                if (!result || result === source) return;
+
+                field.setAttribute(attr, result);
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function setupReposPageInteractions() {
+        const scheduleTooltip = event => {
+            if (!isReposPage()) return;
+            const element = getNodeElement(event.target);
+            const control = element?.closest?.('button, [role="button"], [aria-label], [title], [data-tooltip], [data-tooltip-text]');
+            if (!control || control.closest?.('header, [role="banner"], .AppHeader, .Header')) return;
+
+            const labels = [
+                control.getAttribute?.('aria-label'),
+                control.getAttribute?.('title'),
+                control.getAttribute?.('data-tooltip'),
+                control.getAttribute?.('data-tooltip-text'),
+                control.textContent
+            ].map(normalizeHeaderTooltipText);
+            const sources = [
+                'Create view', '新建視圖',
+                'Clear filter', '清除篩選',
+                'Comfortable display density', '舒適顯示密度',
+                'Compact display density', '緊湊顯示密度',
+                'Repository settings', '倉庫設置',
+                'Change icon', '更改圖示',
+                'Saved view menu', '已保存視圖選單'
+            ];
+            const metricTooltip = /^([\d,.]+) (forks?|stars?|issues?|pull requests?)$/i;
+            const activityTooltip = /^(.+?)[’']s past year of commit activity$/;
+            if (!labels.some(label => sources.includes(label) || metricTooltip.test(label) || activityTooltip.test(label))) return;
+            scheduleReposPageInteractionTrans();
+        };
+
+        const scheduleDynamicSurface = event => {
+            if (!isReposPage()) return;
+            const isPointerOpen = event.type === 'pointerdown';
+            const isKeyboardOpen = event.type === 'keyup' && ['Enter', ' ', 'ArrowDown'].includes(event.key);
+            if (!isPointerOpen && !isKeyboardOpen) return;
+            scheduleReposPageInteractionTrans();
+        };
+
+        document.addEventListener('pointerover', scheduleTooltip, true);
+        document.addEventListener('focusin', scheduleTooltip, true);
+        document.addEventListener('pointerdown', scheduleDynamicSurface, true);
+        document.addEventListener('keyup', scheduleDynamicSurface, true);
+    }
+
+    function scheduleReposPageInteractionTrans() {
+        [0, 1, 5, 15, 35, 75, 150, 300, 600, 1000, 1600, 2400, 3200].forEach(delay => {
+            setTimeout(() => {
+                safe(transReposPageDynamicText, '倉庫頁互動內容補翻')();
+            }, delay);
+        });
+    }
+
+    function getReposContextBreadcrumbElements() {
+        const selector = [
+            'span[class*="contextCrumbLast"]',
+            'span[class*="ContextCrumbLast"]'
+        ].join(', ');
+
+        return Array.from(document.querySelectorAll(selector)).filter(element => {
+            if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+            if (isDebugElementInSearchSurface(element)) return false;
+
+            const text = normalizeHeaderTooltipText(element.textContent);
+            if (text !== 'Repositories' && text !== '倉庫') return false;
+
+            const rect = element.getBoundingClientRect?.();
+            if (!rect || rect.width <= 0 || rect.height <= 0) return false;
+            return rect.top >= 0 && rect.top < 120 && rect.left >= 0 && rect.width < 180 && rect.height < 60;
+        });
+    }
+
+    function transReposContextBreadcrumb() {
+        if (!State.reposContextSearchSeen || isDashboardSearchActive()) return;
+        getReposContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === 'Repositories') {
+                    node.data = node.data.replace(node.data.trim(), '倉庫');
+                }
+            });
+        });
+    }
+
+    function restoreReposContextBreadcrumb() {
+        getReposContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === '倉庫') {
+                    node.data = node.data.replace(node.data.trim(), 'Repositories');
+                }
+            });
+        });
+    }
+
+    function setupReposContextProtection() {
+        const restoreBeforeInteraction = event => {
+            if (!isReposPage() || !isDashboardSearchInteraction(event)) return;
+            State.reposContextSearchSeen = true;
+            restoreReposContextBreadcrumb();
+        };
+        const restoreBeforeShortcut = event => {
+            if (!isReposPage() || event.defaultPrevented || event.key !== '/') return;
+            if (isEditableElement(getNodeElement(event.target))) return;
+            State.reposContextSearchSeen = true;
+            restoreReposContextBreadcrumb();
+        };
+
+        document.addEventListener('pointerdown', restoreBeforeInteraction, true);
+        document.addEventListener('mousedown', restoreBeforeInteraction, true);
+        document.addEventListener('touchstart', restoreBeforeInteraction, true);
+        document.addEventListener('focusin', restoreBeforeInteraction, true);
+        document.addEventListener('keydown', restoreBeforeShortcut, true);
+        document.addEventListener('focusout', scheduleReposContextRetranslate, true);
+        document.addEventListener('keyup', scheduleReposContextRetranslate, true);
+    }
+
+    function scheduleInitialReposContextTranslation() {
+        if (!isReposPage()) return;
+        [1500, 12000].forEach(delay => {
+            setTimeout(() => {
+                if (!isReposPage() || isDashboardSearchActive()) return;
+                State.reposContextSearchSeen = true;
+                safe(transReposContextBreadcrumb, '倉庫頂欄延遲初始補翻')();
+            }, delay);
+        });
+    }
+
+    function scheduleReposContextRetranslate() {
+        if (!isReposPage() || !State.reposContextSearchSeen) return;
+        [250, 900, 1800].forEach(delay => {
+            setTimeout(() => {
+                if (!isDashboardSearchActive()) {
+                    safe(transReposContextBreadcrumb, '倉庫頂欄補翻')();
                 }
             }, delay);
         });
