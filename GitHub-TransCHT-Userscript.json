@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.61
+// @version      local.11.65
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -21768,37 +21768,46 @@ I18N["zh-TW"]["pulls"] = { // 合併請求頁面
 
         // 上邊欄
             "What's new": "新功能",
+            "Give feedback": "提供回饋",
             "Switch to the classic experience": "切換到經典視圖",
             "Default view options": "預設視圖選項",
             "View options": "視圖選項",
             "Set as default view": "設為預設視圖",
             "Default to this view when visiting /pulls": "訪問 /pulls 時預設使用此視圖",
+            "Customize sections": "自訂區段",
 
         "Inbox": "收件箱",
             "Needs your review": "需要您的審查",
                 "Expand Needs your review": "展開“需要您的審查”選項卡",
                 "Collapse Needs your review": "摺疊“需要您的審查”選項卡",
                 "Pull requests that need your review will appear here.": "需要您審查的合併請求將出現在這裡。",
+                "About the “Needs your review” section": "關於「需要您的審查」區段",
             "Needs action": "需要操作",
                 "Expand Needs action": "展開“需要操作”選項卡",
                 "Collapse Needs action": "摺疊“需要操作”選項卡",
                 "Pull requests with failing checks, merge conflicts, or required changes will appear here.": "檢查失敗、存在合併衝突或需要更改的合併請求將出現在這裡。",
+                "About the “Needs action” section": "關於「需要操作」區段",
             "Ready to merge": "準備合併",
                 "Expand Ready to merge": "展開“準備合併”選項卡",
                 "Collapse Ready to merge": "摺疊“準備合併”選項卡",
                 "Pull requests that are ready to merge will appear here.": "準備合併的合併請求將出現在這裡。",
+                "About the “Ready to merge” section": "關於「準備合併」區段",
             "Needs your teams' review": "需要您團隊的審查",
+            "Needs your teams’ review": "需要您團隊的審查",
                 "Expand Needs your teams' review": "展開“需要您團隊的審查”選項卡",
                 "Collapse Needs your teams' review": "摺疊“需要您團隊的審查”選項卡",
                 "Pull requests that need your teams' review will appear here.": "需要您團隊審查的合併請求將出現在這裡。",
+                "About the “Needs your teams' review” section": "關於「需要您團隊的審查」區段",
             "Your drafts": "您的草案",
                 "Expand Your drafts": "展開“您的草案”選項卡",
                 "Collapse Your drafts": "摺疊“您的草案”選項卡",
                 "Pull requests that you have started but not yet submitted for review will appear here.": "您已開始但尚未提交審查的合併請求將出現在這裡。",
+                "About the “Your drafts” section": "關於「您的草案」區段",
             "Waiting for review": "等待審查",
                 "Expand Waiting for review": "展開“等待審查”選項卡",
                 "Collapse Waiting for review": "摺疊“等待審查”選項卡",
                 "Pull requests that are waiting for review but have not had a review will appear here.": "等待審查但尚未獲得審查的合併請求將出現在這裡。",
+                "About the “Waiting for review” section": "關於「等待審查」區段",
             "All caught up": "全部已處理",
             "When a pull request needs your review or attention, it'll appear here.": "當一個合併請求需要您的審查或追蹤時，它將出現在這裡。",
             "Awaiting approval": "等待批准",
@@ -21842,17 +21851,36 @@ I18N["zh-TW"]["pulls"] = { // 合併請求頁面
         // 搜尋結果框上邊欄
             "result": "個結果",
             "results": "個結果",
-            "Comfortable display density": "舒適視圖",
-            "Compact display density": "緊湊視圖",
+            "Clear filter": "清除篩選",
+            "Comfortable display density": "舒適顯示密度",
+            "Compact display density": "緊湊顯示密度",
+            "Open": "開啟",
+            "Closed": "已關閉",
+            "Created on": "創建時間",
+            "Last updated": "最近更新",
+            "Total comments": "評論總數",
+            "Best match": "最佳匹配",
+            "Ascending": "升序",
+            "Descending": "降序",
 
         // 搜尋結果框
             "Enter a query to start searching.": "輸入查詢以開始搜尋。",
             "No pull requests matched your search": "沒有合併請求匹配您的搜尋",
             "Try a different search query.": "嘗試不同的搜尋查詢。",
+            "Learn more about searching and filtering pull requests.": "深入瞭解如何搜尋和篩選合併請求。",
 
         // 視圖
             "No saved views": "沒有保存的視圖",
             "Change icon": "更改圖示",
+            "Icon": "圖示",
+            "Title": "標題",
+            "Title *": "標題 *",
+            "Description": "描述",
+            "Add a description": "新增描述",
+            "Query": "查詢",
+            "Query *": "查詢 *",
+            "Cancel": "取消",
+            "Save view": "保存視圖",
             "Apply": "應用",
             "Title can not be empty": "標題不能為空",
             "Query can not be empty": "查詢不能為空",
@@ -29631,6 +29659,7 @@ I18N["zh-TW"]["repository/agents"] = {
         headerTooltipPending: false,
         notificationsPagePending: false,
         issuesPagePending: false,
+        pullsPagePending: false,
         newRepositoryPagePending: false,
         newRepositoryImportPagePending: false,
         newRepositoryVisibilityPending: false,
@@ -29639,6 +29668,7 @@ I18N["zh-TW"]["repository/agents"] = {
         dashboardFloatingTooltipPending: false,
         dashboardLoadingMorePending: false,
         dashboardContextSearchSeen: false,
+        pullsContextSearchSeen: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
         dynamicMenus: {},        // 動態菜單ID記錄
         initDone: false,
@@ -29681,8 +29711,10 @@ I18N["zh-TW"]["repository/agents"] = {
         setupInitTrans();
         setupNewRepositoryPageInteractions();
         setupIssuesPageInteractions();
+        setupPullsPageInteractions();
         setupHeaderTooltipTranslations();
         setupDashboardContextProtection();
+        setupPullsContextProtection();
         setupDashboardShortcutMenuTranslations();
         setupUrlChangeListener();
         setupTurboEvents();
@@ -29710,10 +29742,12 @@ I18N["zh-TW"]["repository/agents"] = {
                 safe(traverseNode, '首次遍歷')(document.body);
                 scheduleNotificationsPageTrans();
                 scheduleIssuesPageTrans();
+                schedulePullsPageTrans();
                 scheduleNewRepositoryPageTrans();
                 scheduleNewRepositoryImportPageTrans();
                 scheduleDashboardPageTrans();
                 scheduleInitialDashboardContextTranslation();
+                scheduleInitialPullsContextTranslation();
             }
         }
 
@@ -29796,10 +29830,12 @@ I18N["zh-TW"]["repository/agents"] = {
             safe(transIssuesPageDynamicText, '議題頁 DOM 更新補翻')();
         }
         scheduleIssuesPageTrans();
+        schedulePullsPageTrans();
         scheduleNewRepositoryPageTrans();
         scheduleNewRepositoryImportPageTrans();
         scheduleDashboardPageTrans();
         scheduleInitialDashboardContextTranslation();
+        scheduleInitialPullsContextTranslation();
 
         // 如果描述翻譯功能啟用，翻譯頁面描述
         if (State.featureSet.enable_transDesc &&
@@ -30039,6 +30075,7 @@ I18N["zh-TW"]["repository/agents"] = {
             safe(transIssuesPageDynamicText, '議題頁 DOM 更新補翻')();
         }
         scheduleIssuesPageTrans();
+        schedulePullsPageTrans();
         scheduleNewRepositoryImportPageTrans();
         scheduleDashboardPageTrans();
     }
@@ -30611,6 +30648,404 @@ I18N["zh-TW"]["repository/agents"] = {
         [0, 1, 5, 15, 35, 75, 150, 300, 600, 1000, 1600, 2400, 3200].forEach(delay => {
             setTimeout(() => {
                 safe(transIssuesPageDynamicText, '議題頁互動內容補翻')();
+            }, delay);
+        });
+    }
+
+    function schedulePullsPageTrans() {
+        if (!isPullsPage()) return;
+        if (State.pullsPagePending) return;
+        State.pullsPagePending = true;
+
+        [0, 100, 350, 900, 1600, 3000].forEach(delay => {
+            setTimeout(() => {
+                safe(transPullsPageDynamicText, '合併請求頁動態補翻')();
+                if (delay === 3000) {
+                    State.pullsPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function isPullsPage() {
+        return (
+            State.pageConfig?.currentPageType === 'pulls' ||
+            /^\/pulls(?:\/|$)/.test(window.location.pathname)
+        );
+    }
+
+    function transPullsPageDynamicText() {
+        if (!isPullsPage() || !document.body) return false;
+
+        const dict = {
+            "Pull requests": "合併請求",
+            "Inbox": "收件箱",
+            "Authored by me": "由我創建",
+            "Assigned to me": "分配給我",
+            "Involves me": "涉及我",
+            "Review requests": "審查請求",
+            "Views": "視圖",
+            "No saved views": "沒有保存的視圖",
+            "Create view": "新建視圖",
+            "Preview": "預覽",
+            "Select repositories": "選擇倉庫",
+            "Updated: Last month": "更新時間：上個月",
+            "What's new": "新功能",
+            "Give feedback": "提供回饋",
+            "Switch to the classic experience": "切換到經典視圖",
+            "Last month": "上個月",
+            "Last 3 months": "近 3 個月",
+            "Last year": "去年",
+            "Any time": "任意時間",
+            "View options": "視圖選項",
+            "Set as default view": "設為預設視圖",
+            "Default to this view when visiting /pulls": "訪問 /pulls 時預設使用此視圖",
+            "Customize sections": "自訂區段",
+            "Open": "開啟",
+            "Closed": "已關閉",
+            "Created on": "創建時間",
+            "Last updated": "最近更新",
+            "Total comments": "評論總數",
+            "Best match": "最佳匹配",
+            "Ascending": "升序",
+            "Descending": "降序",
+            "No pull requests matched your search": "沒有合併請求匹配您的搜尋",
+            "Try a different search query.": "嘗試不同的搜尋查詢。",
+            "Learn more about searching and filtering pull requests.": "深入瞭解如何搜尋和篩選合併請求。",
+            "Clear filter": "清除篩選",
+            "Comfortable display density": "舒適顯示密度",
+            "Compact display density": "緊湊顯示密度",
+            "Icon": "圖示",
+            "Title": "標題",
+            "Title *": "標題 *",
+            "Description": "描述",
+            "Add a description": "新增描述",
+            "Query": "查詢",
+            "Query *": "查詢 *",
+            "Cancel": "取消",
+            "Save view": "保存視圖",
+            "Change icon": "更改圖示",
+            "Needs your review": "需要您的審查",
+            "Needs your teams' review": "需要您團隊的審查",
+            "Needs your teams’ review": "需要您團隊的審查",
+            "Your drafts": "您的草案",
+            "Waiting for review": "等待審查",
+            "Needs action": "需要操作",
+            "Ready to merge": "準備合併",
+            "All caught up": "全部已處理",
+            "Pull requests that need your review will appear here.": "需要您審查的合併請求將出現在這裡。",
+            "Pull requests that need your teams' review will appear here.": "需要您團隊審查的合併請求將出現在這裡。",
+            "Pull requests that you have started but not yet submitted for review will appear here.": "您已開始但尚未提交審查的合併請求將出現在這裡。",
+            "Pull requests that are waiting for review but have not had a review will appear here.": "等待審查但尚未獲得審查的合併請求將出現在這裡。",
+            "Pull requests with failing checks, merge conflicts, or required changes will appear here.": "檢查失敗、存在合併衝突或需要更改的合併請求將出現在這裡。",
+            "Pull requests that are ready to merge will appear here.": "準備合併的合併請求將出現在這裡。",
+            "Expand Needs your review": "展開「需要您的審查」區段",
+            "Collapse Needs your review": "摺疊「需要您的審查」區段",
+            "Expand Needs your teams' review": "展開「需要您團隊的審查」區段",
+            "Collapse Needs your teams' review": "摺疊「需要您團隊的審查」區段",
+            "Expand Your drafts": "展開「您的草案」區段",
+            "Collapse Your drafts": "摺疊「您的草案」區段",
+            "Expand Waiting for review": "展開「等待審查」區段",
+            "Collapse Waiting for review": "摺疊「等待審查」區段",
+            "Expand Needs action": "展開「需要操作」區段",
+            "Collapse Needs action": "摺疊「需要操作」區段",
+            "Expand Ready to merge": "展開「準備合併」區段",
+            "Collapse Ready to merge": "摺疊「準備合併」區段"
+        };
+        const sectionNames = {
+            "Needs your review": "需要您的審查",
+            "Needs your teams' review": "需要您團隊的審查",
+            "Needs your teams’ review": "需要您團隊的審查",
+            "Your drafts": "您的草案",
+            "Waiting for review": "等待審查",
+            "Needs action": "需要操作",
+            "Ready to merge": "準備合併"
+        };
+        const ignoredSelector = [
+            'header',
+            '[role="banner"]',
+            '.AppHeader',
+            '.Header',
+            'query-builder',
+            'qbsearch-input',
+            'react-app[app-name="command-palette"]',
+            'script',
+            'style',
+            'code',
+            'pre',
+            'kbd',
+            'input',
+            'textarea',
+            'select',
+            'option',
+            '[contenteditable="true"]'
+        ].join(', ');
+        const visited = new WeakSet();
+        let translated = false;
+
+        const transPullsDynamicPhrase = source => {
+            const aboutMatch = source.match(/^About the [“\"](.+?)[”\"] section$/);
+            if (aboutMatch && sectionNames[aboutMatch[1]]) {
+                return `關於「${sectionNames[aboutMatch[1]]}」區段`;
+            }
+
+            return false;
+        };
+
+        const shouldSkip = node => {
+            const element = getNodeElement(node);
+            if (!element) return true;
+            try {
+                return !!element.closest?.(ignoredSelector);
+            } catch (e) {
+                return true;
+            }
+        };
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                if (shouldSkip(node)) continue;
+                const source = normalizeHeaderTooltipText(node.data);
+                const result = dict[source] || transPullsDynamicPhrase(source);
+                if (!result || result === source) continue;
+
+                node.data = node.data.replace(node.data.trim(), result);
+                translated = true;
+            }
+
+            root.querySelectorAll?.('*').forEach(element => {
+                if (shouldSkip(element)) return;
+
+                ['aria-label', 'aria-placeholder', 'title', 'placeholder', 'data-placeholder', 'data-tooltip', 'data-tooltip-text'].forEach(attr => {
+                    const source = normalizeHeaderTooltipText(element.getAttribute?.(attr));
+                    const result = dict[source] || transPullsDynamicPhrase(source);
+                    if (!result || result === source) return;
+
+                    element.setAttribute(attr, result);
+                    translated = true;
+                });
+
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+        };
+
+        const roots = new Set(document.querySelectorAll('main, [role="main"], aside'));
+        document.querySelectorAll('a[href="/pulls/inbox"], a[href^="/pulls/"]').forEach(link => {
+            const navigation = link.closest?.('nav, aside, [role="navigation"]');
+            if (navigation) roots.add(navigation);
+        });
+        roots.forEach(visit);
+
+        const dynamicSurfaces = [
+            '[role="menu"]',
+            '[role="listbox"]',
+            '[role="dialog"]',
+            '[popover]',
+            'anchored-position',
+            '.Overlay',
+            '.Popover-message',
+            '.ActionList'
+        ].join(', ');
+        document.querySelectorAll(dynamicSurfaces).forEach(surface => {
+            if (!surface.closest?.('header, [role="banner"], .AppHeader, .Header')) {
+                visit(surface);
+            }
+        });
+
+        document.querySelectorAll('tool-tip, [role="tooltip"]').forEach(tooltip => {
+            if (!tooltip.closest?.('header, [role="banner"], .AppHeader, .Header')) {
+                visit(tooltip);
+            }
+        });
+
+        document.querySelectorAll('[aria-label], [title], [data-tooltip], [data-tooltip-text]').forEach(control => {
+            if (shouldSkip(control)) return;
+            ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text'].forEach(attr => {
+                const source = normalizeHeaderTooltipText(control.getAttribute?.(attr));
+                const result = dict[source] || transPullsDynamicPhrase(source);
+                if (!result || result === source) return;
+
+                control.setAttribute(attr, result);
+                translated = true;
+            });
+        });
+
+        const formAttributeDict = {
+            "Title": "標題",
+            "Add a description": "新增描述"
+        };
+        document.querySelectorAll('main input, main textarea, [role="main"] input, [role="main"] textarea').forEach(field => {
+            ['placeholder', 'aria-placeholder', 'aria-label', 'data-placeholder'].forEach(attr => {
+                const source = normalizeHeaderTooltipText(field.getAttribute?.(attr));
+                const result = formAttributeDict[source];
+                if (!result || result === source) return;
+
+                field.setAttribute(attr, result);
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function setupPullsPageInteractions() {
+        const scheduleTooltip = event => {
+            if (!isPullsPage()) return;
+            const element = getNodeElement(event.target);
+            const control = element?.closest?.('button, [role="button"], [aria-label], [title], [data-tooltip], [data-tooltip-text]');
+            if (!control || control.closest?.('header, [role="banner"], .AppHeader, .Header')) return;
+
+            const labels = [
+                control.getAttribute?.('aria-label'),
+                control.getAttribute?.('title'),
+                control.getAttribute?.('data-tooltip'),
+                control.getAttribute?.('data-tooltip-text'),
+                control.textContent
+            ].map(normalizeHeaderTooltipText);
+
+            const tooltipSources = [
+                'Create view', '新建視圖',
+                'View options', '視圖選項',
+                'Clear filter', '清除篩選',
+                'Comfortable display density', '舒適顯示密度',
+                'Compact display density', '緊湊顯示密度',
+                'Change icon', '更改圖示'
+            ];
+            if (!labels.some(label => tooltipSources.includes(label) || /^About the [“\"].+[”\"] section$/.test(label) || /^關於「.+」區段$/.test(label))) return;
+            schedulePullsPageInteractionTrans();
+        };
+
+        const scheduleDynamicSurface = event => {
+            if (!isPullsPage()) return;
+            const isPointerOpen = event.type === 'pointerdown';
+            const isKeyboardOpen = event.type === 'keyup' && ['Enter', ' ', 'ArrowDown'].includes(event.key);
+            if (!isPointerOpen && !isKeyboardOpen) return;
+            schedulePullsPageInteractionTrans();
+        };
+
+        document.addEventListener('pointerover', scheduleTooltip, true);
+        document.addEventListener('focusin', scheduleTooltip, true);
+        document.addEventListener('pointerdown', scheduleDynamicSurface, true);
+        document.addEventListener('keyup', scheduleDynamicSurface, true);
+    }
+
+    function schedulePullsPageInteractionTrans() {
+        [0, 1, 5, 15, 35, 75, 150, 300, 600, 1000, 1600, 2400, 3200].forEach(delay => {
+            setTimeout(() => {
+                safe(transPullsPageDynamicText, '合併請求頁互動內容補翻')();
+            }, delay);
+        });
+    }
+
+    function getPullsContextBreadcrumbElements() {
+        const selector = [
+            'span[class*="contextCrumbLast"]',
+            'span[class*="ContextCrumbLast"]'
+        ].join(', ');
+
+        return Array.from(document.querySelectorAll(selector)).filter(element => {
+            if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+            if (isDebugElementInSearchSurface(element)) return false;
+
+            const text = normalizeHeaderTooltipText(element.textContent);
+            if (text !== 'Pull requests' && text !== '合併請求') return false;
+
+            const rect = element.getBoundingClientRect?.();
+            if (!rect || rect.width <= 0 || rect.height <= 0) return false;
+
+            return (
+                rect.top >= 0 &&
+                rect.top < 120 &&
+                rect.left >= 0 &&
+                rect.width < 180 &&
+                rect.height < 60
+            );
+        });
+    }
+
+    function transPullsContextBreadcrumb() {
+        if (!State.pullsContextSearchSeen) return;
+        if (isDashboardSearchActive()) return;
+
+        getPullsContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType !== Node.TEXT_NODE) return;
+                if (normalizeHeaderTooltipText(node.data) === 'Pull requests') {
+                    node.data = node.data.replace(node.data.trim(), '合併請求');
+                }
+            });
+        });
+    }
+
+    function restorePullsContextBreadcrumb() {
+        getPullsContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType !== Node.TEXT_NODE) return;
+                if (normalizeHeaderTooltipText(node.data) === '合併請求') {
+                    node.data = node.data.replace(node.data.trim(), 'Pull requests');
+                }
+            });
+        });
+    }
+
+    function setupPullsContextProtection() {
+        const restoreBeforeInteraction = event => {
+            if (!isPullsPage()) return;
+            if (!isDashboardSearchInteraction(event)) return;
+
+            State.pullsContextSearchSeen = true;
+            restorePullsContextBreadcrumb();
+        };
+
+        const restoreBeforeShortcut = event => {
+            if (!isPullsPage()) return;
+            if (event.defaultPrevented) return;
+            if (event.key !== '/') return;
+            if (isEditableElement(getNodeElement(event.target))) return;
+
+            State.pullsContextSearchSeen = true;
+            restorePullsContextBreadcrumb();
+        };
+
+        document.addEventListener('pointerdown', restoreBeforeInteraction, true);
+        document.addEventListener('mousedown', restoreBeforeInteraction, true);
+        document.addEventListener('touchstart', restoreBeforeInteraction, true);
+        document.addEventListener('focusin', restoreBeforeInteraction, true);
+        document.addEventListener('keydown', restoreBeforeShortcut, true);
+        document.addEventListener('focusout', schedulePullsContextRetranslate, true);
+        document.addEventListener('keyup', schedulePullsContextRetranslate, true);
+    }
+
+    function scheduleInitialPullsContextTranslation() {
+        if (!isPullsPage()) return;
+
+        [1500, 12000].forEach(delay => {
+            setTimeout(() => {
+                if (!isPullsPage()) return;
+                if (isDashboardSearchActive()) return;
+
+                State.pullsContextSearchSeen = true;
+                safe(transPullsContextBreadcrumb, '合併請求頂欄延遲初始補翻')();
+            }, delay);
+        });
+    }
+
+    function schedulePullsContextRetranslate() {
+        if (!isPullsPage()) return;
+        if (!State.pullsContextSearchSeen) return;
+
+        [250, 900, 1800].forEach(delay => {
+            setTimeout(() => {
+                if (!isDashboardSearchActive()) {
+                    safe(transPullsContextBreadcrumb, '合併請求頂欄補翻')();
+                }
             }, delay);
         });
     }
