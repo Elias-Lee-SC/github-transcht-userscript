@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.73
+// @version      local.11.80
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -22381,6 +22381,7 @@ I18N["zh-TW"]["discussions"] = {
         // https://github.com/discussions/commented
     },
     "regexp": [ // 正則翻譯
+        [/was created by/g, "建立者："],
     ],
     "title": {
         "static": {
@@ -29687,6 +29688,8 @@ I18N["zh-TW"]["repository/agents"] = {
         issuesPagePending: false,
         pullsPagePending: false,
         reposPagePending: false,
+        discussionsPagePending: false,
+        discussionsHovercardPending: false,
         newRepositoryPagePending: false,
         newRepositoryImportPagePending: false,
         newRepositoryVisibilityPending: false,
@@ -29697,6 +29700,8 @@ I18N["zh-TW"]["repository/agents"] = {
         dashboardContextSearchSeen: false,
         pullsContextSearchSeen: false,
         reposContextSearchSeen: false,
+        projectsContextSearchSeen: false,
+        discussionsContextSearchSeen: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
         dynamicMenus: {},        // 動態菜單ID記錄
         initDone: false,
@@ -29745,6 +29750,8 @@ I18N["zh-TW"]["repository/agents"] = {
         setupDashboardContextProtection();
         setupPullsContextProtection();
         setupReposContextProtection();
+        setupProjectsContextProtection();
+        setupDiscussionsContextProtection();
         setupDashboardShortcutMenuTranslations();
         setupUrlChangeListener();
         setupTurboEvents();
@@ -29774,12 +29781,15 @@ I18N["zh-TW"]["repository/agents"] = {
                 scheduleIssuesPageTrans();
                 schedulePullsPageTrans();
                 scheduleReposPageTrans();
+                scheduleDiscussionsPageTrans();
                 scheduleNewRepositoryPageTrans();
                 scheduleNewRepositoryImportPageTrans();
                 scheduleDashboardPageTrans();
                 scheduleInitialDashboardContextTranslation();
                 scheduleInitialPullsContextTranslation();
                 scheduleInitialReposContextTranslation();
+                scheduleInitialProjectsContextTranslation();
+                scheduleInitialDiscussionsContextTranslation();
             }
         }
 
@@ -29864,12 +29874,15 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleIssuesPageTrans();
         schedulePullsPageTrans();
         scheduleReposPageTrans();
+        scheduleDiscussionsPageTrans();
         scheduleNewRepositoryPageTrans();
         scheduleNewRepositoryImportPageTrans();
         scheduleDashboardPageTrans();
         scheduleInitialDashboardContextTranslation();
         scheduleInitialPullsContextTranslation();
         scheduleInitialReposContextTranslation();
+        scheduleInitialProjectsContextTranslation();
+        scheduleInitialDiscussionsContextTranslation();
 
         // 如果描述翻譯功能啟用，翻譯頁面描述
         if (State.featureSet.enable_transDesc &&
@@ -30111,6 +30124,7 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleIssuesPageTrans();
         schedulePullsPageTrans();
         scheduleReposPageTrans();
+        scheduleDiscussionsPageTrans();
         scheduleNewRepositoryImportPageTrans();
         scheduleDashboardPageTrans();
     }
@@ -30308,12 +30322,23 @@ I18N["zh-TW"]["repository/agents"] = {
 
         const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
         let node;
+        const textNodes = [];
 
         while ((node = walker.nextNode())) {
+            textNodes.push(node);
             const result = transRelativeTimeText(node.data);
             if (result && result !== node.data) {
                 node.data = result;
             }
+        }
+
+        const combinedText = normalizeHeaderTooltipText(element.textContent);
+        const abbreviatedResult = transAbbreviatedRelativeTimeValue(combinedText);
+        if (abbreviatedResult && textNodes.length) {
+            textNodes[0].data = abbreviatedResult;
+            textNodes.slice(1).forEach(textNode => {
+                textNode.data = '';
+            });
         }
     }
 
@@ -30331,6 +30356,9 @@ I18N["zh-TW"]["repository/agents"] = {
     }
 
     function transRelativeTimeValue(text) {
+        const abbreviatedResult = transAbbreviatedRelativeTimeValue(text);
+        if (abbreviatedResult) return abbreviatedResult;
+
         const rules = I18N?.[CONFIG.LANG]?.public?.["time-regexp"] || [];
         let result = text;
 
@@ -30345,6 +30373,31 @@ I18N["zh-TW"]["repository/agents"] = {
         return result !== text ? result : false;
     }
 
+    function transAbbreviatedRelativeTimeValue(text) {
+        const normalized = normalizeHeaderTooltipText(text);
+        const match = normalized.match(/(\d+)\s*(mo|[smhdwy])\s+ago$/i);
+        if (!match) return false;
+
+        const unitKey = {
+            s: '秒',
+            m: '分鐘',
+            h: '小時',
+            d: '天',
+            w: '週',
+            mo: '個月',
+            y: '年'
+        };
+        const translated = `${match[1]} ${unitKey[match[2].toLowerCase()]}之前`;
+        const shortTranslated = translated.replace(/之前$/, '前');
+        const prefix = normalized.slice(0, match.index).trim();
+
+        if (!prefix || prefix === translated || prefix === shortTranslated || prefix.endsWith(translated) || prefix.endsWith(shortTranslated)) {
+            return translated;
+        }
+
+        return false;
+    }
+
     function normalizeRelativeTimeTranslation(text) {
         return String(text).replace(/(\d+)\s*周之前/g, '$1 週之前');
     }
@@ -30356,8 +30409,15 @@ I18N["zh-TW"]["repository/agents"] = {
             element.__ghchtTimeObserver = new MutationObserver(
                 safe(() => {
                     transTimeElement(element);
+                    if (isDiscussionsPage()) {
+                        shortenDiscussionsRelativeTime(element);
+                        transDiscussionsTimeAttributes(element);
+                    }
                     if (element.shadowRoot) {
                         transTimeElement(element.shadowRoot);
+                        if (isDiscussionsPage()) {
+                            shortenDiscussionsRelativeTime(element.shadowRoot);
+                        }
                     }
                 }, '相對時間翻譯觀察')
             );
@@ -30365,7 +30425,9 @@ I18N["zh-TW"]["repository/agents"] = {
             element.__ghchtTimeObserver.observe(element, {
                 childList: true,
                 subtree: true,
-                characterData: true
+                characterData: true,
+                attributes: true,
+                attributeFilter: ['title', 'aria-label', 'data-tooltip', 'data-tooltip-text']
             });
         }
 
@@ -30373,6 +30435,9 @@ I18N["zh-TW"]["repository/agents"] = {
             element.__ghchtShadowTimeObserver = new MutationObserver(
                 safe(() => {
                     transTimeElement(element.shadowRoot);
+                    if (isDiscussionsPage()) {
+                        shortenDiscussionsRelativeTime(element.shadowRoot);
+                    }
                 }, '相對時間 Shadow DOM 翻譯觀察')
             );
 
@@ -31574,6 +31639,430 @@ I18N["zh-TW"]["repository/agents"] = {
                 }
             }, delay);
         });
+    }
+
+    function isProjectsPage() {
+        return (
+            State.pageConfig?.currentPageType === 'projects' ||
+            /^\/projects(?:\/|$)/.test(window.location.pathname)
+        );
+    }
+
+    function getProjectsContextBreadcrumbElements() {
+        const selector = [
+            'span[class*="contextCrumbLast"]',
+            'span[class*="ContextCrumbLast"]'
+        ].join(', ');
+
+        return Array.from(document.querySelectorAll(selector)).filter(element => {
+            if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+            if (isDebugElementInSearchSurface(element)) return false;
+
+            const text = normalizeHeaderTooltipText(element.textContent);
+            if (text !== 'Projects' && text !== '專案') return false;
+
+            const rect = element.getBoundingClientRect?.();
+            if (!rect || rect.width <= 0 || rect.height <= 0) return false;
+            return rect.top >= 0 && rect.top < 120 && rect.left >= 0 && rect.width < 180 && rect.height < 60;
+        });
+    }
+
+    function transProjectsContextBreadcrumb() {
+        if (!State.projectsContextSearchSeen || isDashboardSearchActive()) return;
+        getProjectsContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === 'Projects') {
+                    node.data = node.data.replace(node.data.trim(), '專案');
+                }
+            });
+        });
+    }
+
+    function restoreProjectsContextBreadcrumb() {
+        getProjectsContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === '專案') {
+                    node.data = node.data.replace(node.data.trim(), 'Projects');
+                }
+            });
+        });
+    }
+
+    function setupProjectsContextProtection() {
+        const restoreBeforeInteraction = event => {
+            if (!isProjectsPage() || !isDashboardSearchInteraction(event)) return;
+            State.projectsContextSearchSeen = true;
+            restoreProjectsContextBreadcrumb();
+        };
+        const restoreBeforeShortcut = event => {
+            if (!isProjectsPage() || event.defaultPrevented || event.key !== '/') return;
+            if (isEditableElement(getNodeElement(event.target))) return;
+            State.projectsContextSearchSeen = true;
+            restoreProjectsContextBreadcrumb();
+        };
+
+        document.addEventListener('pointerdown', restoreBeforeInteraction, true);
+        document.addEventListener('mousedown', restoreBeforeInteraction, true);
+        document.addEventListener('touchstart', restoreBeforeInteraction, true);
+        document.addEventListener('focusin', restoreBeforeInteraction, true);
+        document.addEventListener('keydown', restoreBeforeShortcut, true);
+        document.addEventListener('focusout', scheduleProjectsContextRetranslate, true);
+        document.addEventListener('keyup', scheduleProjectsContextRetranslate, true);
+    }
+
+    function scheduleInitialProjectsContextTranslation() {
+        if (!isProjectsPage()) return;
+        [200, 500, 1000, 1500, 12000].forEach(delay => {
+            setTimeout(() => {
+                if (!isProjectsPage() || isDashboardSearchActive()) return;
+                State.projectsContextSearchSeen = true;
+                safe(transProjectsContextBreadcrumb, '專案頂欄延遲初始補翻')();
+            }, delay);
+        });
+    }
+
+    function scheduleProjectsContextRetranslate() {
+        if (!isProjectsPage() || !State.projectsContextSearchSeen) return;
+        [250, 900, 1800].forEach(delay => {
+            setTimeout(() => {
+                if (!isDashboardSearchActive()) {
+                    safe(transProjectsContextBreadcrumb, '專案頂欄補翻')();
+                }
+            }, delay);
+        });
+    }
+
+    function isDiscussionsPage() {
+        return (
+            State.pageConfig?.currentPageType === 'discussions' ||
+            /^\/discussions(?:\/|$)/.test(window.location.pathname)
+        );
+    }
+
+    function getDiscussionsContextBreadcrumbElements() {
+        const selector = [
+            'span[class*="contextCrumbLast"]',
+            'span[class*="ContextCrumbLast"]'
+        ].join(', ');
+
+        return Array.from(document.querySelectorAll(selector)).filter(element => {
+            if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+            if (isDebugElementInSearchSurface(element)) return false;
+
+            const text = normalizeHeaderTooltipText(element.textContent);
+            if (text !== 'Discussions' && text !== '討論') return false;
+
+            const rect = element.getBoundingClientRect?.();
+            if (!rect || rect.width <= 0 || rect.height <= 0) return false;
+            return rect.top >= 0 && rect.top < 120 && rect.left >= 0 && rect.width < 180 && rect.height < 60;
+        });
+    }
+
+    function transDiscussionsContextBreadcrumb() {
+        if (!State.discussionsContextSearchSeen || isDashboardSearchActive()) return;
+        getDiscussionsContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === 'Discussions') {
+                    node.data = node.data.replace(node.data.trim(), '討論');
+                }
+            });
+        });
+    }
+
+    function restoreDiscussionsContextBreadcrumb() {
+        getDiscussionsContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === '討論') {
+                    node.data = node.data.replace(node.data.trim(), 'Discussions');
+                }
+            });
+        });
+    }
+
+    function setupDiscussionsContextProtection() {
+        const restoreBeforeInteraction = event => {
+            if (!isDiscussionsPage() || !isDashboardSearchInteraction(event)) return;
+            State.discussionsContextSearchSeen = true;
+            restoreDiscussionsContextBreadcrumb();
+        };
+        const restoreBeforeShortcut = event => {
+            if (!isDiscussionsPage() || event.defaultPrevented || event.key !== '/') return;
+            if (isEditableElement(getNodeElement(event.target))) return;
+            State.discussionsContextSearchSeen = true;
+            restoreDiscussionsContextBreadcrumb();
+        };
+        const scheduleHovercard = event => {
+            if (!isDiscussionsPage()) return;
+            const element = getNodeElement(event.target);
+            if (!element || !element.closest?.('main, [role="main"]')) return;
+            scheduleDiscussionsHovercardTrans();
+        };
+
+        document.addEventListener('pointerdown', restoreBeforeInteraction, true);
+        document.addEventListener('mousedown', restoreBeforeInteraction, true);
+        document.addEventListener('touchstart', restoreBeforeInteraction, true);
+        document.addEventListener('focusin', restoreBeforeInteraction, true);
+        document.addEventListener('keydown', restoreBeforeShortcut, true);
+        document.addEventListener('focusout', scheduleDiscussionsContextRetranslate, true);
+        document.addEventListener('keyup', scheduleDiscussionsContextRetranslate, true);
+        document.addEventListener('pointerover', scheduleHovercard, true);
+        document.addEventListener('focusin', scheduleHovercard, true);
+    }
+
+    function scheduleInitialDiscussionsContextTranslation() {
+        if (!isDiscussionsPage()) return;
+        [200, 500, 1000, 1500, 12000].forEach(delay => {
+            setTimeout(() => {
+                if (!isDiscussionsPage() || isDashboardSearchActive()) return;
+                State.discussionsContextSearchSeen = true;
+                safe(transDiscussionsContextBreadcrumb, '討論頂欄延遲初始補翻')();
+            }, delay);
+        });
+    }
+
+    function scheduleDiscussionsContextRetranslate() {
+        if (!isDiscussionsPage() || !State.discussionsContextSearchSeen) return;
+        [250, 900, 1800].forEach(delay => {
+            setTimeout(() => {
+                if (!isDashboardSearchActive()) {
+                    safe(transDiscussionsContextBreadcrumb, '討論頂欄補翻')();
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleDiscussionsPageTrans() {
+        if (!isDiscussionsPage()) return;
+        if (State.discussionsPagePending) return;
+        State.discussionsPagePending = true;
+
+        [0, 100, 350, 900, 1600, 3000].forEach(delay => {
+            setTimeout(() => {
+                safe(transDiscussionsPageDynamicText, '討論頁動態補翻')();
+                if (delay === 3000) {
+                    State.discussionsPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function transDiscussionsPageDynamicText() {
+        if (!isDiscussionsPage() || !document.body) return false;
+        let translated = false;
+
+        document.querySelectorAll('main, [role="main"]').forEach(root => {
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                const parent = getNodeElement(node);
+                if (!parent || isDebugElementInSearchSurface(parent)) continue;
+                if (parent.closest?.('input, textarea, code, pre, kbd, [contenteditable="true"]')) continue;
+
+                const result = replaceDiscussionsListText(node.data);
+                if (result !== node.data) {
+                    node.data = result;
+                    translated = true;
+                }
+            }
+
+            root.querySelectorAll('relative-time, time-ago, time[datetime]').forEach(element => {
+                const before = normalizeHeaderTooltipText(element.textContent);
+                transTimeElement(element);
+                shortenDiscussionsRelativeTime(element);
+                transDiscussionsTimeAttributes(element);
+                bindRelativeTimeElementObserver(element);
+                if (element.shadowRoot) {
+                    transTimeElement(element.shadowRoot);
+                    shortenDiscussionsRelativeTime(element.shadowRoot);
+                }
+                translated = normalizeHeaderTooltipText(element.textContent) !== before || translated;
+            });
+        });
+
+        translated = transDiscussionsHovercards() || translated;
+
+        return translated;
+    }
+
+    function scheduleDiscussionsHovercardTrans() {
+        if (!isDiscussionsPage()) return;
+        if (State.discussionsHovercardPending) return;
+        State.discussionsHovercardPending = true;
+
+        [0, 25, 75, 150, 300, 600, 1000, 1600, 2400].forEach(delay => {
+            setTimeout(() => {
+                safe(transDiscussionsHovercards, '討論頁使用者懸浮卡補翻')();
+                if (delay === 2400) {
+                    State.discussionsHovercardPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function transDiscussionsHovercards() {
+        if (!isDiscussionsPage()) return false;
+
+        const roots = new Set(document.querySelectorAll([
+            '.Popover-message',
+            'hovercard-include',
+            '[data-testid*="hovercard"]',
+            '[class*="Hovercard"]',
+            '[class*="hovercard"]',
+            'anchored-position'
+        ].join(', ')));
+        let translated = false;
+
+        const dict = {
+            'Follow': '追蹤',
+            'Following...': '追蹤中…',
+            'Following…': '追蹤中…',
+            'Unfollow': '取消追蹤',
+            'Follows you': '追蹤了您',
+            'Sponsor': '贊助',
+            'Sponsoring': '贊助中',
+            'Member of': '隸屬組織',
+            'Joined': '加入於',
+            'Block or Report': '拉黑或舉報',
+            'Block user': '拉黑用戶',
+            'Report abuse': '舉報濫用'
+        };
+
+        const visit = root => {
+            if (!root) return;
+            if (root.shadowRoot) {
+                visit(root.shadowRoot);
+            }
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+
+            while ((node = walker.nextNode())) {
+                const parent = getNodeElement(node);
+                if (!parent || isDebugElementInSearchSurface(parent)) continue;
+                if (parent.closest?.('input, textarea, code, pre, kbd, [contenteditable="true"]')) continue;
+
+                const normalized = normalizeHeaderTooltipText(node.data);
+                let result = dict[normalized];
+                if (!result && /Member of(?=\s|$)/.test(node.data)) {
+                    result = node.data.replace(/Member of(?=\s|$)/g, '隸屬組織');
+                }
+                if (!result || result === node.data) continue;
+
+                node.data = dict[normalized]
+                    ? node.data.replace(node.data.trim(), result)
+                    : result;
+                translated = true;
+            }
+
+            root.querySelectorAll?.('*').forEach(element => {
+                ['title', 'aria-label', 'data-tooltip', 'data-tooltip-text'].forEach(attr => {
+                    const source = normalizeHeaderTooltipText(element.getAttribute?.(attr));
+                    const result = dict[source];
+                    if (result && result !== source) {
+                        element.setAttribute(attr, result);
+                        translated = true;
+                    }
+                });
+
+                if (element.matches?.('input[type="button"], input[type="submit"], input[type="reset"]')) {
+                    const source = normalizeHeaderTooltipText(element.value || element.getAttribute('value'));
+                    const result = dict[source];
+                    if (result && result !== source) {
+                        element.value = result;
+                        element.setAttribute('value', result);
+                        translated = true;
+                    }
+                }
+
+                ['data-disable-with', 'data-visible-text'].forEach(attr => {
+                    const source = normalizeHeaderTooltipText(element.getAttribute?.(attr));
+                    const result = dict[source];
+                    if (result && result !== source) {
+                        element.setAttribute(attr, result);
+                        translated = true;
+                    }
+                });
+
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+
+            if (root.host?.shadowRoot === root) {
+                root.querySelectorAll?.('*').forEach(element => {
+                    if (element.shadowRoot) visit(element.shadowRoot);
+                });
+            }
+        };
+
+        roots.forEach(visit);
+        return translated;
+    }
+
+    function replaceDiscussionsListText(text) {
+        if (!text) return text;
+        return replaceDiscussionsEnglishDateTime(
+            text.replace(/was created by/g, '建立者：')
+        );
+    }
+
+    function replaceDiscussionsEnglishDateTime(text) {
+        if (!text) return text;
+
+        const monthKey = {
+            Jan: 1,
+            Feb: 2,
+            Mar: 3,
+            Apr: 4,
+            May: 5,
+            Jun: 6,
+            Jul: 7,
+            Aug: 8,
+            Sep: 9,
+            Oct: 10,
+            Nov: 11,
+            Dec: 12
+        };
+        const pattern = /\b(?:on\s+)?(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+(\d{1,2}),\s+(\d{4})(?:,\s*|\s+)(\d{1,2}:\d{2}(?::\d{2})?)(?:\s+(GMT[+-]\d{1,2}))?/g;
+
+        return text.replace(pattern, (all, month, day, year, time, timezone) => {
+            const translated = `${year} 年 ${monthKey[month.slice(0, 3)]} 月 ${Number(day)} 日 ${time}`;
+            return timezone ? `${translated} ${timezone}` : translated;
+        });
+    }
+
+    function shortenDiscussionsRelativeTime(root) {
+        if (!root) return false;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        let translated = false;
+
+        while ((node = walker.nextNode())) {
+            const result = node.data.replace(/(\d+\s*(?:秒|分鐘|小時|天|週|個月|年))之前/g, '$1前');
+            if (result !== node.data) {
+                node.data = result;
+                translated = true;
+            }
+        }
+
+        return translated;
+    }
+
+    function transDiscussionsTimeAttributes(element) {
+        if (!element) return false;
+        let translated = false;
+
+        ['title', 'aria-label', 'data-tooltip', 'data-tooltip-text'].forEach(attr => {
+            const source = element.getAttribute?.(attr);
+            if (!source) return;
+
+            const result = replaceDiscussionsEnglishDateTime(source);
+            if (result !== source) {
+                element.setAttribute(attr, result);
+                translated = true;
+            }
+        });
+
+        return translated;
     }
 
     function scheduleNewRepositoryPageTrans() {
