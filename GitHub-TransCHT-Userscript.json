@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.80
+// @version      local.11.83
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -27507,6 +27507,19 @@ I18N["zh-TW"]["codespaces"] = { // 程式碼空間頁面
             "Start a codespace from a template and get to developing with the power of a virtual machine in the cloud.": "從範本開始創建程式碼空間，然後利用雲中虛擬機的能力進行開發。",
             "Use this template": "使用此模版",
 
+            // 模板描述只做完整句精準匹配；官方更新原文後應保留新的英文描述
+            "Start with a blank canvas or import any packages you need.": "從空白畫布開始，或導入您需要的任何套件。",
+            "A popular JavaScript library for building user interfaces based on UI components.": "一個熱門的 JavaScript 程式庫，用於基於 UI 元件構建使用者介面。",
+            "A full-stack web application template written in C#.": "一個使用 C# 編寫的全端 Web 應用程式範本。",
+            "A full-stack web framework for building dynamic websites that deliver a rich user experience.": "一個用於構建動態網站的全端 Web 框架，可提供豐富的使用者體驗。",
+            "JupyterLab is the latest web-based interactive development environment for notebooks, code, and data.": "JupyterLab 是最新的網頁式互動開發環境，適用於筆記本、程式碼和資料。",
+            "Express is a minimal and flexible Node.js web application framework.": "Express 是一個精簡且靈活的 Node.js Web 應用程式框架。",
+            "Next.js is a React framework that gives you building blocks to create web applications.": "Next.js 是一個 React 框架，提供建立 Web 應用程式所需的構建模組。",
+            "Django is a high-level Python web framework that encourages rapid development and clean, pragmatic design.": "Django 是一個高階 Python Web 框架，鼓勵快速開發和簡潔、實用的設計。",
+            "Flask is a lightweight web application framework.": "Flask 是一個輕量級 Web 應用程式框架。",
+            "A fast 3kB alternative to React with the same modern API.": "一個快速且僅 3 kB 的 React 替代方案，具備相同的現代 API。",
+            "Examples running via semihosting output on an Arm FVP simulation model.": "透過半主機輸出在 Arm FVP 模擬模型上執行的範例。",
+
         // https://github.com/codespaces/new
             "Create a new codespace": "新建程式碼空間",
             "Codespace usage for this repository is paid for by": "該倉庫的程式碼空間使用費由以下人員支付",
@@ -29702,6 +29715,7 @@ I18N["zh-TW"]["repository/agents"] = {
         reposContextSearchSeen: false,
         projectsContextSearchSeen: false,
         discussionsContextSearchSeen: false,
+        codespacesContextSearchSeen: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
         dynamicMenus: {},        // 動態菜單ID記錄
         initDone: false,
@@ -29752,6 +29766,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupReposContextProtection();
         setupProjectsContextProtection();
         setupDiscussionsContextProtection();
+        setupCodespacesContextProtection();
         setupDashboardShortcutMenuTranslations();
         setupUrlChangeListener();
         setupTurboEvents();
@@ -29790,6 +29805,7 @@ I18N["zh-TW"]["repository/agents"] = {
                 scheduleInitialReposContextTranslation();
                 scheduleInitialProjectsContextTranslation();
                 scheduleInitialDiscussionsContextTranslation();
+                scheduleInitialCodespacesContextTranslation();
             }
         }
 
@@ -29883,6 +29899,7 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleInitialReposContextTranslation();
         scheduleInitialProjectsContextTranslation();
         scheduleInitialDiscussionsContextTranslation();
+        scheduleInitialCodespacesContextTranslation();
 
         // 如果描述翻譯功能啟用，翻譯頁面描述
         if (State.featureSet.enable_transDesc &&
@@ -31826,6 +31843,97 @@ I18N["zh-TW"]["repository/agents"] = {
             setTimeout(() => {
                 if (!isDashboardSearchActive()) {
                     safe(transDiscussionsContextBreadcrumb, '討論頂欄補翻')();
+                }
+            }, delay);
+        });
+    }
+
+    function isCodespacesPage() {
+        return (
+            State.pageConfig?.currentPageType === 'codespaces' ||
+            /^\/codespaces(?:\/|$)/.test(window.location.pathname)
+        );
+    }
+
+    function getCodespacesContextBreadcrumbElements() {
+        const selector = [
+            'span[class*="contextCrumbLast"]',
+            'span[class*="ContextCrumbLast"]'
+        ].join(', ');
+
+        return Array.from(document.querySelectorAll(selector)).filter(element => {
+            if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+            if (isDebugElementInSearchSurface(element)) return false;
+
+            const text = normalizeHeaderTooltipText(element.textContent);
+            if (text !== 'Codespaces' && text !== '程式碼空間') return false;
+
+            const rect = element.getBoundingClientRect?.();
+            if (!rect || rect.width <= 0 || rect.height <= 0) return false;
+            return rect.top >= 0 && rect.top < 120 && rect.left >= 0 && rect.width < 180 && rect.height < 60;
+        });
+    }
+
+    function transCodespacesContextBreadcrumb() {
+        if (!State.codespacesContextSearchSeen || isDashboardSearchActive()) return;
+        getCodespacesContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === 'Codespaces') {
+                    node.data = node.data.replace(node.data.trim(), '程式碼空間');
+                }
+            });
+        });
+    }
+
+    function restoreCodespacesContextBreadcrumb() {
+        getCodespacesContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === '程式碼空間') {
+                    node.data = node.data.replace(node.data.trim(), 'Codespaces');
+                }
+            });
+        });
+    }
+
+    function setupCodespacesContextProtection() {
+        const restoreBeforeInteraction = event => {
+            if (!isCodespacesPage() || !isDashboardSearchInteraction(event)) return;
+            State.codespacesContextSearchSeen = true;
+            restoreCodespacesContextBreadcrumb();
+        };
+        const restoreBeforeShortcut = event => {
+            if (!isCodespacesPage() || event.defaultPrevented || event.key !== '/') return;
+            if (isEditableElement(getNodeElement(event.target))) return;
+            State.codespacesContextSearchSeen = true;
+            restoreCodespacesContextBreadcrumb();
+        };
+
+        document.addEventListener('pointerdown', restoreBeforeInteraction, true);
+        document.addEventListener('mousedown', restoreBeforeInteraction, true);
+        document.addEventListener('touchstart', restoreBeforeInteraction, true);
+        document.addEventListener('focusin', restoreBeforeInteraction, true);
+        document.addEventListener('keydown', restoreBeforeShortcut, true);
+        document.addEventListener('focusout', scheduleCodespacesContextRetranslate, true);
+        document.addEventListener('keyup', scheduleCodespacesContextRetranslate, true);
+    }
+
+    function scheduleInitialCodespacesContextTranslation() {
+        if (!isCodespacesPage()) return;
+        [200, 500, 1000, 1500, 12000].forEach(delay => {
+            setTimeout(() => {
+                if (!isCodespacesPage() || isDashboardSearchActive()) return;
+                State.codespacesContextSearchSeen = true;
+                safe(transCodespacesContextBreadcrumb, '程式碼空間頂欄延遲初始補翻')();
+            }, delay);
+        });
+    }
+
+    function scheduleCodespacesContextRetranslate() {
+        if (!isCodespacesPage() || !State.codespacesContextSearchSeen) return;
+        [250, 900, 1800].forEach(delay => {
+            setTimeout(() => {
+                if (!isDashboardSearchActive()) {
+                    safe(transCodespacesContextBreadcrumb, '程式碼空間頂欄補翻')();
                 }
             }, delay);
         });
