@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.89
+// @version      local.11.93
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -28600,6 +28600,34 @@ I18N["zh-TW"]["copilot"] = {
 
         "Spaces": "空間",
 
+        // 空間總覽 https://github.com/copilot/spaces
+        "Give feedback": "提供回饋",
+        "Copilot Spaces documentation": "Copilot 空間說明文件",
+        "Spaces are available in VSCode! Get started using Spaces with the GitHub MCP server.": "空間現已可在 VS Code 中使用！透過 GitHub MCP 伺服器開始使用空間。",
+        "Install": "安裝",
+        "Dismiss banner": "關閉提示",
+        "Spaces organize your files, pull requests, issues, and standards so Copilot can give more relevant help for your work.": "空間組織您的文件、合併請求、議題和標準，以便 Copilot 為您的工作提供更相關的幫助。",
+        "Create space": "創建空間",
+        "Search...": "搜尋…",
+        "Starred": "已加星標",
+        "Shared with me": "與我共享的空間",
+        "Start your first space": "開始您的第一個空間",
+        "Need help? Read the docs": "需要幫助？閱讀文件",
+        "Generate code": "生成程式碼",
+        "Produce code that follows your team's patterns.": "生成符合團隊規範的程式碼。",
+        "Share knowledge": "分享知識",
+        "Centralize docs so your team can quickly find answers.": "集中管理文件，讓團隊快速找到答案。",
+        "Plan projects": "規劃專案",
+        "Create requirements and issues your team can ship.": "創建團隊可交付的需求與議題。",
+
+        // 空間回饋對話框
+        "Message": "訊息",
+        "It's ok": "良",
+        "Please don't include sensitive, confidential, or personal data. Your feedback helps us improve our services in line with our": "請勿包含敏感、機密或個人資料。您的回饋有助於我們依據以下政策改善服務：",
+        "Privacy Policy.": "隱私政策。",
+        "Cancel": "取消",
+        "Close dialog": "關閉對話框",
+
         "Set context once. Chat again and again": "一次設置上下文，反覆聊天。",
             "Create and share a custom Copilot experience using a collection of GitHub repositories, files, and other content.": "使用一組 GitHub 倉庫、文件和其他內容創建並分享定製的 Copilot 體驗。",
             "Spaces lets you create shared research environments where you and your team can collaborate, explore topics, and exchange insights—all powered by AI-driven search and summarization.": "空間讓您創建共享的研究環境，您和您的團隊可以在其中協作、探索主題和交流見解——所有這些都得益於 AI 驅動的搜尋和摘要。",
@@ -29735,6 +29763,7 @@ I18N["zh-TW"]["repository/agents"] = {
         newRepositoryVisibilityPending: false,
         dashboardPagePending: false,
         copilotLandingPagePending: false,
+        copilotInteractiveSurfacePending: false,
         dashboardShortcutMenuPending: false,
         dashboardFloatingTooltipPending: false,
         dashboardLoadingMorePending: false,
@@ -29796,6 +29825,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupDiscussionsContextProtection();
         setupCodespacesContextProtection();
         setupDashboardShortcutMenuTranslations();
+        setupCopilotShellInteractions();
         setupUrlChangeListener();
         setupTurboEvents();
         State.initDone = true;
@@ -30858,6 +30888,7 @@ I18N["zh-TW"]["repository/agents"] = {
             "Updated: Last month": "更新時間：上個月",
             "What's new": "新功能",
             "Give feedback": "提供回饋",
+            "Copilot Spaces documentation": "Copilot 空間說明文件",
             "Switch to the classic experience": "切換到經典視圖",
             "Last month": "上個月",
             "Last 3 months": "近 3 個月",
@@ -30999,6 +31030,7 @@ I18N["zh-TW"]["repository/agents"] = {
                 if (element.shadowRoot) {
                     visit(element.shadowRoot);
                 }
+
             });
         };
 
@@ -32295,6 +32327,7 @@ I18N["zh-TW"]["repository/agents"] = {
                 if (element.shadowRoot) {
                     visit(element.shadowRoot);
                 }
+
             });
         };
 
@@ -32612,7 +32645,7 @@ I18N["zh-TW"]["repository/agents"] = {
     function isCopilotShellPage() {
         return (
             State.pageConfig?.currentPageType === 'copilot' &&
-            /^\/copilot(?:\/agents)?\/?$/.test(window.location.pathname)
+            /^\/copilot(?:\/(?:agents|spaces))?\/?$/.test(window.location.pathname)
         );
     }
 
@@ -32658,6 +32691,48 @@ I18N["zh-TW"]["repository/agents"] = {
             "View Copilot cloud agent capabilities": "查看 Copilot 雲端 AI 代理功能",
             "Available on paid plans. Try it with Copilot Pro — free for 30 days.": "僅在付費計劃中可用。立即試用 Copilot Pro，享受 30 天免費體驗。",
             "Start free trial": "開始免費試用",
+            "Give feedback": "提供回饋",
+            "Spaces are available in VSCode! Get started using Spaces with the GitHub MCP server.": "空間現已可在 VS Code 中使用！透過 GitHub MCP 伺服器開始使用空間。",
+            "Install": "安裝",
+            "Dismiss banner": "關閉提示",
+            "Spaces organize your files, pull requests, issues, and standards so Copilot can give more relevant help for your work.": "空間組織您的文件、合併請求、議題和標準，以便 Copilot 為您的工作提供更相關的幫助。",
+            "Create space": "創建空間",
+            "Search...": "搜尋…",
+            "Starred": "已加星標",
+            "Yours": "我的",
+            "Shared with me": "與我共享的空間",
+            "Start your first space": "開始您的第一個空間",
+            "Need help? Read the docs": "需要幫助？閱讀文件",
+            "Generate code": "生成程式碼",
+            "Produce code that follows your team's patterns.": "生成符合團隊規範的程式碼。",
+            "Share knowledge": "分享知識",
+            "Centralize docs so your team can quickly find answers.": "集中管理文件，讓團隊快速找到答案。",
+            "Plan projects": "規劃專案",
+            "Create requirements and issues your team can ship.": "創建團隊可交付的需求與議題。",
+            "New Space": "新空間",
+            "Space name": "空間名稱",
+            "Space name *": "空間名稱 *",
+            "Choose a name that describes your project or use case": "選擇一個描述您的專案或用例的名稱",
+            "Owner": "所有者",
+            "Owner *": "所有者 *",
+            "Private": "私有",
+            "Only you will be able to see this space.": "只有您可以看到此空間。",
+            "Create Space": "創建空間",
+            "Message": "訊息",
+            "Hate it": "差",
+            "Not great": "中",
+            "It’s ok": "良",
+            "It's ok": "良",
+            "Love it": "優",
+            "Tell us what you liked or what could be better": "告訴我們您喜歡什麼或可以改進的地方",
+            "Please don't include sensitive, confidential, or personal data. Your feedback helps us improve our services in line with our": "請勿包含敏感、機密或個人資料。您的回饋有助於我們依據以下政策改善服務：",
+            "Please don’t include sensitive, confidential, or personal data. Your feedback helps us improve our services in line with our": "請勿包含敏感、機密或個人資料。您的回饋有助於我們依據以下政策改善服務：",
+            "Privacy Policy": "隱私政策",
+            "Privacy Policy.": "隱私政策。",
+            "Cancel": "取消",
+            "Send": "發送",
+            "Close": "關閉",
+            "Close dialog": "關閉對話框",
             "Send now": "立即發送",
             "Send now (enter)": "立即發送（Enter）",
             "uses AI. Check for mistakes.": "使用 AI。請檢查錯誤。",
@@ -32696,6 +32771,14 @@ I18N["zh-TW"]["repository/agents"] = {
                 if (element.shadowRoot) {
                     visit(element.shadowRoot);
                 }
+
+                if (element.tagName === 'IFRAME') {
+                    try {
+                        visit(element.contentDocument?.body);
+                    } catch (e) {
+                        // 跨來源 iframe 不可訪問，保持原樣。
+                    }
+                }
             });
         };
 
@@ -32704,6 +32787,33 @@ I18N["zh-TW"]["repository/agents"] = {
         transDashboardShortcutMenus();
         transDashboardFloatingTooltips();
         return translated;
+    }
+
+    function setupCopilotShellInteractions() {
+        const schedule = () => {
+            if (!isCopilotShellPage()) return;
+            scheduleCopilotInteractiveSurfaceTrans();
+        };
+
+        document.addEventListener('pointerup', schedule, true);
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('focusin', schedule, true);
+        document.addEventListener('keyup', schedule, true);
+    }
+
+    function scheduleCopilotInteractiveSurfaceTrans() {
+        if (!isCopilotShellPage()) return;
+        if (State.copilotInteractiveSurfacePending) return;
+        State.copilotInteractiveSurfacePending = true;
+
+        [0, 5, 25, 75, 200, 500, 1000, 1600, 2400].forEach(delay => {
+            setTimeout(() => {
+                safe(transCopilotLandingPageDynamicText, 'Copilot 互動表面補翻')();
+                if (delay === 2400) {
+                    State.copilotInteractiveSurfacePending = false;
+                }
+            }, delay);
+        });
     }
 
     function transCopilotAgentsSplitText() {
@@ -33081,6 +33191,7 @@ I18N["zh-TW"]["repository/agents"] = {
     function getDashboardFloatingTooltipTranslations() {
         return {
             "Add files, and spaces": "新增文件和空間",
+            "Copilot Spaces documentation": "Copilot 空間說明文件",
             "Send now": "立即發送",
             "Remove": "移除",
             "Attachments options": "附件選項",
@@ -33091,6 +33202,7 @@ I18N["zh-TW"]["repository/agents"] = {
 
     function getDashboardExactFloatingTooltipTranslations() {
         return {
+            "Copilot Spaces documentation": "Copilot 空間說明文件",
             "Feed item options": "動態項目選項",
             "Add this repository to a list": "將此倉庫新增至清單"
         };
