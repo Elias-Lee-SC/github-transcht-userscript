@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.93
+// @version      local.11.99
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -75,7 +75,7 @@ I18N.conf = {
      * 導入倉庫 /new/import
      * ...
      */
-    rePagePath: /^\/($|home|dashboard|feed|copilot|spark|signup|account_verifications|login\/oauth|login|logout|sessions?|password_reset|orgs|explore|topics|notifications\/subscriptions|notifications|watching|stars|issues|pulls|repos|search|trending|showcases|new\/(import|project)|new|import|settings\/(profile|admin|appearance|accessibility|notifications|billing|emails|security_analysis|security-log|security|auth|sessions|keys|ssh|gpg|organizations|enterprises|blocked_users|interaction_limits|code_review_limits|repositories|codespaces|models|codespaces\/allow_permissions|deleted_repositories|packages|copilot|pages|replies|installations|apps\/authorizations|reminders|sponsors-log|apps|(?:personal-access-|)tokens|developers|applications\/new|applications|connections\/applications|education\/benefits)|settings|installations\/new|marketplace|apps|account\/(organizations\/new|choose|upgrade|billing\/history)|projects|redeem|discussions|collections|sponsors|sponsoring|github-copilot\/(signup|free_signup|code-review-waitlist|pro)|codespaces|developer\/register|features|security|sitemap|education|mcp)|^\/users\/[^\/]+\/(projects|packages|succession\/invitation)/,
+    rePagePath: /^\/($|home|dashboard|feed|copilot|spark|signup|account_verifications|login\/oauth|login|logout|sessions?|password_reset|orgs|explore|topics|notifications\/subscriptions|notifications|watching|stars|issues|pulls|repos|search|trending|showcases|new\/(import|project)|new|import|settings\/(profile|admin|appearance|accessibility|notifications|billing|emails|security_analysis|security-log|security|auth|sessions|keys|ssh|gpg|organizations|enterprises|blocked_users|interaction_limits|code_review_limits|repositories|codespaces|models|codespaces\/allow_permissions|deleted_repositories|packages|copilot|pages|replies|installations|apps\/authorizations|reminders|sponsors-log|apps|(?:personal-access-|)tokens|developers|applications\/new|applications|connections\/applications|education\/benefits)|settings|installations\/new|marketplace|apps|account\/(organizations\/new|choose|upgrade|billing\/history)|projects|redeem|discussions|collections|sponsors|sponsoring|github-spark\/pro-plus(?:\/signup)?|github-copilot\/(signup|free_signup|code-review-waitlist|pro)|codespaces|developer\/register|features|security|sitemap|education|mcp)|^\/users\/[^\/]+\/(projects|packages|succession\/invitation)/,
 
     // 倉庫路徑
     rePagePathRepo: /^\/[^\/]+\/[^\/]+\/(issues|pulls|pull|tree|watchers|stargazers|new|edit|delete|upload|find|models|wiki|branches|discussions|activity|rules|releases|packages|tags|labels|milestones?|compare|commit|blob|blame|actions(\/metrics\/(usage|performance))?|runs|deployments|security|pulse|community|forks|fork|import|graphs\/(contributors|community|traffic|commit-activity|code-frequency)|network$|network\/(dependencies|dependents|updates|members)|settings\/(access|code_review_limits|interaction_limits|branches|branch_protection_rules|tag_protection|rules|actions|models\/access-policy|hooks|copilot\/(code_review|coding_agent)|environments|codespaces|pages|security_analysis|dependabot_rules|keys|secrets|variables|installations|notifications|key_links)|settings|transfer|projects\/new|projects|pkgs|contribute|subscription|invitations|codespaces|attestations|custom-properties|reported_content|agents|tasks)/,
@@ -22759,6 +22759,11 @@ I18N["zh-TW"]["explore"] = { // 探索頁面
 
         // github.com/explore
             "Explore": "探索",
+            "Lists": "清單",
+            "Create list": "創建清單",
+            "Add this repository to a list": "將此倉庫新增至清單",
+            "GitHub Checkout": "GitHub 精選",
+            "Open Source Fridays": "開源星期五",
             "Topics": "主題",
             "Trending": "熱門",
             "Collections": "集合",
@@ -28891,17 +28896,18 @@ I18N["zh-TW"]["github-copilot/code-review-waitlist"] = {
 I18N["zh-TW"]["spark"] = {
     "static": {
         // spark https://github.com/spark
+            "Dream it. See it. Ship it.": "夢想它。看見它。交付它。",
             "Dream it.": "夢想它。",
-            "See it.": "看到它。",
+            "See it.": "看見它。",
             "Ship it.": "交付它。",
 
-            "Transform ideas into full-stack intelligent apps in a snap. Publish with a click.": "將想法轉化為全棧智能應用，一鍵發布。",
-            "Spark is currently only available to Copilot Pro+ and Enterprise users.": "Spark 目前僅適用於 Copilot Pro+ 和企業版用戶。",
-                "Upgrade now to access Spark": "立即升級以訪問 Spark",
+            "Transform ideas into full-stack intelligent apps in a snap. Publish with a click.": "頃刻間將想法轉化為全端智慧應用程式，一鍵即可發布。",
+            "Spark is currently only available to Copilot Pro+ and Enterprise users.": "Spark 目前僅開放給 Copilot Pro+ 與 Enterprise 使用者。",
+                "Upgrade now to access Spark": "立即升級以使用 Spark",
 
-            "Create web apps with React and TypeScript to prototype ideas, build tools, and more": "使用 React 和 TypeScript 創建 Web 應用，原型化想法，構建工具等",
+            "Create web apps with React and TypeScript to prototype ideas, build tools, and more": "使用 React 和 TypeScript 建立 Web 應用程式，將想法製作成原型、打造工具，以及更多用途",
                 "Submit prompt": "提交提示詞",
-                "Attach image": "附上圖片",
+                "Attach image": "附加圖片",
 
             "Recent": "最近",
                 "Favorite this spark": "收藏此 spark",
@@ -28911,7 +28917,7 @@ I18N["zh-TW"]["spark"] = {
                 "Nothing to see here… yet.": "這裡還沒有什麼可看的。",
             "Last updated": "最後更新於",
 
-            "uses AI. Check for mistakes.": "使用 AI。請檢查錯誤。",
+            "uses AI. Check for mistakes.": "使用 AI。請檢查是否有誤。",
             "Terms of service": "服務條款",
 
         // https://github.com/spark/<user-name>/<spark-name>
@@ -29075,6 +29081,37 @@ I18N["zh-TW"]["spark"] = {
         [/Delete \((\d+)\)/, "刪除（$1）"],
     ],
 };
+
+I18N["zh-TW"]["github-spark/pro-plus/signup"] = {
+    "static": {
+        ...I18N["zh-TW"]["payment-module"]["static"],
+        "Spark checkout": "Spark 結帳",
+        "Access Spark with a GitHub Copilot Pro+ subscription": "訂閱 GitHub Copilot Pro+ 即可使用 Spark",
+        "Billing frequency": "計費週期",
+        "Billing information": "帳單資訊",
+        "Payment method": "付款方式",
+        "Review": "確認",
+        "Account": "帳戶",
+        "Personal account": "個人帳戶",
+        "First name *": "名字 *",
+        "Last name *": "姓氏 *",
+        "Address (Street, P.O. box) *": "地址（街道、郵政信箱）*",
+        "Address line 2 (Apartment, suite, unit)": "地址第 2 行（公寓、套房、單位）",
+        "City *": "城市 *",
+        "Country/Region": "國家／地區",
+        "Country/Region *": "國家／地區 *",
+        "Choose your country/region": "選擇您的國家／地區",
+        "State/Province": "州／省",
+        "Postal/Zip code": "郵遞區號",
+        "Postal/Zip code (9-digit zip code for US)": "郵遞區號（美國為 9 位數郵遞區號）",
+        "Required for certain countries": "部分國家／地區必填",
+        "VAT/GST ID": "VAT/GST 稅務編號",
+        "Save billing information": "儲存帳單資訊",
+        "Includes access to GitHub Spark": "包含 GitHub Spark 使用權"
+    },
+    "regexp": []
+};
+I18N["zh-TW"]["github-spark/pro-plus"] = I18N["zh-TW"]["github-spark/pro-plus/signup"];
 
 I18N["zh-TW"]["sitemap"] = { // 網站地圖頁，僅匹配公共部分
     "static": {
@@ -29762,6 +29799,8 @@ I18N["zh-TW"]["repository/agents"] = {
         newRepositoryImportPagePending: false,
         newRepositoryVisibilityPending: false,
         dashboardPagePending: false,
+        sparkLandingPagePending: false,
+        sparkCheckoutPagePending: false,
         copilotLandingPagePending: false,
         copilotInteractiveSurfacePending: false,
         dashboardShortcutMenuPending: false,
@@ -29773,6 +29812,8 @@ I18N["zh-TW"]["repository/agents"] = {
         projectsContextSearchSeen: false,
         discussionsContextSearchSeen: false,
         codespacesContextSearchSeen: false,
+        exploreContextSearchSeen: false,
+        explorePagePending: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
         dynamicMenus: {},        // 動態菜單ID記錄
         initDone: false,
@@ -29824,6 +29865,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupProjectsContextProtection();
         setupDiscussionsContextProtection();
         setupCodespacesContextProtection();
+        setupExplorePageInteractions();
         setupDashboardShortcutMenuTranslations();
         setupCopilotShellInteractions();
         setupUrlChangeListener();
@@ -29858,6 +29900,8 @@ I18N["zh-TW"]["repository/agents"] = {
                 scheduleNewRepositoryPageTrans();
                 scheduleNewRepositoryImportPageTrans();
                 scheduleDashboardPageTrans();
+                scheduleSparkLandingPageTrans();
+                scheduleSparkCheckoutPageTrans();
                 scheduleCopilotLandingPageTrans();
                 scheduleInitialDashboardContextTranslation();
                 scheduleInitialPullsContextTranslation();
@@ -29865,6 +29909,8 @@ I18N["zh-TW"]["repository/agents"] = {
                 scheduleInitialProjectsContextTranslation();
                 scheduleInitialDiscussionsContextTranslation();
                 scheduleInitialCodespacesContextTranslation();
+                scheduleInitialExploreContextTranslation();
+                scheduleExplorePageTrans();
             }
         }
 
@@ -29953,6 +29999,8 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleNewRepositoryPageTrans();
         scheduleNewRepositoryImportPageTrans();
         scheduleDashboardPageTrans();
+        scheduleSparkLandingPageTrans();
+        scheduleSparkCheckoutPageTrans();
         scheduleCopilotLandingPageTrans();
         scheduleInitialDashboardContextTranslation();
         scheduleInitialPullsContextTranslation();
@@ -29960,6 +30008,8 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleInitialProjectsContextTranslation();
         scheduleInitialDiscussionsContextTranslation();
         scheduleInitialCodespacesContextTranslation();
+        scheduleInitialExploreContextTranslation();
+        scheduleExplorePageTrans();
 
         // 如果描述翻譯功能啟用，翻譯頁面描述
         if (State.featureSet.enable_transDesc &&
@@ -30206,7 +30256,10 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleDiscussionsPageTrans();
         scheduleNewRepositoryImportPageTrans();
         scheduleDashboardPageTrans();
+        scheduleSparkLandingPageTrans();
+        scheduleSparkCheckoutPageTrans();
         scheduleCopilotLandingPageTrans();
+        scheduleExplorePageTrans();
     }
 
     /* =========================== DOM 遍歷與節點處理 =========================== */
@@ -32004,6 +32057,168 @@ I18N["zh-TW"]["repository/agents"] = {
         });
     }
 
+    function isExplorePage() {
+        return (
+            State.pageConfig?.currentPageType === 'explore' ||
+            /^\/explore(?:\/|$)/.test(window.location.pathname)
+        );
+    }
+
+    function getExploreContextBreadcrumbElements() {
+        const selector = [
+            'span[class*="contextCrumbLast"]',
+            'span[class*="ContextCrumbLast"]'
+        ].join(', ');
+
+        return Array.from(document.querySelectorAll(selector)).filter(element => {
+            if (!element || element.nodeType !== Node.ELEMENT_NODE) return false;
+            if (isDebugElementInSearchSurface(element)) return false;
+
+            const text = normalizeHeaderTooltipText(element.textContent);
+            if (text !== 'Explore' && text !== '探索') return false;
+
+            const rect = element.getBoundingClientRect?.();
+            if (!rect || rect.width <= 0 || rect.height <= 0) return false;
+            return rect.top >= 0 && rect.top < 120 && rect.left >= 0 && rect.width < 180 && rect.height < 60;
+        });
+    }
+
+    function transExploreContextBreadcrumb() {
+        if (!State.exploreContextSearchSeen || isDashboardSearchActive()) return;
+        getExploreContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === 'Explore') {
+                    node.data = node.data.replace(node.data.trim(), '探索');
+                }
+            });
+        });
+    }
+
+    function restoreExploreContextBreadcrumb() {
+        getExploreContextBreadcrumbElements().forEach(element => {
+            Array.from(element.childNodes || []).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === '探索') {
+                    node.data = node.data.replace(node.data.trim(), 'Explore');
+                }
+            });
+        });
+    }
+
+    function setupExplorePageInteractions() {
+        const restoreBeforeInteraction = event => {
+            if (!isExplorePage() || !isDashboardSearchInteraction(event)) return;
+            State.exploreContextSearchSeen = true;
+            restoreExploreContextBreadcrumb();
+        };
+        const restoreBeforeShortcut = event => {
+            if (!isExplorePage() || event.defaultPrevented || event.key !== '/') return;
+            if (isEditableElement(getNodeElement(event.target))) return;
+            State.exploreContextSearchSeen = true;
+            restoreExploreContextBreadcrumb();
+        };
+        const scheduleInteractiveSurface = () => {
+            if (!isExplorePage()) return;
+            scheduleExplorePageTrans();
+        };
+
+        document.addEventListener('pointerdown', restoreBeforeInteraction, true);
+        document.addEventListener('mousedown', restoreBeforeInteraction, true);
+        document.addEventListener('touchstart', restoreBeforeInteraction, true);
+        document.addEventListener('focusin', restoreBeforeInteraction, true);
+        document.addEventListener('keydown', restoreBeforeShortcut, true);
+        document.addEventListener('focusout', scheduleExploreContextRetranslate, true);
+        document.addEventListener('keyup', scheduleExploreContextRetranslate, true);
+        document.addEventListener('pointerdown', scheduleInteractiveSurface, true);
+        document.addEventListener('pointerover', scheduleInteractiveSurface, true);
+        document.addEventListener('mouseover', scheduleInteractiveSurface, true);
+        document.addEventListener('click', scheduleInteractiveSurface, true);
+        document.addEventListener('focusin', scheduleInteractiveSurface, true);
+        document.addEventListener('keyup', scheduleInteractiveSurface, true);
+    }
+
+    function scheduleInitialExploreContextTranslation() {
+        if (!isExplorePage()) return;
+        [200, 500, 1000, 1500, 12000].forEach(delay => {
+            setTimeout(() => {
+                if (!isExplorePage() || isDashboardSearchActive()) return;
+                State.exploreContextSearchSeen = true;
+                safe(transExploreContextBreadcrumb, '探索頂欄延遲初始補翻')();
+            }, delay);
+        });
+    }
+
+    function scheduleExploreContextRetranslate() {
+        if (!isExplorePage() || !State.exploreContextSearchSeen) return;
+        [250, 900, 1800].forEach(delay => {
+            setTimeout(() => {
+                if (!isDashboardSearchActive()) {
+                    safe(transExploreContextBreadcrumb, '探索頂欄補翻')();
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleExplorePageTrans() {
+        if (!isExplorePage() || State.explorePagePending) return;
+        State.explorePagePending = true;
+
+        [0, 5, 25, 75, 200, 500, 1000, 1600, 2400].forEach(delay => {
+            setTimeout(() => {
+                safe(transExplorePageDynamicText, '探索頁互動表面補翻')();
+                if (delay === 2400) {
+                    State.explorePagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function transExplorePageDynamicText() {
+        if (!isExplorePage()) return false;
+
+        const dict = {
+            "Lists": "清單",
+            "Create list": "創建清單",
+            "Add this repository to a list": "將此倉庫新增至清單",
+            "GitHub Checkout": "GitHub 精選",
+            "Open Source Fridays": "開源星期五"
+        };
+        const attributeNames = [
+            'aria-label',
+            'title',
+            'data-tooltip',
+            'data-tooltip-text'
+        ];
+        const visited = new Set();
+        let translated = false;
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+            translated = transExactTextInRoot(root, dict) || translated;
+
+            if (root.shadowRoot) {
+                visit(root.shadowRoot);
+            }
+
+            root.querySelectorAll?.('*').forEach(element => {
+                attributeNames.forEach(attributeName => {
+                    const source = normalizeHeaderTooltipText(element.getAttribute?.(attributeName));
+                    const result = dict[source];
+                    if (!result || result === source) return;
+                    element.setAttribute(attributeName, result);
+                    translated = true;
+                });
+
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+        };
+
+        visit(document.body);
+        return translated;
+    }
+
     function scheduleDiscussionsPageTrans() {
         if (!isDiscussionsPage()) return;
         if (State.discussionsPagePending) return;
@@ -32642,6 +32857,199 @@ I18N["zh-TW"]["repository/agents"] = {
         });
     }
 
+    function isSparkLandingPage() {
+        return (
+            State.pageConfig?.currentPageType === 'spark' &&
+            /^\/spark\/?$/.test(window.location.pathname)
+        );
+    }
+
+    function scheduleSparkLandingPageTrans() {
+        if (!isSparkLandingPage()) return;
+        if (State.sparkLandingPagePending) return;
+        State.sparkLandingPagePending = true;
+
+        [0, 100, 350, 900, 1600, 3000].forEach(delay => {
+            setTimeout(() => {
+                safe(transSparkLandingPageDynamicText, 'Spark 首頁動態補翻')();
+                if (delay === 3000) {
+                    State.sparkLandingPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function transSparkLandingPageDynamicText() {
+        if (!isSparkLandingPage()) return false;
+
+        const dict = {
+            "Dream it. See it. Ship it.": "夢想它。看見它。交付它。",
+            "Dream it.": "夢想它。",
+            "See it.": "看見它。",
+            "Ship it.": "交付它。",
+            "Transform ideas into full-stack intelligent apps in a snap. Publish with a click.": "頃刻間將想法轉化為全端智慧應用程式，一鍵即可發布。",
+            "Spark is currently only available to Copilot Pro+ and Enterprise users.": "Spark 目前僅開放給 Copilot Pro+ 與 Enterprise 使用者。",
+            "Upgrade now to access Spark": "立即升級以使用 Spark",
+            "Create web apps with React and TypeScript to prototype ideas, build tools, and more": "使用 React 和 TypeScript 建立 Web 應用程式，將想法製作成原型、打造工具，以及更多用途",
+            "Submit prompt": "提交提示詞",
+            "Attach image": "附加圖片",
+            "Spark uses AI. Check for mistakes.": "Spark 使用 AI。請檢查是否有誤。",
+            "uses AI. Check for mistakes.": "使用 AI。請檢查是否有誤。",
+            "Terms of service": "服務條款",
+            "Terms of service.": "服務條款。"
+        };
+        const attributeNames = [
+            'placeholder',
+            'aria-label',
+            'aria-placeholder',
+            'title',
+            'data-placeholder',
+            'data-tooltip',
+            'data-tooltip-text'
+        ];
+        const visited = new Set();
+        let translated = false;
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+            translated = transExactTextInRoot(root, dict) || translated;
+
+            if (root.shadowRoot) {
+                visit(root.shadowRoot);
+            }
+
+            root.querySelectorAll?.('*').forEach(element => {
+                attributeNames.forEach(attributeName => {
+                    const source = normalizeHeaderTooltipText(element.getAttribute?.(attributeName));
+                    const result = dict[source];
+                    if (!result || result === source) return;
+                    element.setAttribute(attributeName, result);
+                    translated = true;
+                });
+
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+        };
+
+        visit(document.body);
+        return translated;
+    }
+
+    function isSparkCheckoutPage() {
+        return (
+            ['github-spark/pro-plus', 'github-spark/pro-plus/signup'].includes(State.pageConfig?.currentPageType) &&
+            /^\/github-spark\/pro-plus(?:\/signup)?\/?$/.test(window.location.pathname)
+        );
+    }
+
+    function scheduleSparkCheckoutPageTrans() {
+        if (!isSparkCheckoutPage()) return;
+        if (State.sparkCheckoutPagePending) return;
+        State.sparkCheckoutPagePending = true;
+
+        [0, 100, 350, 900, 1600, 3000].forEach(delay => {
+            setTimeout(() => {
+                safe(transSparkCheckoutPageDynamicText, 'Spark 結帳頁動態補翻')();
+                if (delay === 3000) {
+                    State.sparkCheckoutPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function transSparkCheckoutPageDynamicText() {
+        if (!isSparkCheckoutPage()) return false;
+
+        const dict = I18N[CONFIG.LANG]['github-spark/pro-plus/signup']?.static || {};
+        const attributeNames = [
+            'placeholder',
+            'aria-label',
+            'aria-placeholder',
+            'title',
+            'data-placeholder',
+            'data-tooltip',
+            'data-tooltip-text'
+        ];
+        const visited = new Set();
+        let translated = false;
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                const parent = getNodeElement(node);
+                if (!parent || parent.closest?.('script, style, code, pre, kbd, input, textarea, [contenteditable="true"]')) {
+                    continue;
+                }
+
+                const source = normalizeHeaderTooltipText(node.data);
+                const result = dict[source] || transSparkCheckoutDynamicPhrase(source);
+                if (!result || result === source) continue;
+
+                const leading = node.data.match(/^\s*/)?.[0] || '';
+                const trailing = node.data.match(/\s*$/)?.[0] || '';
+                node.data = `${leading}${result}${trailing}`;
+                translated = true;
+            }
+
+            if (root.shadowRoot) {
+                visit(root.shadowRoot);
+            }
+
+            root.querySelectorAll?.('*').forEach(element => {
+                attributeNames.forEach(attributeName => {
+                    const source = normalizeHeaderTooltipText(element.getAttribute?.(attributeName));
+                    const result = dict[source] || transSparkCheckoutDynamicPhrase(source);
+                    if (!result || result === source) return;
+                    element.setAttribute(attributeName, result);
+                    translated = true;
+                });
+
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+        };
+
+        visit(document.body);
+        return translated;
+    }
+
+    function transSparkCheckoutDynamicPhrase(source) {
+        if (!source) return false;
+
+        const billingMatch = source.match(/^You will be billed (.+?) today\. Your next payment will be (.+?)(?: on | )((?:January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, \d{4}|\d{4}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日)\.$/);
+        if (!billingMatch) return false;
+
+        const [, todayAmount, nextAmount, nextDate] = billingMatch;
+        return `今天將收取 ${todayAmount}。下一筆 ${nextAmount} 的款項將於 ${transSparkCheckoutEnglishDate(nextDate)} 收取。`;
+    }
+
+    function transSparkCheckoutEnglishDate(source) {
+        const monthNumbers = {
+            January: 1, February: 2, March: 3, April: 4,
+            May: 5, June: 6, July: 7, August: 8,
+            September: 9, October: 10, November: 11, December: 12
+        };
+        const chineseMatch = String(source).match(/^(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日$/);
+        if (chineseMatch) {
+            const [, year, month, day] = chineseMatch;
+            return `${year} 年 ${Number(month)} 月 ${Number(day)} 日`;
+        }
+
+        const match = String(source).match(/^(January|February|March|April|May|June|July|August|September|October|November|December) (\d{1,2}), (\d{4})$/);
+        if (!match) return source;
+
+        const [, month, day, year] = match;
+        return `${year} 年 ${monthNumbers[month]} 月 ${Number(day)} 日`;
+    }
+
     function isCopilotShellPage() {
         return (
             State.pageConfig?.currentPageType === 'copilot' &&
@@ -32684,6 +33092,8 @@ I18N["zh-TW"]["repository/agents"] = {
             "No chats yet": "還沒有聊天",
             "Ask Copilot anything on the right to start your first chat.": "在右側詢問 Copilot 任何問題，開始您的第一次聊天。",
             "Collapse": "摺疊",
+            "Collapse sidebar": "摺疊側邊欄",
+            "Expand sidebar": "展開側邊欄",
             "Copilot cloud agent handles routine tasks so you can focus on core work": "Copilot 雲端 AI 代理處理例行任務，讓您專注於核心工作",
             "Save time by offloading testing, dependency upgrades, migrations and maintenance to agents.": "將測試、依賴項升級、遷移和維護等工作交給 AI 代理處理，節省您的時間。",
             "Create pull requests from Copilot Chat, CLI, IDEs or assign an Issue to Copilot to get started.": "您可以透過 Copilot Chat、CLI、IDE 創建合併請求，或將議題分配給 Copilot 來開始使用。",
@@ -32796,6 +33206,8 @@ I18N["zh-TW"]["repository/agents"] = {
         };
 
         document.addEventListener('pointerup', schedule, true);
+        document.addEventListener('pointerover', schedule, true);
+        document.addEventListener('mouseover', schedule, true);
         document.addEventListener('click', schedule, true);
         document.addEventListener('focusin', schedule, true);
         document.addEventListener('keyup', schedule, true);
@@ -33192,6 +33604,11 @@ I18N["zh-TW"]["repository/agents"] = {
         return {
             "Add files, and spaces": "新增文件和空間",
             "Copilot Spaces documentation": "Copilot 空間說明文件",
+            "New chat": "新聊天",
+            "Agents": "AI 代理",
+            "Spaces": "空間",
+            "Collapse sidebar": "摺疊側邊欄",
+            "Expand sidebar": "展開側邊欄",
             "Send now": "立即發送",
             "Remove": "移除",
             "Attachments options": "附件選項",
@@ -33203,6 +33620,11 @@ I18N["zh-TW"]["repository/agents"] = {
     function getDashboardExactFloatingTooltipTranslations() {
         return {
             "Copilot Spaces documentation": "Copilot 空間說明文件",
+            "New chat": "新聊天",
+            "Agents": "AI 代理",
+            "Spaces": "空間",
+            "Collapse sidebar": "摺疊側邊欄",
+            "Expand sidebar": "展開側邊欄",
             "Feed item options": "動態項目選項",
             "Add this repository to a list": "將此倉庫新增至清單"
         };
