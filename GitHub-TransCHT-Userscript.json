@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.11.99
+// @version      local.12.10
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -22860,6 +22860,77 @@ I18N["zh-TW"]["topics"] = { // 探索-->主題頁面
             "Popular topics": "熱門主題",
             "Unstar": "已加星標",
 
+            // 精選主題與所有主題的固定介紹
+            "An awesome list is a list of awesome things curated by the community.": "Awesome List 是由社群整理的優質內容清單。",
+            "Chrome is a web browser from the tech company Google.": "Chrome 是科技公司 Google 推出的網頁瀏覽器。",
+            "Automate your code review with style, quality, security, and test‑coverage checks when you need them.": "在需要時，以程式碼風格、品質、安全性及測試覆蓋率檢查，自動執行程式碼審查。",
+            "Automate your code review with style, quality, security, and test-coverage checks when you need them.": "在需要時，以程式碼風格、品質、安全性及測試覆蓋率檢查，自動執行程式碼審查。",
+            "Compilers are software that translate higher-level programming languages to lower-level languages (e.g. machine code).": "編譯器是將高階程式語言轉換為低階語言（例如機器碼）的軟體。",
+            "Cascading Style Sheets (CSS) is a language used most often to style and improve upon the appearance of views.": "階層式樣式表（CSS）是一種常用於設定樣式並改善視圖外觀的語言。",
+            "A database is a structured set of data held in a computer, usually a server.": "資料庫是儲存在電腦（通常是伺服器）中的結構化資料集合。",
+            "Front end is the programming and layout that people see and interact with.": "前端是使用者所看到並與之互動的程式與版面配置。",
+            "JavaScript (JS) is a lightweight interpreted programming language with first-class functions.": "JavaScript（JS）是一種具有一級函式的輕量級直譯式程式語言。",
+            "Node.js is a tool for executing JavaScript in a variety of environments.": "Node.js 是一款可在各種環境中執行 JavaScript 的工具。",
+            "npm is a package manager for JavaScript included with Node.js.": "npm 是 JavaScript 的套件管理器，隨 Node.js 一同提供。",
+            "Project management is about building scope and executing on the project's goals.": "專案管理著重於確立範圍並落實專案目標。",
+            "Python is a dynamically typed programming language.": "Python 是一種動態型別程式語言。",
+            "React is an open source JavaScript library used for designing user interfaces.": "React 是用於設計使用者介面的開源 JavaScript 函式庫。",
+            "React Native is a JavaScript mobile framework developed by Facebook.": "React Native 是由 Facebook 開發的 JavaScript 行動應用框架。",
+            "Scala is an object-oriented programming language.": "Scala 是一種物件導向程式語言。",
+            "TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.": "TypeScript 是 JavaScript 的型別化超集，可編譯為純 JavaScript。",
+
+            // github.com/topics/awesome
+            "An awesome list is a list of awesome things curated by the community. There are awesome lists about everything from CLI applications to fantasy books. The main repository serves as a curated list of awesome lists.": "Awesome List 是由社群整理的優質內容清單。其內容涵蓋各種主題，從 CLI 應用程式到奇幻書籍。主要倉庫則是一份精心整理的 Awesome List 清單。",
+
+            // github.com/topics/chrome
+            "Chrome is the most popular web browser worldwide as of mid-2017, made by the tech company Google. It’s available for most operating systems including Windows, macOS, and Linux and on multiple platforms such as the desktop, phones, and tablets.": "Chrome 是由科技公司 Google 開發，截至 2017 年中為全球最受歡迎的網頁瀏覽器。它支援多數作業系統，包括 Windows、macOS 和 Linux，並可在桌面電腦、手機和平板電腦等多種平台上使用。",
+            "Chrome boasts a minimalistic UI and was the first browser to feature “tabs” above the address bar, a convention that was later implemented in other browsers. Other popular features include things such as Incognito mode, tab sandboxing, and a Web Store with extensions and themes.": "Chrome 採用極簡介面，也是第一款在網址列上方設置「分頁」的瀏覽器，這項設計後來也被其他瀏覽器採用。其他熱門功能包括無痕模式、分頁沙箱，以及提供擴充功能與主題的 Chrome 線上應用程式商店。",
+            "Although Chrome is not open source, the majority of the source code is available under the Chromium moniker.": "儘管 Chrome 並非開源軟體，但其大部分原始碼以 Chromium 名義公開。",
+
+            // github.com/topics/code-quality
+            "Automate your code review with style, quality, security, and test‑coverage checks when you need them most. Code quality is intended to keep complexity down and runtime up.": "在最需要時，以程式碼風格、品質、安全性及測試覆蓋率檢查，自動執行程式碼審查。程式碼品質旨在降低複雜度並維持穩定運行。",
+            "Automate your code review with style, quality, security, and test-coverage checks when you need them most. Code quality is intended to keep complexity down and runtime up.": "在最需要時，以程式碼風格、品質、安全性及測試覆蓋率檢查，自動執行程式碼審查。程式碼品質旨在降低複雜度並維持穩定運行。",
+
+            // github.com/topics/compiler
+            "Compilers are software that translate higher-level (more human readable) programming languages to lower-level languages (e.g. machine code). The processor executes machine code, which indicates when binary high and low signals are required in the arithmetic logic unit of the processor. Examples of compiled languages include BASIC, Fortran, C++, C, and Java.": "編譯器是將高階（較易於人類閱讀的）程式語言轉換為低階語言（例如機器碼）的軟體。處理器執行機器碼，機器碼會指示處理器的算術邏輯單元何時需要二進位高低訊號。編譯型語言包括 BASIC、Fortran、C++、C 和 Java。",
+
+            // github.com/topics/css
+            "Cascading Style Sheets (CSS) is a language used most often to style and improve upon the appearance of websites. It allows for the separation of presentation and content, and includes the characteristics of layouts, colors and fonts. CSS builds upon HTML to make webpages more interactive and appealing to the user.": "階層式樣式表（CSS）是一種最常用於設定網站樣式及改善網站外觀的語言。它能將呈現方式與內容分離，並涵蓋版面配置、色彩和字型等特性。CSS 建構於 HTML 之上，使網頁對使用者而言更具互動性與吸引力。",
+
+            // github.com/topics/database
+            "A database is a structured set of data held in a computer, most often a server. Databases use a database management system (DBMS) that interacts with users, similar to a lookup table. Modern databases are designed to allow for the creation, querying, updating, and administration of the data it holds. There are different types of databases, including Relational Database Management Systems (RDBMS) that organize data into tables with predefined relationships, and NoSQL databases that provide a more flexible, schema-less approach to data storage.": "資料庫是儲存在電腦（通常是伺服器）中的結構化資料集合。資料庫使用資料庫管理系統（DBMS）與使用者互動，其運作方式類似查閱表。現代資料庫支援建立、查詢、更新及管理其中的資料。資料庫有不同類型，包括使用預先定義關係將資料組織成表格的關聯式資料庫管理系統（RDBMS），以及以更靈活、無結構描述方式儲存資料的 NoSQL 資料庫。",
+
+            // github.com/topics/frontend
+            "Front-end development is the process of producing HTML, CSS, and JavaScript for web application visuals and interactions. Basically it is a language that is executed in client.": "前端開發是為 Web 應用程式的視覺呈現與互動製作 HTML、CSS 和 JavaScript 的過程。簡單來說，它是在客戶端執行的程式。",
+
+            // github.com/topics/javascript
+            "JavaScript (JS) is a lightweight interpreted or JIT-compiled programming language with first-class functions. While it is most well-known as the scripting language for Web pages, many non-browser environments also use it, such as Node.js, Apache CouchDB and Adobe Acrobat. JavaScript is a prototype-based, multi-paradigm, dynamic language, supporting object-oriented, imperative, and declarative (e.g. functional programming) styles.": "JavaScript（JS）是一種具有一級函式的輕量級直譯式或即時編譯（JIT）程式語言。它最廣為人知的用途是作為網頁腳本語言，但 Node.js、Apache CouchDB 和 Adobe Acrobat 等許多非瀏覽器環境也會使用它。JavaScript 是一種以原型為基礎、多範式的動態語言，支援物件導向、指令式及宣告式（例如函數式程式設計）風格。",
+
+            // github.com/topics/nodejs
+            "Node.js is a tool for executing JavaScript in a variety of environments. JavaScript had humble beginnings as a language that lived only in web browsers, but the Node.js project has expanded its reach and helped make it the most popular programming language in the world. Node.js extends the creative potential of people with web development experience, enabling a new generation of developers to create servers, command-line tools, desktop apps, and even robots.": "Node.js 是可在各種環境中執行 JavaScript 的工具。JavaScript 最初只存在於網頁瀏覽器中，但 Node.js 專案拓展了它的使用範圍，並協助它成為全球最受歡迎的程式語言。Node.js 擴展了具備 Web 開發經驗者的創作潛力，讓新一代開發者能夠建立伺服器、命令列工具、桌面應用程式，甚至機器人。",
+
+            // github.com/topics/npm
+            "Npm is a package manager for JavaScript, included with Node.js. As a package manager, npm makes it easy for developers to share and reuse code.": "npm 是 JavaScript 的套件管理器，隨 Node.js 一同提供。作為套件管理器，npm 讓開發者能輕鬆分享與重用程式碼。",
+
+            // github.com/topics/project-management
+            "Project management is the practice of initiating, planning, executing, controlling, and closing the work of a team to achieve specific goals and meet specific success criteria at the specified time.": "Project management 是啟動、規劃、執行、控制及結束團隊工作的實務，目的是在指定時間內達成特定目標並符合明確的成功標準。",
+
+            // github.com/topics/python
+            "Python is a dynamically-typed garbage-collected programming language developed by Guido van Rossum in the late 80s to replace ABC. Much like the programming language Ruby, Python was designed to be easily read by programmers. Because of its large following and many libraries, Python can be implemented and used to do anything from webpages to scientific research.": "Python 是一種動態型別、具垃圾回收機制的程式語言，由 Guido van Rossum 於 1980 年代末開發，用以取代 ABC。與 Ruby 類似，Python 的設計著重於讓程式設計師易於閱讀。由於擁有龐大的使用者群及眾多函式庫，Python 可實作並用於從網頁到科學研究的各種用途。",
+
+            // github.com/topics/react
+            "React (also known as React.js or ReactJS) is a JavaScript library that makes developing interactive user interfaces simple.": "React（亦稱 React.js 或 ReactJS）是一個 JavaScript 函式庫，可簡化互動式使用者介面的開發。",
+
+            // github.com/topics/react-native
+            "React Native is a JavaScript mobile framework developed by Facebook. It allows developers to build Android and iOS mobile apps using JavaScript and reuse code across web and mobile applications.": "React Native 是由 Facebook 開發的 JavaScript 行動應用框架。它讓開發者可使用 JavaScript 建立 Android 和 iOS 行動應用程式，並在 Web 與行動應用程式之間重用程式碼。",
+
+            // github.com/topics/scala
+            "Scala is a general-purpose programming language providing support for functional programming and a strong static type system. Designed to be concise, many of Scala’s design decisions aimed to address criticisms of Java.": "Scala 是一種通用程式語言，支援函數式程式設計並具備強大的靜態型別系統。Scala 的設計力求簡潔，其許多設計決策旨在回應外界對 Java 的批評。",
+
+            // github.com/topics/typescript
+            "TypeScript is an open source programming language developed by Microsoft and first released in 2012. It is designed to add type safety to JavaScript while conforming as closely as possible to the syntax and semantics of the ECMAScript standard.": "TypeScript 是由 Microsoft 開發的開源程式語言，於 2012 年首次發布。它的設計目標是在盡可能貼近 ECMAScript 標準語法與語意的同時，為 JavaScript 增加型別安全性。",
+            "It is a syntactical superset of the JavaScript programming language; all valid JavaScript source code is also valid TypeScript source code, but not vice-versa. TypeScript compiles (or transpiles) to JavaScript, meaning that it can be utilized to target any JavaScript environment. It can be used to develop JavaScript for both client-side and server-side applications.": "它是 JavaScript 程式語言的語法超集；所有有效的 JavaScript 原始碼也都是有效的 TypeScript 原始碼，反之則不成立。TypeScript 會編譯（或轉譯）為 JavaScript，因此可用於任何 JavaScript 環境。它可用來開發客戶端與伺服器端的 JavaScript 應用程式。",
+
         // github.com/topics/<某主題>
             "Created by": "創建者",
             "Released": "發布於",
@@ -22916,6 +22987,9 @@ I18N["zh-TW"]["trending"] = { // 熱門頁面
         "Explore": "探索",
         "Topics": "主題",
         "Trending": "熱門",
+        "Lists": "清單",
+        "Create list": "創建清單",
+        "Add this repository to a list": "將此倉庫新增至清單",
         "Collections": "集合",
         "Events": "活動",
         "GitHub Sponsors": "GitHub 贊助",
@@ -22942,6 +23016,8 @@ I18N["zh-TW"]["trending"] = { // 熱門頁面
             "This setting can be updated in your": "此設置可以更新於您的",
             "profile settings.": "個人資料。",
             "Filter spoken languages": "篩選母語",
+            "Type or choose a spoken language": "輸入或選擇母語",
+            "Close menu": "關閉選單",
             "Clear spoken language": "清除母語",
             "Any": "任何",
             // 彈窗
@@ -22971,6 +23047,7 @@ I18N["zh-TW"]["trending"] = { // 熱門頁面
         [/([\d,]+) stars? today/, "今日 $1 星標"],
         [/([\d,]+) stars? this week/, "本週 $1 星標"],
         [/([\d,]+) stars? this month/, "本月 $1 星標"],
+        [/^Follow (@?[A-Za-z0-9](?:[A-Za-z0-9-]{0,38}))$/, "追蹤 $1"],
     ],
     "title": {
         "static": {
@@ -22981,6 +23058,192 @@ I18N["zh-TW"]["trending"] = { // 熱門頁面
             "Trending developers on GitHub this week": "本週熱門開發者",
             "Trending developers on GitHub this month": "本月熱門開發者",
         },
+    },
+    "spokenLanguages": {
+            "ab": "阿布哈茲文",
+            "aa": "阿法文",
+            "af": "南非荷蘭文",
+            "ak": "阿坎文",
+            "sq": "阿爾巴尼亞文",
+            "am": "阿姆哈拉文",
+            "ar": "阿拉伯文",
+            "an": "阿拉貢文",
+            "hy": "亞美尼亞文",
+            "as": "阿薩姆文",
+            "av": "阿瓦爾文",
+            "ae": "阿維斯塔文",
+            "ay": "艾馬拉文",
+            "az": "亞塞拜然文",
+            "bm": "班巴拉文",
+            "ba": "巴什喀爾文",
+            "eu": "巴斯克文",
+            "be": "白俄羅斯文",
+            "bn": "孟加拉文",
+            "bh": "博傑普爾文",
+            "bi": "比斯拉馬文",
+            "bs": "波士尼亞文",
+            "br": "布列塔尼文",
+            "bg": "保加利亞文",
+            "my": "緬甸文",
+            "ca": "加泰蘭文",
+            "ch": "查莫洛文",
+            "ce": "車臣文",
+            "ny": "尼揚賈文",
+            "zh": "中文",
+            "cv": "楚瓦什文",
+            "kw": "康瓦耳文",
+            "co": "科西嘉文",
+            "cr": "克里文",
+            "hr": "克羅埃西亞文",
+            "cs": "捷克文",
+            "da": "丹麥文",
+            "dv": "迪維西文",
+            "nl": "荷蘭文",
+            "dz": "宗卡文",
+            "en": "英文",
+            "eo": "世界文",
+            "et": "愛沙尼亞文",
+            "ee": "埃維文",
+            "fo": "法羅文",
+            "fj": "斐濟文",
+            "fi": "芬蘭文",
+            "fr": "法文",
+            "ff": "富拉文",
+            "gl": "加利西亞文",
+            "ka": "喬治亞文",
+            "de": "德文",
+            "el": "希臘文",
+            "gn": "瓜拉尼文",
+            "gu": "古吉拉特文",
+            "ht": "海地文",
+            "ha": "豪薩文",
+            "he": "希伯來文",
+            "hz": "赫雷羅文",
+            "hi": "印地文",
+            "ho": "西里莫圖土文",
+            "hu": "匈牙利文",
+            "ia": "國際文",
+            "id": "印尼文",
+            "ie": "國際文（E）",
+            "ga": "愛爾蘭文",
+            "ig": "伊布文",
+            "ik": "依奴皮維克文",
+            "io": "伊多文",
+            "is": "冰島文",
+            "it": "義大利文",
+            "iu": "因紐特文",
+            "ja": "日文",
+            "jv": "爪哇文",
+            "kl": "格陵蘭文",
+            "kn": "坎那達文",
+            "kr": "卡努里文",
+            "ks": "喀什米爾文",
+            "kk": "哈薩克文",
+            "km": "高棉文",
+            "ki": "吉庫尤文",
+            "rw": "盧安達文",
+            "ky": "吉爾吉斯文",
+            "kv": "科米文",
+            "kg": "剛果文",
+            "ko": "韓文",
+            "ku": "庫德文",
+            "kj": "廣亞馬文",
+            "la": "拉丁文",
+            "lb": "盧森堡文",
+            "lg": "干達文",
+            "li": "林堡文",
+            "ln": "林加拉文",
+            "lo": "寮文",
+            "lt": "立陶宛文",
+            "lu": "魯巴加丹加文",
+            "lv": "拉脫維亞文",
+            "gv": "曼島文",
+            "mk": "馬其頓文",
+            "mg": "馬達加斯加文",
+            "ms": "馬來文",
+            "ml": "馬來亞拉姆文",
+            "mt": "馬爾他文",
+            "mi": "毛利文",
+            "mr": "馬拉地文",
+            "mh": "馬紹爾文",
+            "mn": "蒙古文",
+            "na": "諾魯文",
+            "nv": "納瓦荷文",
+            "nd": "北地畢列文",
+            "ne": "尼泊爾文",
+            "ng": "恩東加文",
+            "nb": "書面挪威文",
+            "nn": "新挪威文",
+            "no": "挪威文",
+            "ii": "四川彝文",
+            "nr": "南地畢列文",
+            "oc": "奧克西坦文",
+            "oj": "奧杰布瓦文",
+            "cu": "宗教斯拉夫文",
+            "om": "奧羅莫文",
+            "or": "歐迪亞文",
+            "os": "奧塞提文",
+            "pa": "旁遮普文",
+            "pi": "巴利文",
+            "fa": "波斯文",
+            "pl": "波蘭文",
+            "ps": "普什圖文",
+            "pt": "葡萄牙文",
+            "qu": "蓋楚瓦文",
+            "rm": "羅曼斯文",
+            "rn": "隆迪文",
+            "ro": "羅馬尼亞文",
+            "ru": "俄文",
+            "sa": "梵文",
+            "sc": "撒丁文",
+            "sd": "信德文",
+            "se": "北薩米文",
+            "sm": "薩摩亞文",
+            "sg": "桑戈文",
+            "sr": "塞爾維亞文",
+            "gd": "蘇格蘭蓋爾文",
+            "sn": "紹納文",
+            "si": "僧伽羅文",
+            "sk": "斯洛伐克文",
+            "sl": "斯洛維尼亞文",
+            "so": "索馬利文",
+            "st": "塞索托文",
+            "es": "西班牙文",
+            "su": "巽他文",
+            "sw": "史瓦希里文",
+            "ss": "斯瓦特文",
+            "sv": "瑞典文",
+            "ta": "坦米爾文",
+            "te": "泰盧固文",
+            "tg": "塔吉克文",
+            "th": "泰文",
+            "ti": "提格利尼亞文",
+            "bo": "藏文",
+            "tk": "土庫曼文",
+            "tl": "菲律賓文",
+            "tn": "塞茲瓦納文",
+            "to": "東加文",
+            "tr": "土耳其文",
+            "ts": "特松加文",
+            "tt": "韃靼文",
+            "tw": "阿坎文",
+            "ty": "大溪地文",
+            "ug": "維吾爾文",
+            "uk": "烏克蘭文",
+            "ur": "烏都文",
+            "uz": "烏茲別克文",
+            "ve": "溫達文",
+            "vi": "越南文",
+            "vo": "沃拉普克文",
+            "wa": "瓦隆文",
+            "cy": "威爾斯文",
+            "wo": "沃洛夫文",
+            "fy": "西弗里西亞文",
+            "xh": "科薩文",
+            "yi": "意第緒文",
+            "yo": "約魯巴文",
+            "za": "壯文",
+            "zu": "祖魯文",
     },
 };
 
@@ -29814,6 +30077,8 @@ I18N["zh-TW"]["repository/agents"] = {
         codespacesContextSearchSeen: false,
         exploreContextSearchSeen: false,
         explorePagePending: false,
+        topicsPagePending: false,
+        settingsTrendingLanguagePending: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
         dynamicMenus: {},        // 動態菜單ID記錄
         initDone: false,
@@ -29866,6 +30131,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupDiscussionsContextProtection();
         setupCodespacesContextProtection();
         setupExplorePageInteractions();
+        setupTopicsPageInteractions();
         setupDashboardShortcutMenuTranslations();
         setupCopilotShellInteractions();
         setupUrlChangeListener();
@@ -29909,9 +30175,14 @@ I18N["zh-TW"]["repository/agents"] = {
                 scheduleInitialProjectsContextTranslation();
                 scheduleInitialDiscussionsContextTranslation();
                 scheduleInitialCodespacesContextTranslation();
-                scheduleInitialExploreContextTranslation();
-                scheduleExplorePageTrans();
+                scheduleTopicsPageTrans();
+                scheduleSettingsTrendingSpokenLanguageTrans();
             }
+
+            // 主題詳情頁的專用補翻不能依賴通用 pageType 辨識成功。
+            // GitHub 調整路由或 hydration 時，仍以精確 pathname 啟動頂欄、介紹與清單表面翻譯。
+            scheduleInitialExploreContextTranslation();
+            scheduleExplorePageTrans();
         }
 
         if (document.readyState === 'interactive' || document.readyState === 'complete') {
@@ -30010,6 +30281,8 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleInitialCodespacesContextTranslation();
         scheduleInitialExploreContextTranslation();
         scheduleExplorePageTrans();
+        scheduleTopicsPageTrans();
+        scheduleSettingsTrendingSpokenLanguageTrans();
 
         // 如果描述翻譯功能啟用，翻譯頁面描述
         if (State.featureSet.enable_transDesc &&
@@ -30260,6 +30533,8 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleSparkCheckoutPageTrans();
         scheduleCopilotLandingPageTrans();
         scheduleExplorePageTrans();
+        scheduleTopicsPageTrans();
+        scheduleSettingsTrendingSpokenLanguageTrans();
     }
 
     /* =========================== DOM 遍歷與節點處理 =========================== */
@@ -32057,14 +32332,40 @@ I18N["zh-TW"]["repository/agents"] = {
         });
     }
 
+    function isAwesomeTopicPage() {
+        return /^\/topics\/awesome\/?$/.test(window.location.pathname);
+    }
+
+    function isChromeTopicPage() {
+        return /^\/topics\/chrome\/?$/.test(window.location.pathname);
+    }
+
+    function isCodeQualityTopicPage() {
+        return /^\/topics\/code-quality\/?$/.test(window.location.pathname);
+    }
+
+    function isTranslatedTopicDetailPage() {
+        return /^\/topics\/(?:awesome|chrome|code-quality|compiler|css|database|frontend|javascript|nodejs|npm|project-management|python|react|react-native|scala|typescript)\/?$/.test(window.location.pathname);
+    }
+
     function isExplorePage() {
         return (
             State.pageConfig?.currentPageType === 'explore' ||
-            /^\/explore(?:\/|$)/.test(window.location.pathname)
+            /^\/explore(?:\/|$)/.test(window.location.pathname) ||
+            /^\/trending(?:\/|$)/.test(window.location.pathname) ||
+            isTranslatedTopicDetailPage()
         );
     }
 
+    function getExploreContextBreadcrumbTranslation() {
+        if (/^\/trending(?:\/|$)/.test(window.location.pathname)) {
+            return { source: 'Trending', target: '熱門' };
+        }
+        return { source: 'Explore', target: '探索' };
+    }
+
     function getExploreContextBreadcrumbElements() {
+        const { source, target } = getExploreContextBreadcrumbTranslation();
         const selector = [
             'span[class*="contextCrumbLast"]',
             'span[class*="ContextCrumbLast"]'
@@ -32075,7 +32376,7 @@ I18N["zh-TW"]["repository/agents"] = {
             if (isDebugElementInSearchSurface(element)) return false;
 
             const text = normalizeHeaderTooltipText(element.textContent);
-            if (text !== 'Explore' && text !== '探索') return false;
+            if (text !== source && text !== target) return false;
 
             const rect = element.getBoundingClientRect?.();
             if (!rect || rect.width <= 0 || rect.height <= 0) return false;
@@ -32085,20 +32386,22 @@ I18N["zh-TW"]["repository/agents"] = {
 
     function transExploreContextBreadcrumb() {
         if (!State.exploreContextSearchSeen || isDashboardSearchActive()) return;
+        const { source, target } = getExploreContextBreadcrumbTranslation();
         getExploreContextBreadcrumbElements().forEach(element => {
             Array.from(element.childNodes || []).forEach(node => {
-                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === 'Explore') {
-                    node.data = node.data.replace(node.data.trim(), '探索');
+                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === source) {
+                    node.data = node.data.replace(node.data.trim(), target);
                 }
             });
         });
     }
 
     function restoreExploreContextBreadcrumb() {
+        const { source, target } = getExploreContextBreadcrumbTranslation();
         getExploreContextBreadcrumbElements().forEach(element => {
             Array.from(element.childNodes || []).forEach(node => {
-                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === '探索') {
-                    node.data = node.data.replace(node.data.trim(), 'Explore');
+                if (node.nodeType === Node.TEXT_NODE && normalizeHeaderTooltipText(node.data) === target) {
+                    node.data = node.data.replace(node.data.trim(), source);
                 }
             });
         });
@@ -32175,13 +32478,21 @@ I18N["zh-TW"]["repository/agents"] = {
     function transExplorePageDynamicText() {
         if (!isExplorePage()) return false;
 
-        const dict = {
+        const interfaceDict = {
             "Lists": "清單",
             "Create list": "創建清單",
             "Add this repository to a list": "將此倉庫新增至清單",
+            "Star": "星標",
+            "Unstar": "取消星標",
             "GitHub Checkout": "GitHub 精選",
             "Open Source Fridays": "開源星期五"
         };
+        const dict = isTranslatedTopicDetailPage()
+            ? {
+                ...(I18N?.["zh-TW"]?.topics?.static || {}),
+                ...interfaceDict
+            }
+            : interfaceDict;
         const attributeNames = [
             'aria-label',
             'title',
@@ -32216,7 +32527,330 @@ I18N["zh-TW"]["repository/agents"] = {
         };
 
         visit(document.body);
+        translated = transTrendingSpokenLanguageMenu() || translated;
+        translated = transTrendingDeveloperFollowTooltips() || translated;
+        translated = transAwesomeTopicDescription() || translated;
+        translated = transSplitTopicDetailDescription() || translated;
+        translated = transTopicDetailFallbackRegexp() || translated;
         return translated;
+    }
+
+    function transTrendingSpokenLanguageMenu() {
+        if (!/^\/trending(?:\/|$)/.test(window.location.pathname)) return false;
+
+        const root = document.querySelector('#select-menu-spoken-language');
+        const dict = I18N?.["zh-TW"]?.trending?.spokenLanguages || {};
+        if (!root || !Object.keys(dict).length) return false;
+
+        let translated = false;
+        let selectedCode = new URLSearchParams(window.location.search).get('spoken_language_code');
+
+        root.querySelectorAll('a[href*="spoken_language_code="]').forEach(anchor => {
+            let code = '';
+            try {
+                code = new URL(anchor.getAttribute('href'), window.location.origin).searchParams.get('spoken_language_code') || '';
+            } catch (e) {
+                return;
+            }
+
+            const result = dict[code];
+            const label = anchor.querySelector('[data-menu-button-text], .select-menu-item-text');
+            if (!result || !label) return;
+
+            if (normalizeHeaderTooltipText(label.textContent) !== result) {
+                label.textContent = result;
+                translated = true;
+            }
+            if (anchor.getAttribute('aria-checked') === 'true') {
+                selectedCode = code;
+            }
+        });
+
+        const selectedResult = dict[selectedCode];
+        const summaryLabel = root.querySelector('summary [data-menu-button]');
+        if (selectedResult && summaryLabel && normalizeHeaderTooltipText(summaryLabel.textContent) !== selectedResult) {
+            summaryLabel.textContent = selectedResult;
+            translated = true;
+        }
+
+        const input = root.querySelector('#text-filter-field-spoken-language');
+        if (input?.getAttribute('placeholder') === 'Filter spoken languages') {
+            input.setAttribute('placeholder', '篩選母語');
+            translated = true;
+        }
+        if (input?.getAttribute('aria-label') === 'Type or choose a spoken language') {
+            input.setAttribute('aria-label', '輸入或選擇母語');
+            translated = true;
+        }
+
+        root.querySelectorAll('[aria-label="Close menu"]').forEach(element => {
+            element.setAttribute('aria-label', '關閉選單');
+            translated = true;
+        });
+
+        return translated;
+    }
+
+    function transTrendingDeveloperFollowLabel(source) {
+        const match = normalizeHeaderTooltipText(source).match(/^Follow (@?[A-Za-z0-9](?:[A-Za-z0-9-]{0,38}))$/);
+        return match ? `追蹤 ${match[1]}` : false;
+    }
+
+    function transTrendingDeveloperFollowTooltips() {
+        if (!/^\/trending\/developers\/?$/.test(window.location.pathname)) return false;
+
+        const attributeNames = ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text'];
+        const tooltipSelector = [
+            'tool-tip',
+            '[role="tooltip"]',
+            '[data-testid*="tooltip"]',
+            '[class*="Tooltip"]',
+            '[class*="tooltip"]'
+        ].join(', ');
+        let translated = false;
+
+        document.querySelectorAll('[aria-label^="Follow "], [title^="Follow "], [data-tooltip^="Follow "], [data-tooltip-text^="Follow "]').forEach(element => {
+            attributeNames.forEach(attributeName => {
+                const source = element.getAttribute?.(attributeName);
+                const result = transTrendingDeveloperFollowLabel(source);
+                if (!result || result === source) return;
+                element.setAttribute(attributeName, result);
+                translated = true;
+            });
+        });
+
+        document.querySelectorAll(tooltipSelector).forEach(root => {
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                const result = transTrendingDeveloperFollowLabel(node.data);
+                if (!result) continue;
+                node.data = node.data.replace(node.data.trim(), result);
+                translated = true;
+            }
+        });
+
+        return translated;
+    }
+
+    function isSettingsProfilePage() {
+        return /^\/settings\/profile\/?$/.test(window.location.pathname);
+    }
+
+    function scheduleSettingsTrendingSpokenLanguageTrans() {
+        if (!isSettingsProfilePage() || State.settingsTrendingLanguagePending) return;
+        State.settingsTrendingLanguagePending = true;
+
+        [0, 200, 800, 1600].forEach(delay => {
+            setTimeout(() => {
+                safe(transSettingsTrendingSpokenLanguageSelect, '趨勢設置母語選單補翻')();
+                if (delay === 1600) {
+                    State.settingsTrendingLanguagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function transSettingsTrendingSpokenLanguageSelect() {
+        if (!isSettingsProfilePage()) return false;
+
+        const heading = document.querySelector('#trending-settings-heading');
+        const dict = I18N?.["zh-TW"]?.trending?.spokenLanguages || {};
+        if (!heading || !Object.keys(dict).length) return false;
+
+        const select = Array.from(document.querySelectorAll('select')).find(element => (
+            element.querySelector('option[value="ab"]') &&
+            element.querySelector('option[value="zu"]')
+        ));
+        if (!select) return false;
+
+        let translated = false;
+        Array.from(select.options || []).forEach(option => {
+            const result = dict[option.value];
+            if (!result || normalizeHeaderTooltipText(option.textContent) === result) return;
+            option.textContent = result;
+            translated = true;
+        });
+
+        return translated;
+    }
+
+    function transTopicDetailFallbackRegexp() {
+        if (!isTranslatedTopicDetailPage()) return false;
+
+        let translated = false;
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+            const source = normalizeHeaderTooltipText(node.data);
+            const match = source.match(/^Here are ([\d,]+) public repositories? matching this topic(?:\.{3}|…)?$/);
+            if (!match) continue;
+
+            node.data = `有 ${match[1]} 個公共倉庫與此主題相匹配`;
+            translated = true;
+        }
+
+        return translated;
+    }
+
+    function transAwesomeTopicDescription() {
+        if (!isAwesomeTopicPage()) return false;
+
+        const sources = new Set([
+            'An awesome list is a list of awesome things curated by the community. There are awesome lists about everything from CLI applications to fantasy books. The main repository serves as a curated list of awesome lists.',
+            'An awesome list is a list of awesome things curated by the community. There are awesome lists about everything from CLI applications 到 fantasy books. The main repository serves as a curated list of awesome lists.'
+        ]);
+        const replacements = {
+            'An awesome list is a list of awesome things curated by the community. There are awesome lists about everything from': 'Awesome List 是由社群整理的優質內容清單。其內容涵蓋各種主題，從 ',
+            'CLI applications': 'CLI 應用程式',
+            'to': '到',
+            '到': '到',
+            'fantasy books': '奇幻書籍',
+            '. The': '。',
+            'main repository': '主要倉庫',
+            'serves as a curated list of awesome lists.': '則是一份精心整理的 Awesome List 清單。'
+        };
+        let translated = false;
+
+        document.querySelectorAll('main .markdown-body p, main p').forEach(paragraph => {
+            if (!sources.has(normalizeHeaderTooltipText(paragraph.textContent))) return;
+
+            Array.from(paragraph.childNodes || []).forEach(node => {
+                const normalized = normalizeHeaderTooltipText(node.textContent || node.data);
+                const result = replacements[normalized];
+                if (!result) return;
+
+                if (node.nodeType === Node.TEXT_NODE) {
+                    node.data = result;
+                } else {
+                    node.textContent = result;
+                }
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function transSplitTopicDetailDescription() {
+        const rules = {
+            '/topics/nodejs': {
+                source: 'Node.js is a tool for executing JavaScript in a variety of environments. JavaScript had humble beginnings as a language that lived only in web browsers, but the Node.js project has expanded its reach and helped make it the most popular programming language in the world. Node.js extends the creative potential of people with web development experience, enabling a new generation of developers to create servers, command-line tools, desktop apps, and even robots.',
+                tail: 'is a tool for executing JavaScript in a variety of environments. JavaScript had humble beginnings as a language that lived only in web browsers, but the Node.js project has expanded its reach and helped make it the most popular programming language in the world. Node.js extends the creative potential of people with web development experience, enabling a new generation of developers to create servers, command-line tools, desktop apps, and even robots.',
+                result: ' 是可在各種環境中執行 JavaScript 的工具。JavaScript 最初只存在於網頁瀏覽器中，但 Node.js 專案拓展了它的使用範圍，並協助它成為全球最受歡迎的程式語言。Node.js 擴展了具備 Web 開發經驗者的創作潛力，讓新一代開發者能夠建立伺服器、命令列工具、桌面應用程式，甚至機器人。'
+            },
+            '/topics/project-management': {
+                source: 'Project management is the practice of initiating, planning, executing, controlling, and closing the work of a team to achieve specific goals and meet specific success criteria at the specified time.',
+                tail: 'is the practice of initiating, planning, executing, controlling, and closing the work of a team to achieve specific goals and meet specific success criteria at the specified time.',
+                result: ' 是啟動、規劃、執行、控制及結束團隊工作的實務，目的是在指定時間內達成特定目標並符合明確的成功標準。'
+            }
+        };
+        const pathname = window.location.pathname.replace(/\/$/, '');
+        const rule = rules[pathname];
+        if (!rule) return false;
+
+        let translated = false;
+        document.querySelectorAll('main .markdown-body p').forEach(paragraph => {
+            if (normalizeHeaderTooltipText(paragraph.textContent) !== rule.source) return;
+
+            Array.from(paragraph.childNodes || []).forEach(node => {
+                if (node.nodeType !== Node.TEXT_NODE) return;
+                if (normalizeHeaderTooltipText(node.data) !== rule.tail) return;
+                node.data = rule.result;
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function isTopicsIndexPage() {
+        return (
+            State.pageConfig?.currentPageType === 'topics' &&
+            /^\/topics\/?$/.test(window.location.pathname)
+        );
+    }
+
+    function setupTopicsPageInteractions() {
+        const schedule = () => {
+            if (!isTopicsIndexPage()) return;
+            scheduleTopicsPageTrans();
+        };
+
+        document.addEventListener('pointerover', schedule, true);
+        document.addEventListener('mouseover', schedule, true);
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('focusin', schedule, true);
+        document.addEventListener('keyup', schedule, true);
+    }
+
+    function scheduleTopicsPageTrans() {
+        if (!isTopicsIndexPage() || State.topicsPagePending) return;
+        State.topicsPagePending = true;
+
+        [0, 5, 25, 75, 200, 500, 1000, 1600, 2400].forEach(delay => {
+            setTimeout(() => {
+                safe(transTopicsPageDynamicText, '主題頁星標提示補翻')();
+                if (delay === 2400) {
+                    State.topicsPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function transTopicsPageDynamicText() {
+        if (!isTopicsIndexPage()) return false;
+
+        const attributeNames = [
+            'aria-label',
+            'title',
+            'data-tooltip',
+            'data-tooltip-text'
+        ];
+        let translated = false;
+
+        document.querySelectorAll('main [aria-label], main [title], main [data-tooltip], main [data-tooltip-text]').forEach(element => {
+            attributeNames.forEach(attributeName => {
+                const source = normalizeHeaderTooltipText(element.getAttribute?.(attributeName));
+                const result = transTopicsStarLabel(source);
+                if (!result || result === source) return;
+                element.setAttribute(attributeName, result);
+                translated = true;
+            });
+        });
+
+        const tooltipSelector = [
+            'tool-tip',
+            '[role="tooltip"]',
+            '[data-testid*="tooltip"]',
+            '[class*="Tooltip"]',
+            '[class*="tooltip"]'
+        ].join(', ');
+
+        document.querySelectorAll(tooltipSelector).forEach(root => {
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                const source = normalizeHeaderTooltipText(node.data);
+                const result = transTopicsStarLabel(source);
+                if (!result || result === source) continue;
+                node.data = node.data.replace(node.data.trim(), result);
+                translated = true;
+            }
+        });
+
+        return translated;
+    }
+
+    function transTopicsStarLabel(source) {
+        if (!source) return false;
+        const match = source.match(/^(Star|Unstar) (.+)$/);
+        if (!match) return false;
+
+        const [, action, topicName] = match;
+        return action === 'Star'
+            ? `星標 ${topicName}`
+            : `取消星標 ${topicName}`;
     }
 
     function scheduleDiscussionsPageTrans() {
