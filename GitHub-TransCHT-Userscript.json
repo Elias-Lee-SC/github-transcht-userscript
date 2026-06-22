@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.12.10
+// @version      local.12.17
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -23261,6 +23261,12 @@ I18N["zh-TW"]["collections"] = { // 集合頁面
         "Curated lists and insight into burgeoning industries, topics, and communities.": "精心策劃的列表和對新興行業、主題和社區的見解。",
         "Create a collection": "創建一個集合",
         "Suggest edits": "建議修改",
+        "GitHub Copilot SDK Reddit Contest Winners": "GitHub Copilot SDK Reddit 競賽優勝者",
+        "A collection of projects from the winners of the GitHub Copilot SDK weekend contest held the weekend of January 25, 2026.": "收錄於 2026 年 1 月 25 日當週舉行的 GitHub Copilot SDK Reddit 週末競賽之優勝專案。",
+        "Pixel Art Tools": "像素藝術工具",
+        "Creating pixel art for fun or animated sprites for a game? The digital artist in you will love these apps and tools!": "想創作趣味像素藝術，或為遊戲製作動畫精靈圖？身為數位藝術家的你一定會喜歡這些應用程式與工具！",
+        "Made in Brazil": "巴西製造",
+        "Open source projects built in or receiving significant contributions from Brazil :brazil:": "在巴西建立，或獲得巴西大量貢獻的開源專案。🇧🇷",
     },
     "regexp": [ // 正則翻譯
     ],
@@ -23416,6 +23422,10 @@ I18N["zh-TW"]["sponsors"] = { // 贊助介面
 
             "Explore GitHub Sponsors": "探索 GitHub 贊助者",
                 "Fund the work of developers and projects you depend on.": "為您所依賴的開發者和專案提供資金。",
+                "Explore navigation": "探索導覽",
+                "Sponsored developers and organizations": "受贊助的開發者與組織",
+                "Refresh Sponsored developers and organizations": "重新整理受贊助的開發者與組織",
+                "Refresh": "重新整理",
 
             // 左側欄
                 "Explore as": "使用以下身份進行探索",
@@ -23498,6 +23508,7 @@ I18N["zh-TW"]["sponsors"] = { // 贊助介面
     },
     "regexp": [ // 正則匹配
         [/You are previewing ([^ ]+)’s GitHub Sponsors profile./, "您正在預覽 $1 組織的 GitHub 贊助者個人資料。"], // sponsors/<org-name>?preview=true
+        [/(\d+) sponsored developers and organizations loaded\./, "已載入 $1 個受贊助的開發者與組織。"],
         [/Edit ([^ ]+)’s profile./, "編輯 $1 組織的個人資料。"], // sponsors/<org-name>?preview=true
         [/([^ ]+) does not directly depend on any repositories whose maintainers can be sponsored./, "$1 不直接依賴於任何可以贊助其維護人員的倉庫。"],
         [/(\d+) repositor(y|ies) they own or maintain/, "他們擁有或維護 $1 個倉庫"],
@@ -30077,6 +30088,7 @@ I18N["zh-TW"]["repository/agents"] = {
         codespacesContextSearchSeen: false,
         exploreContextSearchSeen: false,
         explorePagePending: false,
+        sponsorableUserSearchPending: false,
         topicsPagePending: false,
         settingsTrendingLanguagePending: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
@@ -30131,6 +30143,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupDiscussionsContextProtection();
         setupCodespacesContextProtection();
         setupExplorePageInteractions();
+        setupSponsorableUserSearchInteractions();
         setupTopicsPageInteractions();
         setupDashboardShortcutMenuTranslations();
         setupCopilotShellInteractions();
@@ -30183,6 +30196,7 @@ I18N["zh-TW"]["repository/agents"] = {
             // GitHub 調整路由或 hydration 時，仍以精確 pathname 啟動頂欄、介紹與清單表面翻譯。
             scheduleInitialExploreContextTranslation();
             scheduleExplorePageTrans();
+            scheduleSponsorableUserSearchPageTrans();
         }
 
         if (document.readyState === 'interactive' || document.readyState === 'complete') {
@@ -30281,6 +30295,7 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleInitialCodespacesContextTranslation();
         scheduleInitialExploreContextTranslation();
         scheduleExplorePageTrans();
+        scheduleSponsorableUserSearchPageTrans();
         scheduleTopicsPageTrans();
         scheduleSettingsTrendingSpokenLanguageTrans();
 
@@ -30533,6 +30548,7 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleSparkCheckoutPageTrans();
         scheduleCopilotLandingPageTrans();
         scheduleExplorePageTrans();
+        scheduleSponsorableUserSearchPageTrans();
         scheduleTopicsPageTrans();
         scheduleSettingsTrendingSpokenLanguageTrans();
     }
@@ -32352,6 +32368,9 @@ I18N["zh-TW"]["repository/agents"] = {
         return (
             State.pageConfig?.currentPageType === 'explore' ||
             /^\/explore(?:\/|$)/.test(window.location.pathname) ||
+            /^\/topics\/?$/.test(window.location.pathname) ||
+            /^\/collections\/?$/.test(window.location.pathname) ||
+            /^\/sponsors\/explore\/?$/.test(window.location.pathname) ||
             /^\/trending(?:\/|$)/.test(window.location.pathname) ||
             isTranslatedTopicDetailPage()
         );
@@ -32487,11 +32506,55 @@ I18N["zh-TW"]["repository/agents"] = {
             "GitHub Checkout": "GitHub 精選",
             "Open Source Fridays": "開源星期五"
         };
+        const sponsorsExploreInterfaceDict = {
+            "Explore as": "使用以下身份進行探索",
+            "Ecosystems": "生態系統",
+            "All ecosystems": "所有生態系統",
+            "Filters": "過濾器",
+            "Direct dependencies only": "僅直接依賴項",
+            "Order by": "排序依據",
+            "Most used": "較常使用",
+            "Least used": "較少使用",
+            "Most sponsors": "較多贊助者",
+            "Fewest sponsors": "較少贊助者",
+            "Newest Sponsors profile": "最新贊助者資料",
+            "Oldest Sponsors profile": "最早贊助者資料",
+            "Apply": "應用",
+            "None of your dependencies can be sponsored": "您的任何依賴項都尚未開放贊助",
+            "You don't directly depend on any repositories whose maintainers can be sponsored.": "您不直接依賴任何可贊助維護者的倉庫。",
+            "You depend on": "您依賴於",
+            "developers who maintain your dependencies": "位開發人員維護您的依賴項",
+            "Download your": "下載",
+            "results as CSV": "結果（CSV 格式）",
+            "Explore people and projects": "探索人員和專案",
+            "Bulk Sponsor": "批量贊助",
+            "Sponsor multiple maintainers in one easy transaction.": "在一筆簡單的交易中贊助多位維護人員。",
+            "Get started": "開始",
+            "Invest in open source software and we'll track your progress here!": "投資開源軟體，我們將在這裡追蹤您的進度！",
+            "Don't see what you're looking for? Try": "沒有看到您在找的內容？嘗試",
+            "searching for people you can sponsor": "尋找可以接受您贊助的人",
+            "and filtering by language!": "並依語言篩選！",
+            "Clear filter": "清除篩選器",
+            "Sponsor": "贊助"
+        };
         const dict = isTranslatedTopicDetailPage()
             ? {
                 ...(I18N?.["zh-TW"]?.topics?.static || {}),
                 ...interfaceDict
             }
+            : /^\/collections\/?$/.test(window.location.pathname)
+                ? {
+                    ...interfaceDict,
+                    "Load more...": "載入更多…",
+                    "Load more…": "載入更多…",
+                    "Loading more...": "正在載入更多…",
+                    "Loading more…": "正在載入更多…"
+                }
+            : /^\/sponsors\/explore\/?$/.test(window.location.pathname)
+                ? {
+                    ...interfaceDict,
+                    ...sponsorsExploreInterfaceDict
+                }
             : interfaceDict;
         const attributeNames = [
             'aria-label',
@@ -32532,6 +32595,161 @@ I18N["zh-TW"]["repository/agents"] = {
         translated = transAwesomeTopicDescription() || translated;
         translated = transSplitTopicDetailDescription() || translated;
         translated = transTopicDetailFallbackRegexp() || translated;
+        return translated;
+    }
+
+    function isSponsorableUserSearchPage() {
+        if (!/^\/search\/?$/.test(window.location.pathname)) return false;
+
+        const params = new URLSearchParams(window.location.search);
+        const type = (params.get('type') || '').toLowerCase();
+        const query = params.get('q') || '';
+        return type === 'users' && /(?:^|\s)is:sponsorable(?:\s|$)/i.test(query);
+    }
+
+    function setupSponsorableUserSearchInteractions() {
+        const schedule = () => {
+            if (isSponsorableUserSearchPage()) {
+                scheduleSponsorableUserSearchPageTrans();
+            }
+        };
+
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('focusin', schedule, true);
+        document.addEventListener('keyup', schedule, true);
+    }
+
+    function scheduleSponsorableUserSearchPageTrans() {
+        if (!isSponsorableUserSearchPage() || State.sponsorableUserSearchPending) return;
+        State.sponsorableUserSearchPending = true;
+
+        [0, 25, 75, 200, 500, 1000, 1600, 2400].forEach(delay => {
+            setTimeout(() => {
+                safe(transSponsorableUserSearchPage, '可贊助使用者搜尋頁補翻')();
+                if (delay === 2400) {
+                    State.sponsorableUserSearchPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function transSponsorableUserSearchPage() {
+        if (!isSponsorableUserSearchPage() || !document.body) return false;
+
+        const fixedDict = {
+            "Filter by": "篩選",
+            "Code": "程式碼",
+            "Repositories": "倉庫",
+            "Issues": "議題",
+            "Pull requests": "合併請求",
+            "Discussions": "討論",
+            "Users": "使用者",
+            "More": "更多",
+            "Commits": "提交",
+            "Packages": "套件",
+            "Wikis": "維基",
+            "Topics": "主題",
+            "Marketplace": "市場",
+            "Languages": "語言",
+            "More languages...": "更多語言…",
+            "Advanced": "進階",
+            "Organization": "組織",
+            "Full name": "全名",
+            "Number of repositories": "倉庫數量",
+            "Number of followers": "追蹤者數量",
+            "Location": "地點",
+            "Language": "語言",
+            "Creation date": "建立日期",
+            "Sponsorable": "可接受贊助",
+            "Advanced search": "進階搜尋",
+            "Best match": "最佳匹配",
+            "Sort by:": "排序方式：",
+            "Sort by": "排序方式",
+            "Sort by: Best match": "排序方式：最佳匹配",
+            "Most followers": "最多追蹤者",
+            "Fewest followers": "最少追蹤者",
+            "Most recently joined": "最近加入",
+            "Least recently joined": "最早加入",
+            "Most repositories": "最多倉庫",
+            "Fewest repositories": "最少倉庫",
+            "Open column options": "開啟欄位選項",
+            "Save": "儲存",
+            "View search docs": "查看搜尋文件",
+            "Give feedback": "提供回饋",
+            "Follow": "追蹤",
+            "Sponsor": "贊助",
+            "Previous": "上一頁",
+            "Next": "下一頁",
+            "Sponsor open source projects you depend on": "贊助您所依賴的開源專案",
+            "Contributors are working behind the scenes to make open source better for everyone—give them the help and recognition they deserve.": "貢獻者正在幕後努力，讓開源環境對所有人都更加完善——請給予他們應得的協助與肯定。",
+            "Explore sponsorable projects": "探索可接受贊助的專案",
+            "ProTip!": "專業提示！",
+            "Press the": "按下",
+            "key to activate the search input again and adjust your query.": "鍵即可再次啟用搜尋輸入框並調整查詢。"
+        };
+        const locationDict = {
+            "Singapore": "新加坡",
+            "Massachusetts": "麻薩諸塞州",
+            "Pittsburgh, PA, USA": "美國賓夕法尼亞州匹茲堡",
+            "Santa Catarina, Brasil": "巴西聖卡塔琳娜州",
+            "London / San Francisco": "倫敦／舊金山",
+            "Austin, TX": "美國德克薩斯州奧斯汀",
+            "United Kingdom": "英國"
+        };
+        const resultRowSelector = '[class*="Users-module__resultRow"]';
+        let translated = false;
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        let node;
+
+        while ((node = walker.nextNode())) {
+            const parent = getNodeElement(node);
+            if (!parent || isDebugElementInSearchSurface(parent)) continue;
+
+            const source = normalizeHeaderTooltipText(node.data);
+            const resultRow = parent.closest?.(resultRowSelector);
+            if (resultRow) {
+                const isFollowControl = source === 'Follow' && !!parent.closest?.('a, button');
+                const isSponsorControl = source === 'Sponsor' && !!parent.closest?.('[class*="Users-module__sponsorButton"], a[aria-label^="Sponsor @"]');
+                if (!isFollowControl && !isSponsorControl) continue;
+            }
+
+            let result = fixedDict[source];
+            if (!result) {
+                const match = source.match(/^([\d,]+) results$/);
+                if (match) result = `${match[1]} 個結果`;
+            }
+            if (!result || result === source) continue;
+
+            node.data = node.data.replace(node.data.trim(), result);
+            translated = true;
+        }
+
+        document.querySelectorAll(`${resultRowSelector} ul[class*="Footer-module__footer"] li[class*="Footer-module__footerItem"] > span:only-child`).forEach(element => {
+            if (element.parentElement?.querySelector('svg')) return;
+            const source = normalizeHeaderTooltipText(element.textContent);
+            const result = locationDict[source];
+            if (!result || result === source) return;
+            element.textContent = result;
+            translated = true;
+        });
+
+        document.querySelectorAll('[aria-label], [title]').forEach(element => {
+            if (isDebugElementInSearchSurface(element)) return;
+            const resultRow = element.closest?.(resultRowSelector);
+
+            ['aria-label', 'title'].forEach(attributeName => {
+                const source = normalizeHeaderTooltipText(element.getAttribute(attributeName));
+                let result = fixedDict[source];
+                if (resultRow) {
+                    const sponsorMatch = source.match(/^Sponsor (@?[A-Za-z0-9](?:[A-Za-z0-9-]{0,38}))$/);
+                    result = sponsorMatch ? `贊助 ${sponsorMatch[1]}` : false;
+                }
+                if (!result || result === source) return;
+                element.setAttribute(attributeName, result);
+                translated = true;
+            });
+        });
+
         return translated;
     }
 
