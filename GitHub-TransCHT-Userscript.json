@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.12.17
+// @version      local.12.21
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -23686,7 +23686,10 @@ I18N["zh-TW"]["marketplace"] = { // GitHub 市場
 			"Enhance your workflow with extensions": "增強您的工作流程",
 				"Tools from the community and partners to simplify tasks and automate processes": "社區和合作夥伴提供的簡化任務和自動化流程的工具",
 				"Search for apps, actions, and models": "搜尋應用程式、操作和模型",
+				"Search in GitHub Marketplace": "搜尋 GitHub 市場",
+                "Search Marketplace": "搜尋市場",
     				"Listing Type": "顯示類型",
+                    "Listing type": "顯示類型",
     					"Has listing type": "包含顯示類型",
                     "Input modality": "輸入模態",
                         "No input modality": "無輸入模態",
@@ -23737,6 +23740,67 @@ I18N["zh-TW"]["marketplace"] = { // GitHub 市場
             "Featured": "精選",
                 "Models for your every use case": "適用於各種方案的模型",
                 "Try, test, and deploy from a wide range of model types, sizes, and specializations.": "嘗試、測試和部署各種型號、尺寸和專業化產品。",
+                    "gpt-5 is designed for logic-heavy and multi-step tasks.": "gpt-5 專為重邏輯與多步驟任務而設計。",
+                    "DeepSeek-V3-0324 demonstrates notable improvements over its predecessor, DeepSeek-V3, in several key aspects, including enhanced reasoning, improved function calling, and superior code generation capabilities.": "DeepSeek-V3-0324 相較前代 DeepSeek-V3 在多個關鍵方面有明顯提升，包括增強推理、改進函式呼叫，以及更優秀的程式碼生成能力。",
+                    "Llama 4 Scout 17B 16E Instruct is great at multi-document summarization, parsing extensive user activity for personalized tasks, and reasoning over vast codebases.": "Llama 4 Scout 17B 16E Instruct 擅長多文件摘要、解析大量使用者活動以執行個人化任務，以及對龐大程式碼庫進行推理。",
+
+                // 首頁推薦卡片
+                    "Continuous integration and deploys with Render, the modern cloud for ambitious developers": "透過 Render 進行持續集成與部署，這是為有抱負的開發者打造的現代雲端平台",
+                    "Keep your Lovable project synced both ways": "讓您的 Lovable 專案保持雙向同步",
+                    "Review code and manage pull requests": "審查程式碼並管理合併請求",
+                    "Login to OpenCode through Github Copilot": "透過 Github Copilot 登入 OpenCode",
+                    "Cut Code Review Time & Bugs in Half": "將程式碼審查時間與錯誤數量減半",
+                    "Build, test, & deploy in a fast, consistent, and secure manner": "以快速、一致且安全的方式構建、測試與部署",
+                    "View recommended or recent marketplace listings navigation": "查看推薦或近期市場列表導覽",
+                    "Automated GitHub backups so you can recover fast, stay compliant, and never lose a line of code": "自動備份 GitHub，讓您快速復原、維持合規，且不遺失任何一行程式碼",
+                    "A GitHub app that optimizes your images": "一款可最佳化圖片的 GitHub 應用",
+                    "Ship trusted code with confidence. Fast feedback, flexible execution, and enterprise-grade security": "自信交付可信任的程式碼。快速回饋、彈性執行，以及企業級安全性",
+                    "Automated code review for humans and AI": "為人類與 AI 提供自動化程式碼審查",
+                    "Continuously build, test, and deploy to any platform and cloud": "持續構建、測試，並部署到任何平台與雲端",
+                    "Project management that's seamlessly integrated with GitHub’s data & interface, builds powerful insights & automates tasks": "與 GitHub 資料和介面無縫整合的專案管理，可建立強大的洞察並自動化任務",
+                    "Automatic test report merging for all CI and languages into a single code coverage report directly into your pull request": "將所有 CI 與語言的測試報告自動合併成單一程式碼覆蓋率報告，並直接呈現在您的合併請求中",
+                    "Codacy helps to build effortless code quality and security for developers": "Codacy 幫助開發者輕鬆建立程式碼品質與安全性",
+                    "Code quality and coverage done right": "正確完成程式碼品質與覆蓋率管理",
+                    "An Agile project management tool that seamlessly integrates with GitHub Issues": "一款與 GitHub Issues 無縫整合的敏捷專案管理工具",
+                    "Find accessibility issues in your pull requests": "在您的合併請求中找出可訪問性問題",
+                    "GitHub for Atlassian unifies data, automates workflows, and syncs development across GitHub, Jira, and your Atlassian apps": "GitHub for Atlassian 可統一資料、自動化工作流程，並在 GitHub、Jira 與您的 Atlassian 應用之間同步開發工作",
+                    "Advanced static analysis for automatically finding runtime errors in JavaScript, TypeScript, React, and Vue code": "進階靜態分析，可自動找出 JavaScript、TypeScript、React 與 Vue 程式碼中的執行期錯誤",
+                    "Pull requests automation service. Merge your pull requests faster with automatic merges and a merge queue": "合併請求自動化服務。透過自動合併與合併佇列，更快合併您的合併請求",
+                    "AI-Powered Software Engineering Intelligence Platform": "AI 驅動的軟體工程智能平台",
+                    "A sidekick for repository maintainers": "倉庫維護者的輔助工具",
+                    "Apply size labels to Pull Requests based on the total lines of code changed": "根據程式碼變更總行數，為合併請求套用大小標籤",
+                    "A software engineering intelligence tool tool to identify and prioritize technical debt and evaluate your efficiency": "一款軟體工程智能工具，可識別技術債、排定優先順序，並評估您的效率",
+                    "Agile localization for your projects": "為您的專案提供敏捷本地化",
+                    "Test Plan Driven QA Test Management for GitHub": "由測試計畫驅動的 GitHub QA 測試管理",
+                    "Real-time, cross-platform crash reporting and error logging starting at $0/mo": "即時、跨平台的崩潰回報與錯誤記錄，最低 $0/月起",
+                    "Manage your software localization collaboratively": "協作管理您的軟體本地化",
+                    "Ensure that new code is fully covered, and see coverage trends emerge. Works with any CI service": "確保新程式碼獲得完整覆蓋，並查看覆蓋率趨勢。可搭配任何 CI 服務使用",
+                    "Stop visual regressions, not releases": "阻止視覺回歸，而不是阻止發布",
+                    "Metrics, goals, and time tracking automatically generated from your programming activity": "根據您的程式設計活動自動生成指標、目標與時間追蹤",
+                    "Automated visual review platform": "自動化視覺審查平台",
+                    "Expert On-Demand Code Review as a Service": "專家隨選程式碼審查服務",
+
+                // 首頁最近新增卡片
+                    "Diff-scoped code review gate (complexity, cognitive complexity, dead code) with SARIF output for Code Scanning": "針對差異範圍的程式碼審查閘門（複雜度、認知複雜度、死程式碼），並輸出供 Code Scanning 使用的 SARIF",
+                    "Connect your GitHub Action workflow to your NetBird network": "將您的 GitHub Action 工作流程連接到 NetBird 網路",
+                    "Detect breaking and non-breaking OpenAPI contract changes with governance support and PR comments": "偵測破壞性與非破壞性的 OpenAPI 合約變更，並提供治理支援與合併請求評論",
+                    "Trigger a Dockhand git-stack webhook with an HMAC-SHA256 signed request": "使用 HMAC-SHA256 簽名請求觸發 Dockhand git-stack webhook",
+                    "Automated PR code review powered by GitHub Models, Copilot, OpenAI, Anthropic, and more": "由 GitHub Models、Copilot、OpenAI、Anthropic 等提供支援的自動化合併請求程式碼審查",
+                    "AI code review: N personas in parallel + coordinator, cross-runner resume, one PR comment. LiteLLM/DeepSeek.": "AI 程式碼審查：多個角色並行加協調器、跨 runner 續跑，並輸出一則合併請求評論。支援 LiteLLM/DeepSeek。",
+                    "Lint PostgreSQL migrations for dangerous lock patterns. Posts inline PR annotations — no database, Docker, or Go required.": "檢查 PostgreSQL migration 中危險的鎖定模式，並發布行內合併請求註解，不需要資料庫、Docker 或 Go。",
+                    "Mirror a docs folder into the repository s GitHub wiki, rewriting relative .md links to extensionless wiki links": "將 docs 資料夾鏡像到倉庫的 GitHub wiki，並把相對 .md 連結重寫為無副檔名的 wiki 連結",
+                    "Fail the build if an MCP dependency grades D/F under the open polygraph behavioral litmus": "若 MCP 依賴在開放 polygraph 行為測試中評為 D/F，則讓構建失敗",
+                    "Deploy a preview environment to PreviewDrop and get a live HTTPS URL in your CI pipeline": "在 CI 流程中將預覽環境部署到 PreviewDrop，並取得即時 HTTPS URL",
+                    "A simple Dockerfile/Containerfile interpreter to set up the local machine": "用於設定本機環境的簡易 Dockerfile/Containerfile 直譯器",
+                    "Delete the PR head branch after merge. Skips protected and fork branches": "合併後刪除合併請求的 head 分支，並略過受保護分支與 fork 分支",
+                    "Automatically generates pull request descriptions from your diff using AI (OpenAI, Anthropic, Google Gemini, or Mistral)": "使用 AI（OpenAI、Anthropic、Google Gemini 或 Mistral）根據差異自動產生合併請求描述",
+                    "Create VMs from container descriptions": "根據容器描述建立虛擬機器",
+                    "Make HTTP requests from your workflow using unjs/ofetch, a modern fetch wrapper": "使用現代 fetch 封裝工具 unjs/ofetch，從工作流程發出 HTTP 請求",
+                    "download mite jar and move to correct path": "下載 mite jar 並移動到正確路徑",
+                    "Deterministic CI quality gate for AGENTS.md — works with any agent tool (Cursor, Codex, Copilot, Claude Code)": "適用於 AGENTS.md 的確定性 CI 品質閘門，可搭配任何 agent 工具（Cursor、Codex、Copilot、Claude Code）使用",
+                    "Replace filename tokens in project files with the contents of matching files from a source directory": "用來源目錄中匹配檔案的內容，替換專案檔案中的檔名 token",
+                    "Sends a Feishu (Lark) interactive card notification on PR open, new commits pushed to a PR, or PR merged into main.": "在合併請求開啟、有新提交推送到合併請求，或合併到 main 時，發送飛書（Lark）互動卡片通知。",
+                    "Scan prose for AI-slop writing patterns (a linter, not an authorship detector)": "掃描文章中的 AI 味寫作模式（這是 linter，不是作者身分偵測器）",
 
                 // 未登入 或 https://github.com/marketplace?type=
                 "Discover apps with Copilot extensions": "使用 Copilot 擴展程式探索應用",
@@ -23800,6 +23864,7 @@ I18N["zh-TW"]["marketplace"] = { // GitHub 市場
                 "Apps": "應用",
                 "Build on your workflow with apps that integrate with GitHub": "使用與 GitHub 集成的應用構建您的工作流程。",
                 "App": "應用",
+                "Agent apps": "AI 代理應用",
 
             "AI Assisted": "AI 助理",
                 "AI Assisted apps": "AI 助理應用",
@@ -30088,6 +30153,8 @@ I18N["zh-TW"]["repository/agents"] = {
         codespacesContextSearchSeen: false,
         exploreContextSearchSeen: false,
         explorePagePending: false,
+        marketplacePagePending: false,
+        marketplacePageFastPending: false,
         sponsorableUserSearchPending: false,
         topicsPagePending: false,
         settingsTrendingLanguagePending: false,
@@ -30143,6 +30210,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupDiscussionsContextProtection();
         setupCodespacesContextProtection();
         setupExplorePageInteractions();
+        setupMarketplacePageInteractions();
         setupSponsorableUserSearchInteractions();
         setupTopicsPageInteractions();
         setupDashboardShortcutMenuTranslations();
@@ -30196,6 +30264,8 @@ I18N["zh-TW"]["repository/agents"] = {
             // GitHub 調整路由或 hydration 時，仍以精確 pathname 啟動頂欄、介紹與清單表面翻譯。
             scheduleInitialExploreContextTranslation();
             scheduleExplorePageTrans();
+            scheduleMarketplacePageFastTrans();
+            scheduleMarketplacePageTrans();
             scheduleSponsorableUserSearchPageTrans();
         }
 
@@ -30250,6 +30320,8 @@ I18N["zh-TW"]["repository/agents"] = {
         // 如果頁面類型有效，重新遍歷DOM
         if (State.pageConfig) {
             safe(traverseNode, 'URL變化遍歷')(document.body);
+            scheduleMarketplacePageFastTrans();
+            scheduleMarketplacePageTrans();
         }
 
     }
@@ -30295,6 +30367,8 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleInitialCodespacesContextTranslation();
         scheduleInitialExploreContextTranslation();
         scheduleExplorePageTrans();
+        scheduleMarketplacePageFastTrans();
+        scheduleMarketplacePageTrans();
         scheduleSponsorableUserSearchPageTrans();
         scheduleTopicsPageTrans();
         scheduleSettingsTrendingSpokenLanguageTrans();
@@ -30548,6 +30622,8 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleSparkCheckoutPageTrans();
         scheduleCopilotLandingPageTrans();
         scheduleExplorePageTrans();
+        scheduleMarketplacePageFastTrans();
+        scheduleMarketplacePageTrans();
         scheduleSponsorableUserSearchPageTrans();
         scheduleTopicsPageTrans();
         scheduleSettingsTrendingSpokenLanguageTrans();
@@ -32595,6 +32671,302 @@ I18N["zh-TW"]["repository/agents"] = {
         translated = transAwesomeTopicDescription() || translated;
         translated = transSplitTopicDetailDescription() || translated;
         translated = transTopicDetailFallbackRegexp() || translated;
+        return translated;
+    }
+
+    function isMarketplaceHomePage() {
+        return (
+            State.pageConfig?.currentPageType === 'marketplace' &&
+            /^\/marketplace\/?$/.test(window.location.pathname)
+        );
+    }
+
+    function setupMarketplacePageInteractions() {
+        const schedule = () => {
+            if (isMarketplaceHomePage()) {
+                scheduleMarketplacePageFastTrans();
+                scheduleMarketplacePageTrans();
+            }
+        };
+
+        document.addEventListener('pointerdown', schedule, true);
+        document.addEventListener('pointerover', schedule, true);
+        document.addEventListener('mouseover', schedule, true);
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('focusin', schedule, true);
+        document.addEventListener('keyup', schedule, true);
+    }
+
+    function scheduleMarketplacePageTrans() {
+        if (!isMarketplaceHomePage() || State.marketplacePagePending) return;
+        State.marketplacePagePending = true;
+
+        [0, 25, 75, 200, 500, 1000, 1600, 2400, 3600, 5000, 8000, 12000].forEach(delay => {
+            setTimeout(() => {
+                safe(transMarketplaceHomePageText, '市場首頁 React 補翻')();
+                if (delay === 12000) {
+                    State.marketplacePagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleMarketplacePageFastTrans() {
+        if (!isMarketplaceHomePage() || State.marketplacePageFastPending) return;
+        State.marketplacePageFastPending = true;
+
+        [0, 16, 50, 100, 180, 300, 450, 650, 900, 1200, 1600].forEach(delay => {
+            setTimeout(() => {
+                safe(transMarketplaceHomePageText, '市場首頁互動快速補翻')();
+                if (delay === 1600) {
+                    State.marketplacePageFastPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function getMarketplaceHomeTranslations() {
+        return {
+            ...(I18N?.[CONFIG.LANG]?.public?.static || {}),
+            ...(I18N?.[CONFIG.LANG]?.marketplace?.static || {}),
+            "Actions": "操作"
+        };
+    }
+
+    function transMarketplaceHomePageText() {
+        if (!isMarketplaceHomePage() || !document.body) return false;
+
+        const dict = getMarketplaceHomeTranslations();
+        const attributeNames = [
+            'aria-label',
+            'aria-placeholder',
+            'title',
+            'placeholder',
+            'data-placeholder',
+            'data-tooltip',
+            'data-tooltip-text'
+        ];
+        const rootSelector = [
+            'main',
+            '[role="main"]',
+            'react-app[app-name="marketplace"]',
+            '[data-testid="marketplace-item"]',
+            '[data-testid="listing-type-label"]'
+        ].join(', ');
+        const visited = new WeakSet();
+        let translated = false;
+
+        const shouldSkipElement = element => {
+            if (!element) return true;
+            try {
+                return !!element.closest?.([
+                    'header',
+                    '[role="banner"]',
+                    '.AppHeader',
+                    '.Header',
+                    'qbsearch-input',
+                    'query-builder',
+                    'react-app[app-name="command-palette"]',
+                    'script',
+                    'style',
+                    'code',
+                    'pre',
+                    'kbd',
+                    '[contenteditable="true"]'
+                ].join(', '));
+            } catch (e) {
+                return true;
+            }
+        };
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                const parent = getNodeElement(node);
+                if (shouldSkipElement(parent)) continue;
+
+                const source = normalizeHeaderTooltipText(node.data);
+                const result = dict[source];
+                if (!result || result === source) continue;
+
+                node.data = node.data.replace(node.data.trim(), result);
+                translated = true;
+            }
+
+            root.querySelectorAll?.('*').forEach(element => {
+                if (shouldSkipElement(element)) return;
+
+                attributeNames.forEach(attributeName => {
+                    const source = normalizeHeaderTooltipText(element.getAttribute?.(attributeName));
+                    const result = dict[source];
+                    if (!result || result === source) return;
+
+                    element.setAttribute(attributeName, result);
+                    translated = true;
+                });
+
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+
+            if (root.shadowRoot) {
+                visit(root.shadowRoot);
+            }
+        };
+
+        document.querySelectorAll(rootSelector).forEach(visit);
+        translated = transMarketplaceContextAndHeroText(dict) || translated;
+        translated = transMarketplaceHeroSearchMenuText(dict) || translated;
+        return translated;
+    }
+
+    function transMarketplaceContextAndHeroText(dict) {
+        const fixedText = {
+            "Marketplace": dict.Marketplace || "市場",
+            "Enhance your workflow with extensions": dict["Enhance your workflow with extensions"] || "增強您的工作流程",
+            "Tools from the community and partners to simplify tasks and automate processes": dict["Tools from the community and partners to simplify tasks and automate processes"] || "社區和合作夥伴提供的簡化任務和自動化流程的工具"
+        };
+        const heroPlaceholderText = "Search for apps, actions, and models";
+        let translated = false;
+
+        const isBlockedSurface = element => !!element?.closest?.([
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            'script',
+            'style',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]'
+        ].join(', '));
+        const replaceTextNode = (node, result) => {
+            node.data = node.data.replace(node.data.trim(), result);
+            translated = true;
+        };
+        const inTopContextCrumb = (parent, rect) => {
+            if (!parent?.closest?.('header, [role="banner"], .AppHeader, .Header')) return false;
+            return rect.top >= 0 && rect.top < 120 && rect.left >= 48 && rect.left < 460;
+        };
+        const inHeroCopyArea = rect => (
+            rect.top >= 90 &&
+            rect.top < 470 &&
+            rect.left >= 0 &&
+            rect.left < Math.max(760, window.innerWidth * 0.72)
+        );
+
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+            const parent = getNodeElement(node);
+            if (isBlockedSurface(parent)) continue;
+
+            const source = normalizeHeaderTooltipText(node.data);
+            const result = fixedText[source];
+            if (!result || result === source) continue;
+
+            const rect = getTextNodeRect(node);
+            if (!isDebugRectVisible(rect)) continue;
+
+            if (source === "Marketplace") {
+                if (inTopContextCrumb(parent, rect)) {
+                    replaceTextNode(node, result);
+                }
+            } else if (inHeroCopyArea(rect)) {
+                replaceTextNode(node, result);
+            }
+        }
+
+        document.querySelectorAll('input, textarea, [placeholder], [aria-label], [data-placeholder]').forEach(element => {
+            if (isBlockedSurface(element)) return;
+
+            const rect = element.getBoundingClientRect?.();
+            if (!isDebugRectVisible(rect) || rect.top < 120 || rect.top >= 470 || rect.width < 220) return;
+
+            ['placeholder', 'aria-label', 'data-placeholder'].forEach(attributeName => {
+                const source = normalizeHeaderTooltipText(element.getAttribute?.(attributeName));
+                if (source !== heroPlaceholderText) return;
+
+                const result = dict[source];
+                if (!result || result === source) return;
+
+                element.setAttribute(attributeName, result);
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function transMarketplaceHeroSearchMenuText(dict) {
+        const fixedText = {
+            "Listing Type": dict["Listing Type"] || "顯示類型",
+            "Listing type": dict["Listing type"] || dict["Listing Type"] || "顯示類型",
+            "Exclude": dict.Exclude || "排除"
+        };
+        const attributeNames = [
+            'aria-label',
+            'title',
+            'data-tooltip',
+            'data-tooltip-text'
+        ];
+        let translated = false;
+
+        const isHeroSearchMenuRect = rect => (
+            rect &&
+            rect.width > 0 &&
+            rect.height > 0 &&
+            rect.top >= 240 &&
+            rect.top < Math.min(window.innerHeight, 720) &&
+            rect.left >= 80 &&
+            rect.left < Math.max(700, window.innerWidth * 0.55)
+        );
+        const isHeroSearchMenuSurface = element => {
+            if (!element) return false;
+            const rect = element.getBoundingClientRect?.();
+            if (!isHeroSearchMenuRect(rect)) return false;
+            return !!element.closest?.([
+                'query-builder',
+                '[role="listbox"]',
+                '[role="menu"]',
+                '[role="dialog"]',
+                '[popover]',
+                '[data-portal-root]'
+            ].join(', '));
+        };
+
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+            const parent = getNodeElement(node);
+            if (!isHeroSearchMenuSurface(parent)) continue;
+
+            const source = normalizeHeaderTooltipText(node.data);
+            const result = fixedText[source];
+            if (!result || result === source) continue;
+
+            node.data = node.data.replace(node.data.trim(), result);
+            translated = true;
+        }
+
+        document.querySelectorAll('[role="listbox"] *, [role="menu"] *, [role="dialog"] *, query-builder *').forEach(element => {
+            if (!isHeroSearchMenuSurface(element)) return;
+
+            attributeNames.forEach(attributeName => {
+                const source = normalizeHeaderTooltipText(element.getAttribute?.(attributeName));
+                const result = fixedText[source];
+                if (!result || result === source) return;
+
+                element.setAttribute(attributeName, result);
+                translated = true;
+            });
+        });
+
         return translated;
     }
 
