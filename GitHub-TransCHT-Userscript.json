@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.12.21
+// @version      local.12.24
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -29796,7 +29796,8 @@ I18N["zh-TW"]["mcp"] = {
         "Connect models to the real world": "連接模型至真實世界",
             "Servers and tools from the community that connect models to files, APIs, databases, and more.": "來自社區的伺服器和工具，可以將模型連接到文件、API、資料庫等。",
 
-        "Search MCPs": "搜尋 MCP",
+        "Search MCPs": "搜尋 MCP 伺服器",
+        "Search MCP registry": "搜尋 MCP 伺服器",
 
         "All MCP servers": "所有 MCP 伺服器",
             "Install": "安裝",
@@ -29804,6 +29805,121 @@ I18N["zh-TW"]["mcp"] = {
                 "Install in VS Code Insiders": "安裝到 VS Code 測試版",
 
             "By": "作者",
+            "Prev": "上一頁",
+            "Previous": "上一頁",
+            "Next": "下一頁",
+
+        // MCP Registry 列表卡片摘要
+            "Convert various file formats (PDF, Word, Excel, images, audio) to Markdown.": "將各種文件格式（PDF、Word、Excel、圖片、音訊）轉換為 Markdown。",
+            "Real-time infrastructure monitoring with metrics, logs, alerts, and ML-based anomaly detection.": "透過指標、日誌、警報與基於 ML 的異常偵測，進行即時基礎設施監控。",
+            "Up-to-date code docs for any prompt": "為任何提示詞提供最新程式碼文件",
+            "MCP server for Chrome DevTools": "Chrome DevTools 的 MCP 伺服器",
+            "Automate web browsers using accessibility trees for testing and data extraction.": "使用無障礙樹自動化瀏覽器，以進行測試與資料擷取。",
+            "Connect AI assistants to GitHub - manage repos, issues, PRs, and workflows through natural language.": "將 AI 助理連接到 GitHub，透過自然語言管理倉庫、議題、PR 與工作流程。",
+            "Semantic code retrieval & editing tools for coding agents.": "供編程代理使用的語義程式碼檢索與編輯工具。",
+            "Control the Unity Editor from MCP clients via a Unity bridge + local Python server.": "透過 Unity bridge 與本機 Python 伺服器，從 MCP 用戶端控制 Unity Editor。",
+            "Extract web data with Firecrawl": "使用 Firecrawl 擷取網頁資料",
+            "MCP server for terminal commands, file operations, and process management": "用於終端命令、文件操作與程序管理的 MCP 伺服器",
+            "Official MCP server for Notion API": "Notion API 的官方 MCP 伺服器",
+            "All Azure MCP tools to create a seamless connection between AI agents and Azure services.": "提供所有 Azure MCP 工具，讓 AI 代理與 Azure 服務無縫連接。",
+            "MCP tools for interacting with Microsoft Fabric": "用於與 Microsoft Fabric 互動的 MCP 工具",
+            "Minimal, token-efficient Database MCP Server for PostgreSQL, MySQL, SQL Server, SQLite, MariaDB": "適用於 PostgreSQL、MySQL、SQL Server、SQLite、MariaDB 的精簡且節省 token 的資料庫 MCP 伺服器",
+            "MCP server for interacting with the Supabase platform": "用於與 Supabase 平台互動的 MCP 伺服器",
+            "Bright Data's Web MCP server enabling AI agents to search, extract & navigate the web": "Bright Data 的 Web MCP 伺服器，讓 AI 代理能搜尋、擷取與瀏覽網頁",
+            "MCP server for advanced web search using Tavily": "使用 Tavily 進行進階網頁搜尋的 MCP 伺服器",
+            "Interact with Azure DevOps services like repositories, work items, builds, releases, test plans, and code search.": "與 Azure DevOps 服務互動，包括倉庫、工作項目、建置、發布、測試計劃與程式碼搜尋。",
+            "Enables clients like GitHub Copilot and other AI agents to bring trusted and up-to-date information directly from Microsoft's official documentation.": "讓 GitHub Copilot 等用戶端與其他 AI 代理可直接從 Microsoft 官方文件取得可信且最新的資訊。",
+            "The Figma MCP server brings Figma design context directly into your AI workflow.": "Figma MCP 伺服器會將 Figma 設計上下文直接帶入您的 AI 工作流程。",
+            "MCP server integrating with Stripe - tools for customers, products, payments, and more.": "與 Stripe 整合的 MCP 伺服器，提供客戶、產品、付款等工具。",
+            "A Model Context Protocol (MCP) server for NuGet.": "適用於 NuGet 的模型上下文協議（MCP）伺服器。",
+            "Generate more accurate Terraform and automate workflows for HCP Terraform and Terraform Enterprise": "生成更準確的 Terraform，並為 HCP Terraform 與 Terraform Enterprise 自動化工作流程",
+            "Extract data from any website with thousands of scrapers, crawlers, and automations on Apify Store ⚡": "透過 Apify Store 上數千個 scraper、crawler 與自動化工具，從任何網站擷取資料 ⚡",
+            "MongoDB Model Context Protocol Server": "MongoDB 模型上下文協議伺服器",
+            "MCP server for SearXNG — privacy-respecting web search with pagination, URL reading": "適用於 SearXNG 的 MCP 伺服器，提供尊重隱私、支援分頁與 URL 讀取的網頁搜尋",
+            "MCP server helping models understand your Vite/Nuxt app.": "協助模型理解您的 Vite/Nuxt 應用的 MCP 伺服器。",
+            "SQL-native query and provisioning engine for cloud infrastructure, served over MCP.": "透過 MCP 提供的雲端基礎設施 SQL 原生查詢與佈建引擎。",
+            "Connect to Atlassian Jira, Confluence, and Compass to search, create, and manage your work.": "連接 Atlassian Jira、Confluence 與 Compass，以搜尋、建立並管理您的工作。",
+            "Next.js development tools MCP server with stdio transport": "使用 stdio 傳輸的 Next.js 開發工具 MCP 伺服器",
+            "MCP server for Sentry - error monitoring, issue tracking, and debugging for AI assistants": "適用於 Sentry 的 MCP 伺服器，為 AI 助理提供錯誤監控、議題追蹤與除錯功能",
+            "MCP server for connecting to Elasticsearch data and indices. Supports search queries, mappings, ES|QL, and shard information through natural language interactions.": "用於連接 Elasticsearch 資料與索引的 MCP 伺服器。支援透過自然語言互動進行搜尋查詢、映射、ES|QL 與分片資訊查詢。",
+            "MCP server for interacting with Neon Management API and databases": "用於與 Neon Management API 與資料庫互動的 MCP 伺服器",
+            "Analyze code quality and security with SonarQube Server or Cloud directly in AI assistants.": "直接在 AI 助理中使用 SonarQube Server 或 Cloud 分析程式碼品質與安全性。",
+            "Provides data retrieval capabilities powered by Chroma, enabling AI models to create collections over generated data and user inputs, and retrieve that data using vector search, full text search, metadata filtering, and more.": "提供由 Chroma 驅動的資料檢索能力，讓 AI 模型能針對生成資料與使用者輸入建立集合，並使用向量搜尋、全文搜尋、metadata 篩選等方式取回資料。",
+            "A set of tools to connect to AI agents, to allow them to use Todoist on a user's behalf.": "一組可連接 AI 代理的工具，讓它們能代表使用者操作 Todoist。",
+            "MCP server for monday.com integration.": "用於 monday.com 整合的 MCP 伺服器。",
+            "Geospatial intelligence with Mapbox APIs like geocoding, POI search, directions, isochrones, etc.": "透過 Mapbox API 提供地理空間智慧，包括地理編碼、POI 搜尋、路線、等時圈等。",
+            "Zapier MCP is a remote MCP server that gives your AI direct access to 8,000+ apps and 30,000+ actions—no complex API integrations required.": "Zapier MCP 是遠端 MCP 伺服器，可讓您的 AI 直接存取 8,000 多個應用與 30,000 多個動作，無需複雜 API 整合。",
+            "Local image processing with computer vision capabilities including object detection, OCR, image editing, and transformations.": "本機圖片處理，具備物件偵測、OCR、圖片編輯與轉換等電腦視覺能力。",
+            "The official Svelte MCP server providing docs and autofixing tools for Svelte development": "Svelte 官方 MCP 伺服器，為 Svelte 開發提供文件與自動修復工具",
+            "A basic MCP server to operate on the Postman API.": "用於操作 Postman API 的基礎 MCP 伺服器。",
+            "Access Hugging Face models, datasets, Spaces, papers, collections via MCP.": "透過 MCP 存取 Hugging Face 模型、資料集、Spaces、論文與集合。",
+            "An experimental MCP server implementation for Azure AI Foundry that exposes unified tools for models, knowledge, evaluation and deployment.": "Azure AI Foundry 的實驗性 MCP 伺服器實作，提供模型、知識、評估與部署的統一工具。",
+            "Connects AI agents with CrowdStrike Falcon for security analysis and automation.": "將 AI 代理連接到 CrowdStrike Falcon，以進行安全分析與自動化。",
+            "An MCP server that stores Copilot customizations from the Awesome Copilot repository": "儲存 Awesome Copilot 倉庫中 Copilot 自訂內容的 MCP 伺服器",
+            "Local-first persistent memory for AI coding agents.": "供 AI 編程代理使用的本機優先持久記憶。",
+            "Enterprise PostgreSQL MCP server with NL queries, hybrid search (pgvector+BM25), and web UI": "企業級 PostgreSQL MCP 伺服器，支援自然語言查詢、混合搜尋（pgvector+BM25）與 Web UI",
+            "Remote MCP Server that securely connects Glean Enterprise Knowledge with your IDE, LLM, or agents.": "遠端 MCP 伺服器，可安全地將 Glean Enterprise Knowledge 連接到您的 IDE、LLM 或代理。",
+            "Provides access to OpenTelemetry traces and metrics through Logfire.": "透過 Logfire 存取 OpenTelemetry 追蹤與指標。",
+            "SAP Fiori - Model Context Protocol (MCP) server": "SAP Fiori 的模型上下文協議（MCP）伺服器",
+            "Official SerpApi MCP server for Google, Bing, and other search engines.": "SerpApi 官方 MCP 伺服器，支援 Google、Bing 與其他搜尋引擎。",
+            "Interact with Azure Kubernetes Service (AKS) from MCP clients.": "從 MCP 用戶端與 Azure Kubernetes Service（AKS）互動。",
+            "AI-powered design and management for Webflow Sites": "為 Webflow Sites 提供 AI 驅動的設計與管理",
+            "Official Miro MCP server - Supports context to code and creating diagrams, docs, and data tables.": "Miro 官方 MCP 伺服器，支援 context to code，以及建立圖表、文件與資料表。",
+            "Access Dynatrace observability data: logs, metrics, problems, vulnerabilities via DQL and Davis AI": "透過 DQL 與 Davis AI 存取 Dynatrace 可觀測性資料：日誌、指標、問題與漏洞",
+            "Query Eventhouse/ADX with KQL and manage Eventstreams.": "使用 KQL 查詢 Eventhouse/ADX 並管理 Eventstream。",
+            "Model Context Protocol (MCP) server for AI-assisted development of CAP applications.": "用於 CAP 應用 AI 輔助開發的模型上下文協議（MCP）伺服器。",
+            "Deliver software to Kubernetes, multi-cloud, on-prem infrastructure, and anywhere else": "將軟體交付到 Kubernetes、多雲、本機部署基礎設施與其他環境",
+            "MCP server for SAPUI5/OpenUI5 development": "用於 SAPUI5/OpenUI5 開發的 MCP 伺服器",
+            "Fetch Clarity analytics via MCP clients.": "透過 MCP 用戶端擷取 Clarity 分析資料。",
+            "AI-powered web scraping and data extraction capabilities through ScrapeGraph API": "透過 ScrapeGraph API 提供 AI 驅動的網頁抓取與資料擷取能力",
+            "Official Arm MCP server for code migration, optimization, and Arm architecture guidance": "Arm 官方 MCP 伺服器，提供程式碼遷移、最佳化與 Arm 架構指引",
+            "Devin-generated docs for any public repo": "為任何公開倉庫提供 Devin 生成的文件",
+            "Sonatype component intelligence: versions, security analysis, and Trust Score recommendations": "Sonatype 元件情報：版本、安全分析與 Trust Score 建議",
+            "PagerDuty's official MCP server which provides tools to interact with your PagerDuty account.": "PagerDuty 官方 MCP 伺服器，提供與您的 PagerDuty 帳戶互動的工具。",
+            "MCP Server for the Codacy API, enabling access to repositories, files, quality, coverage, security and more.": "Codacy API 的 MCP 伺服器，可存取倉庫、文件、品質、覆蓋率、安全性等資料。",
+            "Provides AI assistants with direct access to Mapbox developer APIs and documentation.": "讓 AI 助理可直接存取 Mapbox 開發者 API 與文件。",
+            "Easily find and fix security issues in your applications leveraging Snyk platform capabilities.": "利用 Snyk 平台能力，輕鬆找出並修復應用程式中的安全問題。",
+            "Search, access, and get insights on your Amplitude data": "搜尋、存取並洞察您的 Amplitude 資料",
+            "Official Microsoft MCP Server to query Microsoft Entra data using natural language": "Microsoft 官方 MCP 伺服器，可使用自然語言查詢 Microsoft Entra 資料",
+            "Manage Zscaler Zero Trust Exchange via 280+ tools — ZPA, ZIA, ZDX, ZCC, EASM, and more.": "透過 280 多個工具管理 Zscaler Zero Trust Exchange，包括 ZPA、ZIA、ZDX、ZCC、EASM 等。",
+            "MCP server for AI access to SmartBear tools, including BugSnag, Reflect, Swagger, PactFlow, QTM4J.": "讓 AI 存取 SmartBear 工具的 MCP 伺服器，包括 BugSnag、Reflect、Swagger、PactFlow、QTM4J。",
+            "ContextStream MCP server for code context, memory, search, and AI tools.": "用於程式碼上下文、記憶、搜尋與 AI 工具的 ContextStream MCP 伺服器。",
+            "Search and retrieve AI prompts from prompts.chat, the social platform for AI prompts.": "從 AI 提示詞社交平台 prompts.chat 搜尋並擷取 AI 提示詞。",
+            "PubNub Model Context Protocol MCP Server for Cursor and Claude": "供 Cursor 與 Claude 使用的 PubNub 模型上下文協議 MCP 伺服器",
+            "JustCall MCP Server enables LLMs and AI agents to make voice calls and send SMS via JustCall APIs.": "JustCall MCP Server 讓 LLM 與 AI 代理可透過 JustCall API 撥打語音電話與傳送 SMS。",
+            "GoReleaser MCP server": "GoReleaser MCP 伺服器",
+            "MCP server for Dynatrace Managed to access logs, events, and metrics.": "用於 Dynatrace Managed 的 MCP 伺服器，可存取日誌、事件與指標。",
+            "Quality gates for AI agents. Lint, test, build checks with memory persistence.": "AI 代理的品質閘門。提供 lint、測試、建置檢查與持久記憶。",
+            "Official LaunchDarkly MCP Server for feature flag management and experimentation. Enables AI agents to interact with LaunchDarkly APIs for managing feature flags, AI configs, targeting rules, and gradual rollouts across multiple environments.": "LaunchDarkly 官方 MCP 伺服器，用於功能旗標管理與實驗。讓 AI 代理可與 LaunchDarkly API 互動，以管理功能旗標、AI 配置、目標規則，以及跨多環境的漸進式發布。",
+            "DNS lookups, health reports, SSL certs, security scans, GEO scoring, uptime checks": "DNS 查詢、健康報告、SSL 憑證、安全掃描、GEO 評分與上線時間檢查",
+            "MCP server for UI5 Web Components development assistance": "用於 UI5 Web Components 開發輔助的 MCP 伺服器",
+            "Access Stack Overflow's trusted and verified technical questions and answers.": "存取 Stack Overflow 可信且已驗證的技術問答。",
+            "Port.io mcp server": "Port.io MCP 伺服器",
+            "A Model Context Protocol server for Wix AI tools": "適用於 Wix AI 工具的模型上下文協議伺服器",
+            "Sourcegraph code search, semantic search, go-to-definition, find-references, and diff search.": "Sourcegraph 程式碼搜尋、語義搜尋、跳轉定義、尋找引用與差異搜尋。",
+            "List datasets, schemas, run APL queries, and use prompts for exploration, anomalies, and monitoring.": "列出資料集與 schema、執行 APL 查詢，並使用提示詞進行探索、異常分析與監控。",
+            "This server enables natural language interactions for developer-focused operations like managing Dev Boxes, configurations, and pools.": "此伺服器支援以自然語言操作開發者相關任務，例如管理 Dev Box、配置與集區。",
+            "An MCP server for Vercel": "適用於 Vercel 的 MCP 伺服器",
+            "US/HK markets — 145 tools: quotes, options, orders, fundamentals, screener, IPO, alerts & DCA": "美股與港股市場 — 145 個工具：報價、期權、訂單、基本面、篩選器、IPO、提醒與定投",
+            "MCP Server for JFrog, providing tools for development and artifact management.": "JFrog 的 MCP 伺服器，提供開發與 artifact 管理工具。",
+            "An MCP server that provides interaction with StackHawk's security scanning platform.": "提供與 StackHawk 安全掃描平台互動能力的 MCP 伺服器。",
+            "Enable AI agents to securely access and interact with your Intercom data whenever helpful.": "讓 AI 代理在需要時安全地存取並互動您的 Intercom 資料。",
+            "Connect AI coding agents to Anima Playground, Figma, and your design system.": "將 AI 編程代理連接到 Anima Playground、Figma 與您的設計系統。",
+            "Securely connect AI agents to your enterprise content in Box": "安全地將 AI 代理連接到您在 Box 中的企業內容",
+            "Generate a ServiceBricks C# .NET microservice as a ZIP file.": "生成 ServiceBricks C# .NET 微服務 ZIP 文件。",
+            "Secure MCP runtime server for scanning and autofixing code issues": "安全的 MCP runtime 伺服器，用於掃描並自動修復程式碼問題",
+            "AI testing agents for web apps — dispatch test runs, crawls, fetch artifacts and status.": "供 Web 應用使用的 AI 測試代理 — 分派測試執行、爬取、擷取 artifact 與狀態。",
+            "Deploy websites from AI agents. Free at mcp.shipstatic.com. Install for the full toolset.": "從 AI 代理部署網站。可在 mcp.shipstatic.com 免費使用；安裝後可使用完整工具集。",
+            "Guru MCP Server - Connect AI tools to your Guru knowledge base": "Guru MCP Server，將 AI 工具連接到您的 Guru 知識庫",
+            "Find relevant security data from Sentinel data lake for building effective agents. More:aka.ms/s/de": "從 Sentinel data lake 尋找相關安全資料，用於建構有效代理。更多資訊：aka.ms/s/de",
+            "Official MCP server for Lovable, the AI-powered full-stack app builder.": "Lovable 官方 MCP 伺服器，Lovable 是 AI 驅動的全端應用建構工具。",
+            "Runtime permission, approval, and audit layer for AI agent tool execution.": "用於 AI 代理工具執行的 runtime 權限、核准與稽核層。",
+            "Debug production issues using Shipbook logs and Loglytics error insights.": "使用 Shipbook 日誌與 Loglytics 錯誤洞察除錯生產環境問題。",
+            "Lucid’s connector creates diagrams, searches, edits, shares, and retrieves docs to summarize.": "Lucid 連接器可建立圖表、搜尋、編輯、分享並擷取文件進行摘要。",
+            "Data-center, power, energy, renewables & gas intelligence for AI agents — query and cite.": "供 AI 代理使用的資料中心、電力、能源、再生能源與天然氣情報 — 可查詢並引用。",
+            "AI-powered security scanning using Black Duck Signal for vulnerability detection.": "使用 Black Duck Signal 進行 AI 驅動的安全掃描，以偵測漏洞。",
+            "Web scraping MCP server — scrape, extract structured data, screenshot any site with anti-bot bypass.": "網頁抓取 MCP 伺服器 — 可抓取、擷取結構化資料、截圖任何網站，並繞過反機器人機制。",
+            "Drive OctoPerf load testing from any AI agent: import, edit, validate, run scenarios, read metrics.": "從任何 AI 代理驅動 OctoPerf 負載測試：匯入、編輯、驗證、執行情境並讀取指標。",
 
         // 具體頁面
             "Install MCP server": "安裝 MCP 伺服器",
@@ -30155,6 +30271,8 @@ I18N["zh-TW"]["repository/agents"] = {
         explorePagePending: false,
         marketplacePagePending: false,
         marketplacePageFastPending: false,
+        mcpRegistryPagePending: false,
+        mcpRegistryPageFastPending: false,
         sponsorableUserSearchPending: false,
         topicsPagePending: false,
         settingsTrendingLanguagePending: false,
@@ -30211,6 +30329,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupCodespacesContextProtection();
         setupExplorePageInteractions();
         setupMarketplacePageInteractions();
+        setupMcpRegistryPageInteractions();
         setupSponsorableUserSearchInteractions();
         setupTopicsPageInteractions();
         setupDashboardShortcutMenuTranslations();
@@ -30266,6 +30385,8 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleExplorePageTrans();
             scheduleMarketplacePageFastTrans();
             scheduleMarketplacePageTrans();
+            scheduleMcpRegistryFastTrans();
+            scheduleMcpRegistryPageTrans();
             scheduleSponsorableUserSearchPageTrans();
         }
 
@@ -30322,6 +30443,8 @@ I18N["zh-TW"]["repository/agents"] = {
             safe(traverseNode, 'URL變化遍歷')(document.body);
             scheduleMarketplacePageFastTrans();
             scheduleMarketplacePageTrans();
+            scheduleMcpRegistryFastTrans();
+            scheduleMcpRegistryPageTrans();
         }
 
     }
@@ -30369,6 +30492,8 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleExplorePageTrans();
         scheduleMarketplacePageFastTrans();
         scheduleMarketplacePageTrans();
+        scheduleMcpRegistryFastTrans();
+        scheduleMcpRegistryPageTrans();
         scheduleSponsorableUserSearchPageTrans();
         scheduleTopicsPageTrans();
         scheduleSettingsTrendingSpokenLanguageTrans();
@@ -30451,6 +30576,7 @@ I18N["zh-TW"]["repository/agents"] = {
 
         // 頁面特征檢測
         const isSession = document.body.classList.contains("session-authentication");
+        const isMcpRegistry = site === 'github' && /^\/mcp\/?$/.test(pathname);
         const isHomepage = pathname === '/' && site === 'github';
         const isProfile = document.body.classList.contains("page-profile") || metaLocation === '/<user-name>';
         const isRepository = /\/<user-name>\/<repo-name>/.test(metaLocation);
@@ -30464,6 +30590,9 @@ I18N["zh-TW"]["repository/agents"] = {
                 break;
             case SPECIAL_SITES.includes(site): // 特殊站點
                 pageType = site;
+                break;
+            case isMcpRegistry: // GitHub MCP Registry 是單獨產品頁，不按同名組織頁處理
+                pageType = 'mcp';
                 break;
             case isProfile: { // 用戶資料頁面
                 const tabParam = new URLSearchParams(url.search).get('tab');
@@ -30624,6 +30753,8 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleExplorePageTrans();
         scheduleMarketplacePageFastTrans();
         scheduleMarketplacePageTrans();
+        scheduleMcpRegistryFastTrans();
+        scheduleMcpRegistryPageTrans();
         scheduleSponsorableUserSearchPageTrans();
         scheduleTopicsPageTrans();
         scheduleSettingsTrendingSpokenLanguageTrans();
@@ -32671,6 +32802,204 @@ I18N["zh-TW"]["repository/agents"] = {
         translated = transAwesomeTopicDescription() || translated;
         translated = transSplitTopicDetailDescription() || translated;
         translated = transTopicDetailFallbackRegexp() || translated;
+        return translated;
+    }
+
+    function isMcpRegistryPage() {
+        return (
+            State.pageConfig?.currentPageType === 'mcp' &&
+            /^\/mcp\/?$/.test(window.location.pathname)
+        );
+    }
+
+    function setupMcpRegistryPageInteractions() {
+        const scheduleLong = () => {
+            if (isMcpRegistryPage()) {
+                scheduleMcpRegistryPageTrans();
+            }
+        };
+        const scheduleFast = () => {
+            if (isMcpRegistryPage()) {
+                scheduleMcpRegistryFastTrans();
+            }
+        };
+
+        document.addEventListener('pointerdown', scheduleFast, true);
+        document.addEventListener('pointerover', scheduleFast, true);
+        document.addEventListener('mouseover', scheduleFast, true);
+        document.addEventListener('click', scheduleFast, true);
+        document.addEventListener('focusin', scheduleFast, true);
+        document.addEventListener('keyup', scheduleFast, true);
+        document.addEventListener('click', scheduleLong, true);
+    }
+
+    function scheduleMcpRegistryPageTrans() {
+        if (!isMcpRegistryPage() || State.mcpRegistryPagePending) return;
+        State.mcpRegistryPagePending = true;
+
+        [0, 16, 50, 100, 180, 300, 500, 800, 1200, 1600, 2400, 3600, 5000, 8000, 12000].forEach(delay => {
+            setTimeout(() => {
+                safe(transMcpRegistryPageText, 'MCP Registry React 補翻')();
+                if (delay === 12000) {
+                    State.mcpRegistryPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleMcpRegistryFastTrans() {
+        if (!isMcpRegistryPage() || State.mcpRegistryPageFastPending) return;
+        State.mcpRegistryPageFastPending = true;
+
+        [0, 8, 16, 32, 50, 80, 120, 200, 320, 500, 800].forEach(delay => {
+            setTimeout(() => {
+                safe(transMcpRegistryPageText, 'MCP Registry 互動快速補翻')();
+                if (delay === 800) {
+                    State.mcpRegistryPageFastPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function getMcpRegistryTranslations() {
+        return {
+            ...(I18N?.[CONFIG.LANG]?.public?.static || {}),
+            ...(I18N?.[CONFIG.LANG]?.mcp?.static || {}),
+            ...(I18N?.[CONFIG.LANG]?.mcp?.title?.static || {})
+        };
+    }
+
+    function transMcpRegistryPageText() {
+        if (!isMcpRegistryPage() || !document.body) return false;
+
+        const dict = getMcpRegistryTranslations();
+        const attributeNames = [
+            'aria-label',
+            'aria-placeholder',
+            'title',
+            'placeholder',
+            'data-placeholder',
+            'data-tooltip',
+            'data-tooltip-text'
+        ];
+        const rootSelector = [
+            'main',
+            '[role="main"]',
+            'react-app',
+            '[role="menu"]',
+            '[role="menuitem"]',
+            '[popover]',
+            '.Overlay',
+            '.Popover',
+            '.Popover-message',
+            '.ActionList',
+            '.ActionListWrap'
+        ].join(', ');
+        const visited = new WeakSet();
+        let translated = false;
+
+        const shouldSkipElement = element => {
+            if (!element) return true;
+            try {
+                return !!element.closest?.([
+                    'qbsearch-input',
+                    'query-builder',
+                    'react-app[app-name="command-palette"]',
+                    '#command-palette-pjax-container',
+                    '.js-command-palette',
+                    'script',
+                    'style',
+                    'code',
+                    'pre',
+                    'kbd',
+                    '[contenteditable="true"]'
+                ].join(', '));
+            } catch (e) {
+                return true;
+            }
+        };
+
+        const replaceTextNode = node => {
+            const parent = getNodeElement(node);
+            if (shouldSkipElement(parent)) return;
+
+            const source = normalizeHeaderTooltipText(node.data);
+            const result = dict[source];
+            if (!result || result === source) return;
+
+            node.data = node.data.replace(node.data.trim(), result);
+            translated = true;
+        };
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+
+            if (root.nodeType === Node.TEXT_NODE) {
+                replaceTextNode(root);
+                return;
+            }
+
+            const rootElement = getNodeElement(root);
+            if (rootElement && shouldSkipElement(rootElement)) return;
+
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                replaceTextNode(node);
+            }
+
+            root.querySelectorAll?.('*').forEach(element => {
+                if (shouldSkipElement(element)) return;
+
+                attributeNames.forEach(attributeName => {
+                    const source = normalizeHeaderTooltipText(element.getAttribute?.(attributeName));
+                    const result = dict[source];
+                    if (!result || result === source) return;
+
+                    element.setAttribute(attributeName, result);
+                    translated = true;
+                });
+
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+
+            if (root.shadowRoot) {
+                visit(root.shadowRoot);
+            }
+        };
+
+        document.querySelectorAll(rootSelector).forEach(visit);
+        translated = transMcpRegistryContextTitle(dict) || translated;
+        return translated;
+    }
+
+    function transMcpRegistryContextTitle(dict) {
+        const sourceText = "MCP Registry";
+        const resultText = dict[sourceText];
+        if (!resultText || resultText === sourceText) return false;
+
+        let translated = false;
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        let node;
+
+        while ((node = walker.nextNode())) {
+            if (normalizeHeaderTooltipText(node.data) !== sourceText) continue;
+
+            const parent = getNodeElement(node);
+            if (!parent?.closest?.('header, [role="banner"], .AppHeader, .Header')) continue;
+            if (parent.closest?.('qbsearch-input, query-builder, react-app[app-name="command-palette"]')) continue;
+
+            const rect = getTextNodeRect(node);
+            if (!isDebugRectVisible(rect)) continue;
+            if (rect.top < 0 || rect.top > 120 || rect.left < 80 || rect.left > 420) continue;
+
+            node.data = node.data.replace(node.data.trim(), resultText);
+            translated = true;
+        }
+
         return translated;
     }
 
