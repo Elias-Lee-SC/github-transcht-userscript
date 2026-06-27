@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.12.24
+// @version      local.12.28
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -30576,7 +30576,7 @@ I18N["zh-TW"]["repository/agents"] = {
 
         // 頁面特征檢測
         const isSession = document.body.classList.contains("session-authentication");
-        const isMcpRegistry = site === 'github' && /^\/mcp\/?$/.test(pathname);
+        const isMcpRegistry = site === 'github' && /^\/mcp(?:\/|$)/.test(pathname);
         const isHomepage = pathname === '/' && site === 'github';
         const isProfile = document.body.classList.contains("page-profile") || metaLocation === '/<user-name>';
         const isRepository = /\/<user-name>\/<repo-name>/.test(metaLocation);
@@ -30591,7 +30591,7 @@ I18N["zh-TW"]["repository/agents"] = {
             case SPECIAL_SITES.includes(site): // 特殊站點
                 pageType = site;
                 break;
-            case isMcpRegistry: // GitHub MCP Registry 是單獨產品頁，不按同名組織頁處理
+            case isMcpRegistry: // GitHub MCP Registry 及其工具詳情頁是單獨產品頁，不按同名組織頁處理
                 pageType = 'mcp';
                 break;
             case isProfile: { // 用戶資料頁面
@@ -32812,14 +32812,25 @@ I18N["zh-TW"]["repository/agents"] = {
         );
     }
 
+    function isMcpMarkitdownDetailPage() {
+        return (
+            State.pageConfig?.currentPageType === 'mcp' &&
+            /^\/mcp\/microsoft\/markitdown\/?$/.test(window.location.pathname)
+        );
+    }
+
+    function isMcpDynamicPage() {
+        return isMcpRegistryPage() || isMcpMarkitdownDetailPage();
+    }
+
     function setupMcpRegistryPageInteractions() {
         const scheduleLong = () => {
-            if (isMcpRegistryPage()) {
+            if (isMcpDynamicPage()) {
                 scheduleMcpRegistryPageTrans();
             }
         };
         const scheduleFast = () => {
-            if (isMcpRegistryPage()) {
+            if (isMcpDynamicPage()) {
                 scheduleMcpRegistryFastTrans();
             }
         };
@@ -32834,7 +32845,7 @@ I18N["zh-TW"]["repository/agents"] = {
     }
 
     function scheduleMcpRegistryPageTrans() {
-        if (!isMcpRegistryPage() || State.mcpRegistryPagePending) return;
+        if (!isMcpDynamicPage() || State.mcpRegistryPagePending) return;
         State.mcpRegistryPagePending = true;
 
         [0, 16, 50, 100, 180, 300, 500, 800, 1200, 1600, 2400, 3600, 5000, 8000, 12000].forEach(delay => {
@@ -32848,7 +32859,7 @@ I18N["zh-TW"]["repository/agents"] = {
     }
 
     function scheduleMcpRegistryFastTrans() {
-        if (!isMcpRegistryPage() || State.mcpRegistryPageFastPending) return;
+        if (!isMcpDynamicPage() || State.mcpRegistryPageFastPending) return;
         State.mcpRegistryPageFastPending = true;
 
         [0, 8, 16, 32, 50, 80, 120, 200, 320, 500, 800].forEach(delay => {
@@ -32861,16 +32872,217 @@ I18N["zh-TW"]["repository/agents"] = {
         });
     }
 
+    function getMcpMarkitdownDetailTranslations() {
+        return {
+            "MCP registry": "MCP 互聯",
+            "MCP Registry": "MCP 互聯",
+            "Resources": "資源",
+            "About": "關於",
+            "Important": "重要",
+            "Built by": "構建者",
+            "downloads": "下載量",
+            "Install MCP server": "安裝 MCP 伺服器",
+            "Contact support": "獲取支持",
+            "MarkItDown performs I/O with the privileges of the current process. Like open() or requests.get(), it will access resources that the process itself can access. Sanitize your inputs in untrusted environments, and call the narrowest": "MarkItDown 會以目前程序的權限執行 I/O。像 open() 或 requests.get() 一樣，它可以存取程序本身能存取的資源。請在不受信任的環境中清理輸入，並只呼叫最符合用途的",
+            "function needed for your use case (e.g.,": "函式，例如",
+            "). See the": "）。更多資訊請參閱文件中的",
+            "section of the documentation for more information.": "章節。",
+            "MarkItDown is a lightweight Python utility for converting various files to Markdown for use with LLMs and related text analysis pipelines. To this end, it is most comparable to": "MarkItDown 是一個輕量級 Python 工具，可將各種文件轉換為 Markdown，以供 LLM 與相關文字分析流程使用。就此而言，它最接近",
+            ", but with a focus on preserving important document structure and content as Markdown (including: headings, lists, tables, links, etc.) While the output is often reasonably presentable and human-friendly, it is meant to be consumed by text analysis tools -- and may not be the best option for high-fidelity document conversions for human consumption.": "，但更重視將重要的文件結構與內容保留為 Markdown（包括標題、清單、表格、連結等）。輸出通常相當易讀、對人友好，但它主要供文字分析工具使用，未必是面向人類閱讀的高保真文件轉換最佳選擇。",
+            "MarkItDown currently supports the conversion from:": "MarkItDown 目前支援從以下來源轉換：",
+            "Images (EXIF metadata and OCR)": "圖片（EXIF metadata 與 OCR）",
+            "Audio (EXIF metadata and speech transcription)": "音訊（EXIF metadata 與語音轉錄）",
+            "Text-based formats (CSV, JSON, XML)": "文字型格式（CSV、JSON、XML）",
+            "ZIP files (iterates over contents)": "ZIP 文件（會遍歷內容）",
+            "Youtube URLs": "YouTube URL",
+            "... and more!": "……以及更多！",
+            "Why Markdown?": "為什麼是 Markdown？",
+            "Markdown is extremely close to plain text, with minimal markup or formatting, but still": "Markdown 非常接近純文字，標記與格式化都很少，但仍然",
+            "provides a way to represent important document structure. Mainstream LLMs, such as": "能夠表示重要的文件結構。主流 LLM，例如",
+            "speak": "使用",
+            "\" Markdown, and often incorporate Markdown into their": "」Markdown，並且經常在",
+            "responses unprompted. This suggests that they have been trained on vast amounts of": "回覆中主動使用 Markdown。這表示它們曾在大量",
+            "Markdown-formatted text, and understand it well. As a side benefit, Markdown conventions": "Markdown 格式文字上訓練，並且很理解這種格式。附帶好處是，Markdown 慣例",
+            "are also highly token-efficient.": "也非常節省 token。",
+            "Prerequisites": "前置需求",
+            "MarkItDown requires Python 3.10 or higher. It is recommended to use a virtual environment to avoid dependency conflicts.": "MarkItDown 需要 Python 3.10 或更高版本。建議使用虛擬環境，以避免依賴衝突。",
+            "With the standard Python installation, you can create and activate a virtual environment using the following commands:": "使用標準 Python 安裝時，可以用以下命令建立並啟用虛擬環境：",
+            "If using": "如果使用",
+            ", you can create a virtual environment with:": "，可以用以下命令建立虛擬環境：",
+            "NOTE: Be sure to use 'uv pip install' rather than just 'pip install' to install packages in this virtual environment": "注意：在這個虛擬環境中安裝套件時，請務必使用 `uv pip install`，而不是只使用 `pip install`",
+            "If you are using Anaconda, you can create a virtual environment with:": "如果使用 Anaconda，可以用以下命令建立虛擬環境：",
+            "Installation": "安裝",
+            "To install MarkItDown, use pip:": "若要安裝 MarkItDown，請使用 pip：",
+            ". Alternatively, you can install it from the source:": "。或者，也可以從原始碼安裝：",
+            "Usage": "用法",
+            "Command-Line": "命令列",
+            "Or use": "或使用",
+            "to specify the output file:": "指定輸出文件：",
+            "You can also pipe content:": "也可以透過管線傳入內容：",
+            "Optional Dependencies": "可選依賴",
+            "MarkItDown has optional dependencies for activating various file formats. Earlier in this document, we installed all optional dependencies with the": "MarkItDown 有一些可選依賴，用於啟用各種文件格式。本文前面使用",
+            "option. However, you can also install them individually for more control. For example:": "選項安裝了全部可選依賴。不過，你也可以逐個安裝，以獲得更細的控制。例如：",
+            "will install only the dependencies for PDF, DOCX, and PPTX files.": "只會安裝 PDF、DOCX 與 PPTX 文件所需的依賴。",
+            "At the moment, the following optional dependencies are available:": "目前可用的可選依賴如下：",
+            "Installs all optional dependencies": "安裝所有可選依賴",
+            "Installs dependencies for PowerPoint files": "安裝 PowerPoint 文件所需依賴",
+            "Installs dependencies for Word files": "安裝 Word 文件所需依賴",
+            "Installs dependencies for Excel files": "安裝 Excel 文件所需依賴",
+            "Installs dependencies for older Excel files": "安裝舊版 Excel 文件所需依賴",
+            "Installs dependencies for PDF files": "安裝 PDF 文件所需依賴",
+            "Installs dependencies for Outlook messages": "安裝 Outlook 訊息所需依賴",
+            "Installs dependencies for Azure Document Intelligence": "安裝 Azure Document Intelligence 所需依賴",
+            "Installs dependencies for Azure Content Understanding": "安裝 Azure Content Understanding 所需依賴",
+            "Installs dependencies for audio transcription of wav and mp3 files": "安裝 wav 與 mp3 文件音訊轉錄所需依賴",
+            "Installs dependencies for fetching YouTube video transcription": "安裝擷取 YouTube 影片轉錄所需依賴",
+            "Plugins": "外掛",
+            "MarkItDown also supports 3rd-party plugins. Plugins are disabled by default. To list installed plugins:": "MarkItDown 也支援第三方外掛。外掛預設停用。若要列出已安裝的外掛：",
+            "To enable plugins use:": "若要啟用外掛，請使用：",
+            "To find available plugins, search GitHub for the hashtag": "若要尋找可用外掛，請在 GitHub 搜尋 hashtag",
+            ". To develop a plugin, see": "。若要開發外掛，請參閱",
+            "markitdown-ocr Plugin": "markitdown-ocr 外掛",
+            "plugin adds OCR support to PDF, DOCX, PPTX, and XLSX converters, extracting text from embedded images using LLM Vision — the same": "外掛為 PDF、DOCX、PPTX 與 XLSX 轉換器新增 OCR 支援，使用 LLM Vision 從嵌入圖片中擷取文字，採用與 MarkItDown 圖片描述功能相同的",
+            "pattern that MarkItDown already uses for image descriptions. No new ML libraries or binary dependencies required.": "模式。無需新的 ML 函式庫或二進位依賴。",
+            "Installation:": "安裝：",
+            "or any OpenAI-compatible client": "或任何相容 OpenAI 的用戶端",
+            "Usage:": "用法：",
+            "Pass the same": "傳入與圖片描述相同的",
+            "and": "與",
+            "you would use for image descriptions:": "：",
+            "If no": "如果沒有提供",
+            "is provided the plugin still loads, but OCR is silently skipped and the standard built-in converter is used instead.": "，外掛仍會載入，但會靜默略過 OCR，改用標準內建轉換器。",
+            "The": "這個",
+            "See": "請參閱",
+            "for detailed documentation.": "取得詳細文件。",
+            "Azure Content Understanding": "Azure Content Understanding",
+            "provides higher-quality conversion with structured field extraction (YAML front matter), multi-modal support (documents, images, audio, video), and configurable analyzers.": "提供更高品質的轉換，支援結構化欄位擷取（YAML front matter）、多模態輸入（文件、圖片、音訊、影片）與可配置分析器。",
+            "Install:": "安裝：",
+            "When to use Content Understanding": "何時使用 Content Understanding",
+            "Content Understanding is ideal when you need capabilities beyond what built-in or Document Intelligence converters provide:": "當你需要超出內建轉換器或 Document Intelligence 轉換器能力的功能時，Content Understanding 很適合：",
+            "Audio and video files": "音訊與影片文件",
+            "— CU is the only option for video, and the higher-quality cloud option for audio. Built-in converters have no video support and only basic audio transcription.": "— CU 是影片的唯一選項，也是音訊更高品質的雲端選項。內建轉換器不支援影片，且只提供基本音訊轉錄。",
+            "Structured field extraction": "結構化欄位擷取",
+            "analyzers extract domain-specific fields (invoice amounts, receipt dates, contract clauses) serialized as YAML front matter. Neither built-in nor Doc Intel integration exposes fields.": "分析器會擷取特定領域欄位（發票金額、收據日期、合約條款），並序列化為 YAML front matter。內建轉換器與 Doc Intel 整合都不會公開欄位。",
+            "Prebuilt": "預建",
+            "custom-built": "自訂建置",
+            "Higher-quality document extraction": "更高品質的文件擷取",
+            "— Cloud-based layout analysis and OCR for scanned PDFs, complex tables, and multi-page documents.": "— 針對掃描 PDF、複雜表格與多頁文件，提供雲端版面分析與 OCR。",
+            "Single API for all modalities": "所有模態共用單一 API",
+            "handles documents, images, audio, and video with automatic analyzer routing.": "會處理文件、圖片、音訊與影片，並自動路由到合適的分析器。",
+            "Capability": "能力",
+            "Built-in converters": "內建轉換器",
+            "Azure Document Intelligence": "Azure Document Intelligence",
+            "Document conversion": "文件轉換",
+            "Offline, format-specific extraction": "離線、依格式擷取",
+            "Cloud layout extraction": "雲端版面擷取",
+            "Cloud multimodal extraction": "雲端多模態擷取",
+            "Structured fields": "結構化欄位",
+            "Not available": "不可用",
+            "Not exposed by this integration": "此整合不公開",
+            "YAML front matter from analyzer fields": "來自分析器欄位的 YAML front matter",
+            "Custom analyzers": "自訂分析器",
+            "Not configurable in this integration": "此整合不可配置",
+            "Supported with": "支援使用",
+            "Audio and video": "音訊與影片",
+            "Basic audio, no video": "基本音訊，不支援影片",
+            "Not supported": "不支援",
+            "Audio and video analyzers": "音訊與影片分析器",
+            "Cost": "成本",
+            "Local compute only": "僅本機運算",
+            "Billable Azure API calls": "可計費的 Azure API 呼叫",
+            "CLI:": "命令列：",
+            "Python API:": "Python API：",
+            "# Zero-config — auto-selects analyzer per file type": "# 零配置 — 依文件類型自動選擇分析器",
+            "# documents → prebuilt-documentSearch": "# 文件 → prebuilt-documentSearch",
+            "# video → prebuilt-videoSearch": "# 影片 → prebuilt-videoSearch",
+            "# audio → prebuilt-audioSearch": "# 音訊 → prebuilt-audioSearch",
+            "With a custom analyzer": "使用自訂分析器",
+            "(for domain-specific field extraction):": "（用於特定領域欄位擷取）：",
+            "# Output includes YAML front matter with extracted fields:": "# 輸出包含帶有擷取欄位的 YAML front matter：",
+            "# <!-- page 1 -->": "# <!-- 第 1 頁 -->",
+            "When": "當",
+            "is set, the converter automatically scopes it to compatible file types based on the analyzer's modality. Incompatible types (e.g., audio files with a document analyzer) auto-route to default prebuilt analyzers.": "設定後，轉換器會根據分析器模態自動限制為相容文件類型。不相容的類型（例如使用文件分析器處理音訊文件）會自動路由到預設預建分析器。",
+            "Cost note:": "成本注意事項：",
+            "Each": "每次",
+            "call for a CU-routed format is a billable Azure API call. Use": "呼叫只要路由到 CU 格式，就是可計費的 Azure API 呼叫。請使用",
+            "to restrict which formats route to CU:": "限制哪些格式會路由到 CU：",
+            "# only PDFs use CU": "# 只有 PDF 使用 CU",
+            "More information about Azure Content Understanding can be found": "可在",
+            "here": "此處",
+            "To use Microsoft Document Intelligence for conversion:": "若要使用 Microsoft Document Intelligence 進行轉換：",
+            "More information about how to set up an Azure Document Intelligence Resource can be found": "可在",
+            "Python API": "Python API",
+            "Basic usage in Python:": "Python 基本用法：",
+            "# Set to True to enable plugins": "# 設為 True 以啟用外掛",
+            "Document Intelligence conversion in Python:": "在 Python 中使用 Document Intelligence 轉換：",
+            "To use Large Language Models for image descriptions (currently only for pptx and image files), provide": "若要使用大型語言模型生成圖片描述（目前僅支援 pptx 與圖片文件），請提供",
+            ":": "：",
+            "Docker": "Docker",
+            "Contributing": "貢獻",
+            "This project welcomes contributions and suggestions. Most contributions require you to agree to a": "本專案歡迎貢獻與建議。多數貢獻需要你同意",
+            "Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us": "Contributor License Agreement（CLA），聲明你有權且實際授予我們",
+            "the rights to use your contribution. For details, visit": "使用你貢獻內容的權利。詳情請造訪",
+            "When you submit a pull request, a CLA bot will automatically determine whether you need to provide": "提交合併請求時，CLA bot 會自動判斷你是否需要提供",
+            "a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions": "CLA，並在 PR 上加入適當標記（例如狀態檢查、留言）。只需依照 bot 提供的",
+            "provided by the bot. You will only need to do this once across all repos using our CLA.": "指示操作即可。對所有使用我們 CLA 的倉庫，你只需要做一次。",
+            "This project has adopted the": "本專案採用",
+            "Microsoft Open Source Code of Conduct": "Microsoft 開源行為準則",
+            "For more information see the": "更多資訊請參閱",
+            "Code of Conduct FAQ": "行為準則 FAQ",
+            "or": "或",
+            "contact": "聯絡",
+            "with any additional questions or comments.": "提出其他問題或意見。",
+            "How to Contribute": "如何貢獻",
+            "You can help by looking at issues or helping review PRs. Any issue or PR is welcome, but we have also marked some as 'open for contribution' and 'open for reviewing' to help facilitate community contributions. These are of course just suggestions and you are welcome to contribute in any way you like.": "你可以透過查看議題或協助審查 PR 來幫忙。任何議題或 PR 都歡迎，不過我們也標記了一些 `open for contribution` 與 `open for reviewing`，以便促進社群貢獻。這些當然只是建議，你可以用任何喜歡的方式貢獻。",
+            "All": "全部",
+            "Especially Needs Help from Community": "特別需要社群協助",
+            "Issues": "議題",
+            "All Issues": "所有議題",
+            "Issues open for contribution": "開放貢獻的議題",
+            "PRs": "PR",
+            "All PRs": "所有 PR",
+            "PRs open for reviewing": "開放審查的 PR",
+            "Running Tests and Checks": "執行測試與檢查",
+            "Navigate to the MarkItDown package:": "切換到 MarkItDown 套件：",
+            "in your environment and run tests:": "到你的環境中並執行測試：",
+            "Other ways of installing hatch: https://hatch.pypa.io/dev/install/": "其他安裝 hatch 的方式：https://hatch.pypa.io/dev/install/",
+            "(Alternative) Use the Devcontainer which has all the dependencies installed:": "（替代方案）使用已安裝所有依賴的 Devcontainer：",
+            "Reopen the project in Devcontainer and run:": "在 Devcontainer 中重新開啟專案並執行：",
+            "Run pre-commit checks before submitting a PR:": "提交 PR 前執行 pre-commit 檢查：",
+            "Security Considerations": "安全注意事項",
+            "MarkItDown performs I/O with the privileges of the current process. Like": "MarkItDown 會以目前程序的權限執行 I/O。像",
+            ", it will access resources that the process itself can access.": "一樣，它會存取程序本身能存取的資源。",
+            "Sanitize your inputs:": "清理你的輸入：",
+            "Do not pass untrusted input directly to MarkItDown. If any part of the input may be controlled by an untrusted user or system, such as in hosted or server-side applications, it must be validated and restricted before calling MarkItDown. Depending on your environment, this may include restricting file paths, limiting URI schemes and network destinations, and blocking access to private, loopback, link-local, or metadata-service addresses.": "不要將不受信任的輸入直接傳給 MarkItDown。如果輸入的任何部分可能受不受信任的使用者或系統控制，例如托管或伺服器端應用，就必須先驗證並限制，然後再呼叫 MarkItDown。依你的環境而定，這可能包括限制文件路徑、限制 URI scheme 與網路目的地，以及阻擋對私有、loopback、link-local 或 metadata-service 地址的存取。",
+            "Call only the conversion method you need:": "只呼叫你需要的轉換方法：",
+            "Prefer the narrowest conversion API that fits your use case. MarkItDown's": "優先使用最符合用途、範圍最窄的轉換 API。MarkItDown 的",
+            "method is intentionally permissive and can handle local files, remote URIs, and byte streams. If your application only needs to read local files, call": "方法刻意設計得較寬鬆，可以處理本機文件、遠端 URI 與位元組串流。如果你的應用只需要讀取本機文件，請改呼叫",
+            "instead. If you need more control over URI fetching, call": "。如果你需要更細控制 URI 擷取，請自行呼叫",
+            "yourself and pass the response object to": "並將回應物件傳給",
+            ". For maximum control, open a stream to the input you want converted and call": "。若要最大控制權，請為要轉換的輸入開啟串流並呼叫",
+            "Contributing 3rd-party Plugins": "貢獻第三方外掛",
+            "You can also contribute by creating and sharing 3rd party plugins. See": "你也可以透過建立並分享第三方外掛來貢獻。詳情請參閱",
+            "for more details.": "。",
+            "Trademarks": "商標",
+            "This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft": "本專案可能包含專案、產品或服務的商標或 logo。經授權使用 Microsoft",
+            "trademarks or logos is subject to and must follow": "商標或 logo 時，必須遵守",
+            "Microsoft's Trademark & Brand Guidelines": "Microsoft 商標與品牌指南",
+            "Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.": "在本專案修改版本中使用 Microsoft 商標或 logo，不得造成混淆或暗示 Microsoft 贊助。",
+            "Any use of third-party trademarks or logos are subject to those third-party's policies.": "任何第三方商標或 logo 的使用均受該第三方政策約束。"
+        };
+    }
+
     function getMcpRegistryTranslations() {
         return {
             ...(I18N?.[CONFIG.LANG]?.public?.static || {}),
             ...(I18N?.[CONFIG.LANG]?.mcp?.static || {}),
+            ...(isMcpMarkitdownDetailPage() ? getMcpMarkitdownDetailTranslations() : {}),
             ...(I18N?.[CONFIG.LANG]?.mcp?.title?.static || {})
         };
     }
 
     function transMcpRegistryPageText() {
-        if (!isMcpRegistryPage() || !document.body) return false;
+        if (!isMcpDynamicPage() || !document.body) return false;
 
         const dict = getMcpRegistryTranslations();
         const attributeNames = [
@@ -32973,6 +33185,86 @@ I18N["zh-TW"]["repository/agents"] = {
 
         document.querySelectorAll(rootSelector).forEach(visit);
         translated = transMcpRegistryContextTitle(dict) || translated;
+        translated = transMcpMarkitdownBadges() || translated;
+        return translated;
+    }
+
+    function transMcpMarkitdownBadges() {
+        if (!isMcpMarkitdownDetailPage()) return false;
+
+        const makeBadgeDataUri = (label, message, color, labelWidth, messageWidth) => {
+            const width = labelWidth + messageWidth;
+            const svg = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="20" role="img" aria-label="${label}: ${message}">
+                    <linearGradient id="s" x2="0" y2="100%">
+                        <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+                        <stop offset="1" stop-opacity=".1"/>
+                    </linearGradient>
+                    <clipPath id="r">
+                        <rect width="${width}" height="20" rx="3" fill="#fff"/>
+                    </clipPath>
+                    <g clip-path="url(#r)">
+                        <rect width="${labelWidth}" height="20" fill="#555"/>
+                        <rect x="${labelWidth}" width="${messageWidth}" height="20" fill="${color}"/>
+                        <rect width="${width}" height="20" fill="url(#s)"/>
+                    </g>
+                    <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
+                        <text aria-hidden="true" x="${labelWidth * 5}" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="${Math.max(labelWidth - 10, 20) * 10}">${label}</text>
+                        <text x="${labelWidth * 5}" y="140" transform="scale(.1)" textLength="${Math.max(labelWidth - 10, 20) * 10}">${label}</text>
+                        <text aria-hidden="true" x="${(labelWidth + messageWidth / 2) * 10}" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="${Math.max(messageWidth - 10, 20) * 10}">${message}</text>
+                        <text x="${(labelWidth + messageWidth / 2) * 10}" y="140" transform="scale(.1)" textLength="${Math.max(messageWidth - 10, 20) * 10}">${message}</text>
+                    </g>
+                </svg>
+            `.replace(/\s{2,}/g, ' ').trim();
+            return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+        };
+        const badgeMap = [
+            {
+                match: "https://img.shields.io/pypi/v/markitdown.svg",
+                altMatches: ["PyPI", "PyPI 版本"],
+                src: makeBadgeDataUri("PyPI 版本", "v0.1.6", "#fe7d37", 72, 52),
+                alt: "PyPI 版本"
+            },
+            {
+                match: "https://img.shields.io/pypi/dd/markitdown",
+                altMatches: ["PyPI - Downloads", "下載量"],
+                src: makeBadgeDataUri("下載量", "334k/日", "#4c1", 54, 72),
+                alt: "下載量"
+            },
+            {
+                match: "https://img.shields.io/badge/Built%20by-AutoGen%20Team-blue",
+                altMatches: ["Built by AutoGen Team", "構建者 AutoGen Team"],
+                src: makeBadgeDataUri("構建者", "AutoGen Team", "#007ec6", 54, 106),
+                alt: "構建者 AutoGen Team"
+            }
+        ];
+        let translated = false;
+
+        document.querySelectorAll('img[data-canonical-src], img[src*="img.shields.io"], img[src*="camo.githubusercontent.com"]').forEach(img => {
+            const canonical = img.getAttribute('data-canonical-src') || "";
+            const src = img.getAttribute('src') || "";
+            const alt = img.getAttribute('alt') || "";
+            const target = badgeMap.find(item => (
+                canonical === item.match ||
+                src === item.src ||
+                item.altMatches.includes(alt)
+            ));
+            if (!target) return;
+
+            if (src !== target.src) {
+                img.setAttribute('src', target.src);
+                translated = true;
+            }
+            if (canonical !== target.match) {
+                img.setAttribute('data-canonical-src', target.match);
+                translated = true;
+            }
+            if (img.getAttribute('alt') !== target.alt) {
+                img.setAttribute('alt', target.alt);
+                translated = true;
+            }
+        });
+
         return translated;
     }
 
