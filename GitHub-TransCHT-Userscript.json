@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.12.28
+// @version      local.12.42
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -32819,8 +32819,57 @@ I18N["zh-TW"]["repository/agents"] = {
         );
     }
 
+    function isMcpNetdataDetailPage() {
+        return (
+            State.pageConfig?.currentPageType === 'mcp' &&
+            /^\/mcp\/netdata\/mcp-server\/?$/i.test(window.location.pathname)
+        );
+    }
+
+    function isMcpContext7DetailPage() {
+        return (
+            State.pageConfig?.currentPageType === 'mcp' &&
+            /^\/mcp\/upstash\/context7\/?$/i.test(window.location.pathname)
+        );
+    }
+
+    function isMcpChromeDevToolsDetailPage() {
+        return (
+            State.pageConfig?.currentPageType === 'mcp' &&
+            /^\/mcp\/ChromeDevTools\/chrome-devtools-mcp\/?$/i.test(window.location.pathname)
+        );
+    }
+
+    function isMcpPlaywrightDetailPage() {
+        return (
+            State.pageConfig?.currentPageType === 'mcp' &&
+            /^\/mcp\/microsoft\/playwright-mcp\/?$/i.test(window.location.pathname)
+        );
+    }
+
+    function isMcpGithubDetailPage() {
+        return (
+            State.pageConfig?.currentPageType === 'mcp' &&
+            /^\/mcp\/github\/github-mcp-server\/?$/i.test(window.location.pathname)
+        );
+    }
+
+    function isMcpAnyDetailPage() {
+        return (
+            isMcpMarkitdownDetailPage() ||
+            isMcpNetdataDetailPage() ||
+            isMcpContext7DetailPage() ||
+            isMcpChromeDevToolsDetailPage() ||
+            isMcpPlaywrightDetailPage() ||
+            isMcpGithubDetailPage()
+        );
+    }
+
     function isMcpDynamicPage() {
-        return isMcpRegistryPage() || isMcpMarkitdownDetailPage();
+        return (
+            isMcpRegistryPage() ||
+            isMcpAnyDetailPage()
+        );
     }
 
     function setupMcpRegistryPageInteractions() {
@@ -33072,11 +33121,835 @@ I18N["zh-TW"]["repository/agents"] = {
         };
     }
 
+    function getMcpCommonDetailTranslations() {
+        return {
+            "MCP registry": "MCP 互聯",
+            "MCP Registry": "MCP 互聯",
+            "Resources": "資源",
+            "About": "關於",
+            "Repository": "倉庫",
+            "Documentation": "文件",
+            "Install MCP server": "安裝 MCP 伺服器",
+            "Install": "安裝",
+            "Install in VS Code": "安裝到 VS Code",
+            "Install in VS Code Insiders": "安裝到 VS Code 測試版",
+            "Contact support": "獲取支持",
+            "Get support": "獲取支持",
+            "Overview": "概覽",
+            "Prerequisites": "前置需求",
+            "Requirements": "需求",
+            "Installation": "安裝",
+            "Install and run": "安裝與執行",
+            "Getting Started": "開始使用",
+            "Getting started": "開始使用",
+            "Configuration": "配置",
+            "Usage": "用法",
+            "Examples": "範例",
+            "Tools": "工具",
+            "Available Tools": "可用工具",
+            "Features": "功能",
+            "Key Features": "主要功能",
+            "Troubleshooting": "疑難排解",
+            "Contributing": "貢獻",
+            "License": "授權",
+            "Disclaimer": "免責聲明",
+            "Security": "安全",
+            "Security Considerations": "安全注意事項",
+            "Manual Installation": "手動安裝",
+            "Manual installation": "手動安裝",
+            "Quickstart": "快速開始",
+            "Quick Start": "快速開始",
+            "Notes": "注意事項",
+            "Note": "注意",
+            "Warning": "警告",
+            "Authentication": "驗證",
+            "Transport": "傳輸",
+            "Client Configuration": "用戶端配置",
+            "Connection Configuration": "連線配置",
+            "Environment Variables": "環境變數",
+            "Environment variables": "環境變數",
+            "Command line options": "命令列選項",
+            "Command-line options": "命令列選項",
+            "Configuring in VS Code": "在 VS Code 中配置",
+            "Configuring in Cursor": "在 Cursor 中配置",
+            "Configuring in Claude Desktop": "在 Claude Desktop 中配置",
+            "Click the button to install:": "點擊按鈕進行安裝：",
+            "Or install manually:": "或手動安裝：",
+            "For more information, see the": "更多資訊請參閱",
+            "Learn more": "了解更多",
+            "Debugging": "除錯",
+            "Prompts": "提示詞",
+            "Known limitations": "已知限制",
+            "Advanced Usage": "進階用法",
+            "Project wide": "專案範圍",
+            "Globally": "全域",
+            "Default": "預設",
+            "Type": "類型",
+            "Description": "說明",
+            "Name": "名稱"
+        };
+    }
+
+    function getMcpNetdataDetailTranslations() {
+        return {
+            "Real-time infrastructure monitoring with metrics, logs, alerts, and ML-based anomaly detection.": "透過指標、日誌、警報與基於 ML 的異常偵測，進行即時基礎設施監控。",
+            "Netdata MCP Server": "Netdata MCP 伺服器",
+            "Netdata MCP": "Netdata MCP",
+            "Netdata provides": "Netdata 提供",
+            "servers that enable AI assistants to interact with your infrastructure monitoring data. You can connect via:": "伺服器，讓 AI 助理可以與你的基礎設施監控資料互動。你可以透過以下方式連接：",
+            "Netdata Cloud": "Netdata Cloud",
+            "— A single cloud-hosted endpoint at": "— 位於",
+            "with full visibility across all your nodes. No bridges, no firewall changes.": "的單一雲端託管端點，可完整查看所有節點。無需 bridge，也不需要修改防火牆。",
+            "Local Agent or Parent": "本機 Agent 或 Parent",
+            "Connect directly to any Netdata Agent or Parent": "直接連接到你網路中的任何 Netdata Agent 或 Parent",
+            "(v2.6.0+) on your network at": "（v2.6.0+），地址為",
+            "Both options provide comprehensive access to all": "這兩種選項都能透過 MCP 全面存取所有",
+            "available observability data through MCP:": "可用的可觀測性資料：",
+            "Node Discovery": "節點探索",
+            "- Hardware specifications, operating system details, version information, streaming topology, and associated metadata": "- 硬體規格、作業系統詳細資訊、版本資訊、串流拓撲與相關 metadata",
+            "Metrics Discovery": "指標探索",
+            "- Full-text search capabilities across contexts, instances, dimensions, and labels": "- 可在 contexts、instances、dimensions 與 labels 中進行全文搜尋",
+            "Function Discovery": "功能探索",
+            "- Access to system functions including": "- 可存取系統功能，包括",
+            "etc.": "等。",
+            "Alert Discovery": "警報探索",
+            "- Real-time visibility into active and raised alerts": "- 即時查看作用中與已觸發的警報",
+            "Metrics Queries": "指標查詢",
+            "- Complex aggregations and groupings with ML-powered anomaly detection": "- 支援複雜彙總與分組，並具備 ML 驅動的異常偵測",
+            "Logs Queries": "日誌查詢",
+            "- Full-text search and pattern matching across system and application logs": "- 可在系統與應用程式日誌中進行全文搜尋與模式匹配",
+            "Configuration & Troubleshooting": "配置與疑難排解",
+            "- Access to running configuration, logs, and diagnostic information": "- 可存取執行中配置、日誌與診斷資訊",
+            "Access Methods": "存取方式",
+            "Netdata Cloud (recommended)": "Netdata Cloud（推薦）",
+            "Best for production environments and comprehensive visibility:": "最適合生產環境與完整可見性：",
+            "Single endpoint": "單一端點",
+            "access to all your nodes from your Netdata Space": "可從你的 Netdata Space 存取所有節點",
+            "Works from anywhere": "可從任何地方使用",
+            "no VPN or direct network access needed": "不需要 VPN 或直接網路存取",
+            "Secure by default": "預設安全",
+            "uses your existing Netdata Cloud authentication": "使用你既有的 Netdata Cloud 驗證",
+            "Always up-to-date": "永遠保持最新",
+            "automatic updates and latest features": "自動更新並取得最新功能",
+            "Simple setup": "設定簡單",
+            "just add the endpoint to your MCP client": "只需將端點加入你的 MCP 用戶端",
+            "Prerequisites:": "前置需求：",
+            "Netdata Cloud account with your nodes connected": "已有連接節點的 Netdata Cloud 帳戶",
+            "Netdata Cloud API token": "Netdata Cloud API token",
+            "How it works:": "運作方式：",
+            "Your AI assistant connects to Netdata Cloud's MCP endpoint": "你的 AI 助理連接到 Netdata Cloud 的 MCP 端點",
+            "Netdata Cloud routes queries to your connected nodes": "Netdata Cloud 會將查詢路由到已連接的節點",
+            "You get unified access to metrics, logs, alerts, and functions across your infrastructure": "你可以統一存取整個基礎設施中的指標、日誌、警報與功能",
+            "Local Agent/Parent": "本機 Agent / Parent",
+            "Best for development, testing, or environments requiring direct access:": "最適合開發、測試，或需要直接存取的環境：",
+            "Direct connection": "直接連線",
+            "to a specific Netdata Agent or Parent": "連接到指定的 Netdata Agent 或 Parent",
+            "No cloud dependency": "不依賴雲端",
+            "works entirely within your network": "完全在你的網路內運作",
+            "Local data only": "僅本機資料",
+            "access to metrics and logs from that node": "存取該節點的指標與日誌",
+            "Requires network access": "需要網路存取",
+            "AI assistant must reach the Agent/Parent directly": "AI 助理必須能直接連到 Agent / Parent",
+            "Manual setup": "手動設定",
+            "configure each endpoint individually": "需要逐一配置每個端點",
+            "Netdata Agent or Parent v2.6.0+ running": "執行中的 Netdata Agent 或 Parent v2.6.0+",
+            "HTTP access to the Agent/Parent": "可透過 HTTP 存取 Agent / Parent",
+            "Optional bearer token for authentication": "可選的 bearer token 用於驗證",
+            "Your AI assistant connects directly to the Agent/Parent's MCP endpoint": "你的 AI 助理直接連接到 Agent / Parent 的 MCP 端點",
+            "Queries are handled locally by that Netdata instance": "查詢由該 Netdata 實例在本機處理",
+            "You get access to that node's metrics, logs, and functions": "你可以存取該節點的指標、日誌與功能",
+            "Troubleshooting your infrastructure with AI": "使用 AI 排查基礎設施問題",
+            "Visualize the MCP in action!": "看看 MCP 實際運作！",
+            "This demo shows an AI assistant using Netdata's MCP to investigate performance issues and analyze system metrics in real-time.": "此 demo 展示 AI 助理使用 Netdata 的 MCP 即時調查效能問題並分析系統指標。",
+            "Quick Start": "快速開始",
+            "Choose your deployment method:": "選擇你的部署方式：",
+            "For Netdata Cloud:": "Netdata Cloud：",
+            "Generate an API token from your Netdata Cloud space": "從你的 Netdata Cloud space 生成 API token",
+            "Configure your MCP client with the Cloud endpoint": "使用 Cloud 端點配置你的 MCP 用戶端",
+            "For Local Agent/Parent:": "本機 Agent / Parent：",
+            "Ensure Netdata v2.6.0+ is running": "確認 Netdata v2.6.0+ 正在執行",
+            "Configure your MCP client with the local endpoint": "使用本機端點配置你的 MCP 用戶端",
+            "For detailed setup instructions, see the configuration examples below.": "詳細設定說明請參閱下方配置範例。",
+            "Environment Setup": "環境設定",
+            "Create": "建立",
+            "file in the project root to define configuration variables.": "文件於專案根目錄，用來定義配置變數。",
+            "Variable": "變數",
+            "Required": "必填",
+            "Default": "預設",
+            "Description": "說明",
+            "yes": "是",
+            "no": "否",
+            "Your Netdata Cloud API token": "你的 Netdata Cloud API token",
+            "Server listening port": "伺服器監聽連接埠",
+            "Base URL for SSE endpoints": "SSE 端點的 base URL",
+            "Base URL for Netdata Cloud": "Netdata Cloud 的 base URL",
+            "Set to disable SSE authentication": "設為此值可停用 SSE 驗證",
+            "Enabling SSE": "啟用 SSE",
+            "To enable SSE, set the": "若要啟用 SSE，請設定",
+            "environment variable to any string value.": "環境變數為任何字串值。",
+            "Starting the SSE Server": "啟動 SSE 伺服器",
+            "The SSE server starts automatically and listens on the configured port (default: 19990).": "SSE 伺服器會自動啟動，並在配置的連接埠監聽（預設：19990）。",
+            "SSE Endpoint Configuration": "SSE 端點配置",
+            "Clients connect to the SSE endpoint:": "用戶端連接到 SSE 端點：",
+            "Netdata Cloud Endpoint": "Netdata Cloud 端點",
+            "Local Agent Endpoint": "本機 Agent 端點",
+            "HTTP Transport": "HTTP 傳輸",
+            "Running with Docker Compose": "使用 Docker Compose 執行",
+            "Build and run the Netdata MCP server using Docker Compose.": "使用 Docker Compose 建置並執行 Netdata MCP 伺服器。",
+            "Or Build from Source": "或從原始碼建置",
+            "Build the Docker image locally:": "在本機建置 Docker image：",
+            "Running with Docker": "使用 Docker 執行",
+            "Docker Run": "Docker Run",
+            "Run the Netdata MCP server container:": "執行 Netdata MCP 伺服器容器：",
+            "Using Docker for Development": "使用 Docker 進行開發",
+            "Build and run in one command:": "用一條命令完成建置與執行：",
+            "View logs:": "查看日誌：",
+            "Stop the service:": "停止服務：",
+            "Docker Environment Variables": "Docker 環境變數",
+            "When running with Docker, make sure to pass your environment variables:": "使用 Docker 執行時，請確認傳入你的環境變數：",
+            "Setup with your AI Client": "設定你的 AI 用戶端",
+            "Connect using Netdata Cloud": "使用 Netdata Cloud 連接",
+            "If you want to query your Netdata Cloud space, use the provided cloud MCP endpoint directly.": "如果想查詢你的 Netdata Cloud space，請直接使用提供的 Cloud MCP 端點。",
+            "It requires your Netdata Cloud API token.": "這需要你的 Netdata Cloud API token。",
+            "Connect using a Local Agent/Parent": "使用本機 Agent / Parent 連接",
+            "If you want to connect to a local Netdata Agent or Parent, use the local endpoint URL.": "如果想連接本機 Netdata Agent 或 Parent，請使用本機端點 URL。",
+            "The target Agent or Parent must be reachable from your MCP client.": "目標 Agent 或 Parent 必須可從你的 MCP 用戶端連上。",
+            "VS Code": "VS Code",
+            "One-click installation:": "一鍵安裝：",
+            "One-click install for Netdata Cloud:": "Netdata Cloud 一鍵安裝：",
+            "One-click install for local Agent/Parent:": "本機 Agent / Parent 一鍵安裝：",
+            "Manual Installation": "手動安裝",
+            "To enable the Netdata MCP server in VS Code, add one of the following configurations to your user settings.": "若要在 VS Code 中啟用 Netdata MCP 伺服器，請將以下任一配置加入使用者設定。",
+            "Netdata Cloud configuration:": "Netdata Cloud 配置：",
+            "Local Agent/Parent configuration:": "本機 Agent / Parent 配置：",
+            "MCP Client Settings": "MCP 用戶端設定",
+            "Cursor": "Cursor",
+            "Go to": "前往",
+            "and click": "並點擊",
+            "Add a new MCP Server with the following configuration:": "使用以下配置新增 MCP Server：",
+            "This will add a new MCP Server called": "這會新增一個名為",
+            "MCP config example for Netdata Cloud:": "Netdata Cloud 的 MCP 配置範例：",
+            "MCP config example for local Agent/Parent:": "本機 Agent / Parent 的 MCP 配置範例：",
+            "Claude Desktop": "Claude Desktop",
+            "To set up the MCP server in Claude Desktop, you need to modify the configuration file manually.": "若要在 Claude Desktop 中設定 MCP 伺服器，需要手動修改配置文件。",
+            "The location of the configuration file depends on your operating system:": "配置文件的位置取決於你的作業系統：",
+            "macOS": "macOS",
+            "Windows": "Windows",
+            "Add one of the following configurations to the": "將以下任一配置加入",
+            "file:": "文件：",
+            "This enables Claude Desktop to use the Netdata MCP server.": "這會讓 Claude Desktop 可使用 Netdata MCP 伺服器。",
+            "Available Tools": "可用工具",
+            "Tool": "工具",
+            "Purpose": "用途",
+            "Returns a list of available functions with descriptions": "回傳可用功能及其說明清單",
+            "Execute a function with parameters": "使用參數執行功能",
+            "Returns all metrics exposed by the Netdata API": "回傳 Netdata API 公開的所有指標",
+            "Returns full node info, including streaming status": "回傳完整節點資訊，包括串流狀態",
+            "Returns active alerts in the node": "回傳節點中的作用中警報",
+            "Returns all raised alerts in the node": "回傳節點中所有已觸發的警報",
+            "Runs a full-context query on all metrics": "對所有指標執行完整上下文查詢",
+            "Runs a logs query with Lucene syntax": "使用 Lucene 語法執行日誌查詢",
+            "For Netdata Cloud:": "Netdata Cloud：",
+            "Requires a valid Netdata Cloud API token": "需要有效的 Netdata Cloud API token",
+            "For local Agent/Parent:": "本機 Agent / Parent：",
+            "Requires network access to the Agent/Parent": "需要能網路存取 Agent / Parent",
+            "Optional bearer token may be required depending on configuration": "依配置不同，可能需要可選 bearer token",
+            "Metrics Scoring": "指標評分",
+            "- Root cause analysis leveraging anomaly detection and metric correlations": "- 利用異常偵測與指標關聯進行根因分析",
+            "Alert History": "警報歷史",
+            "- Complete alert transition logs and state changes": "- 完整的警報轉換日誌與狀態變更",
+            "Function Execution": "功能執行",
+            "- Execute Netdata functions on any connected node (requires Netdata Parent)": "- 在任何已連接節點上執行 Netdata 功能（需要 Netdata Parent）",
+            "Log Exploration": "日誌探索",
+            "- Access logs from any connected node (requires Netdata Parent)": "- 存取任何已連接節點的日誌（需要 Netdata Parent）",
+            "AI assistants have different visibility depending on where they connect:": "AI 助理的可見範圍取決於它們連接的位置：",
+            "Connection": "連線",
+            "Visibility": "可見範圍",
+            "All nodes across your entire infrastructure": "整個基礎設施中的所有節點",
+            "All child nodes connected to that parent": "連接到該 parent 的所有子節點",
+            "Only that specific node": "僅該特定節點",
+            "Feature": "功能",
+            "Cloud MCP": "Cloud MCP",
+            "Agent/Parent MCP": "Agent / Parent MCP",
+            "Scope": "範圍",
+            "All nodes": "所有節點",
+            "Single agent/parent": "單一 agent / parent",
+            "Endpoint": "端點",
+            "Transport": "傳輸",
+            "Streamable HTTP": "可串流 HTTP",
+            "HTTP, SSE, WebSocket": "HTTP、SSE、WebSocket",
+            "Authentication": "驗證",
+            "Cloud API token (": "Cloud API token（",
+            "Local MCP API key (mandatory when bearer protection is enabled)": "本機 MCP API key（啟用 bearer 保護時必填）",
+            "Network access": "網路存取",
+            "Internet only": "僅需網際網路",
+            "Direct access to Netdata IP required": "需要直接存取 Netdata IP",
+            "Local setup": "本機設定",
+            "None": "無",
+            "Bridge may be needed for some clients": "某些用戶端可能需要 bridge",
+            "Connect AI assistants to your entire Netdata Cloud": "將 AI 助理連接到你的整個 Netdata Cloud",
+            "infrastructure through a single MCP endpoint —": "基礎設施，透過單一 MCP 端點完成連接 —",
+            "no local setup, no bridges, no firewall changes.": "無需本機設定、無需 bridge、也不需要修改防火牆。",
+            "Netdata Cloud account": "Netdata Cloud 帳戶",
+            "with a Paid plan": "使用付費方案",
+            "API token": "API token",
+            "— Create one in API Tokens settings": "— 可在 API Tokens settings 中建立",
+            "Nodes claimed to Netdata Cloud": "已宣告到 Netdata Cloud 的節點",
+            "The Cloud MCP server can only access nodes": "Cloud MCP 伺服器只能存取",
+            "connected to your Netdata Cloud space": "已連接到你的 Netdata Cloud space 的節點",
+            "Transport:": "傳輸：",
+            "Streamable HTTP (stateless, works behind load balancers and CDNs)": "可串流 HTTP（無狀態，可在負載平衡器與 CDN 後方運作）",
+            "All requests to the Cloud MCP endpoint require a": "所有對 Cloud MCP 端點的請求都需要在",
+            "Bearer token in the": "中帶上 Bearer token",
+            "header:": "標頭：",
+            "Creating an API Token": "建立 API Token",
+            "Log in to": "登入",
+            "Click your profile picture in the bottom-left corner": "點擊左下角的個人頭像",
+            "Select": "選擇",
+            "Navigate to the": "前往",
+            "section": "區段",
+            "Create a new token with": "建立具有以下 scope 的新 token：",
+            "Copy and store the token securely — you won't be able to see it again": "複製並安全保存 token，之後將無法再次查看",
+            "For more details, see": "更多詳情請參閱",
+            "Connection Configuration": "連線配置",
+            "Claude Code (One-Line Setup)": "Claude Code（一行設定）",
+            "If you're using": "如果你使用",
+            ", you can register the Netdata Cloud MCP server from any session with a": "，可以從任何 session 用",
+            "you can register the Netdata Cloud MCP server from any session with a single command — no JSON editing required:": "你可以從任何 session 用單一命令註冊 Netdata Cloud MCP 伺服器，無需編輯 JSON：",
+            "single command — no JSON editing required:": "單一命令註冊 Netdata Cloud MCP 伺服器，無需編輯 JSON：",
+            "Replace": "將",
+            "with your": "替換為你的",
+            "with a token that has": "替換為具有以下 scope 的 token：",
+            "— see": "— 請參閱",
+            "above, or go directly to": "上方說明，或直接前往",
+            "Netdata Cloud.": "Netdata Cloud。",
+            "Scope flags:": "Scope 旗標：",
+            "— available in all your projects on this machine (recommended for personal use)": "— 可在此機器上的所有專案中使用（推薦個人使用）",
+            "available in all your projects on this machine (recommended for personal use)": "可在此機器上的所有專案中使用（推薦個人使用）",
+            "— this project only, private to you (default when": "— 僅限此專案，且只對你可見（省略",
+            "this project only, private to you (default when": "僅限此專案，且只對你可見（省略",
+            "is omitted)": "時的預設值）",
+            "— this project, checked into": "— 此專案，會寫入",
+            "this project, checked into": "此專案，會寫入",
+            "and shared with your team": "並與你的團隊共享",
+            "and shared with your team (do not use with a raw token; reference an environment variable instead)": "並與你的團隊共享（不要搭配原始 token 使用；請改引用環境變數）",
+            "(do not use with a raw token; reference an environment variable instead)": "（不要搭配原始 token 使用；請改引用環境變數）",
+            "do not use with a raw token; reference an environment variable instead": "不要搭配原始 token 使用；請改引用環境變數",
+            "Useful companion commands:": "實用的輔助命令：",
+            "Restart the Claude Code session after adding the server so the new tools load.": "新增伺服器後，請重新啟動 Claude Code session，讓新工具載入。",
+            "For more Claude Code options — including connecting to a local Netdata Agent or Parent — see the": "更多 Claude Code 選項，包括連接到本機 Netdata Agent 或 Parent，請參閱",
+            "Claude Code guide": "Claude Code 指南",
+            "Generic MCP Client (HTTP Transport)": "通用 MCP 用戶端（HTTP 傳輸）",
+            "For any MCP client that supports Streamable HTTP transport:": "適用於任何支援可串流 HTTP 傳輸的 MCP 用戶端：",
+            "Clients Requiring stdio Bridge": "需要 stdio bridge 的用戶端",
+            "For MCP clients that only support stdio transport, use": "對於只支援 stdio 傳輸的 MCP 用戶端，請使用",
+            "as a bridge:": "作為 bridge：",
+            "Replace with your API token (must have": "替換為你的 API token（必須具有",
+            "API token": "API token",
+            "(must have": "（必須具有",
+            "Cloud MCP Troubleshooting": "Cloud MCP 疑難排解",
+            "Authentication Errors": "驗證錯誤",
+            "Verify your API token has": "確認你的 API token 具有",
+            "Ensure the token is passed as": "確認 token 是以下列方式傳遞：",
+            "(not as a query parameter)": "（而不是 query 參數）",
+            "Check that your Netdata Cloud subscription includes a space in a Paid plan": "確認你的 Netdata Cloud 訂閱包含付費方案中的 space",
+            "No Nodes Visible": "沒有可見節點",
+            "Confirm your nodes are claimed to Netdata Cloud and appear in the web dashboard": "確認你的節點已宣告到 Netdata Cloud，並出現在 Web 儀表板中",
+            "Check that agents are online and streaming to Cloud": "確認 agents 在線並正在串流到 Cloud",
+            "Connection Issues": "連線問題",
+            "Connection Issues:": "連線問題：",
+            "The endpoint uses HTTPS — no": "端點使用 HTTPS，因此不需要",
+            "flag is needed": "旗標",
+            "Test connectivity:": "測試連線：",
+            "Local Agent or Parent MCP": "本機 Agent 或 Parent MCP",
+            "Connect directly to any Netdata Agent or Parent on your network. All Netdata Agents and Parents (v2.6.0+) include a built-in MCP server at": "直接連接到你網路中的任何 Netdata Agent 或 Parent。所有 Netdata Agent 與 Parent（v2.6.0+）都在以下位置內建 MCP 伺服器：",
+            "Netdata generates a local MCP API key automatically on startup. Authentication behavior depends on": "Netdata 啟動時會自動生成本機 MCP API key。驗證行為取決於",
+            "Bearer protection disabled (": "Bearer 保護已停用（",
+            "): anonymous MCP access works for non-sensitive operations (metrics, alerts, node info). The API key unlocks sensitive operations.": "）：匿名 MCP 存取可用於非敏感操作（指標、警報、節點資訊）。API key 可解鎖敏感操作。",
+            "anonymous MCP access works for non-sensitive operations (metrics, alerts, node info). The API key unlocks sensitive operations.": "匿名 MCP 存取可用於非敏感操作（指標、警報、節點資訊）。API key 可解鎖敏感操作。",
+            "Bearer protection enabled (": "Bearer 保護已啟用（",
+            "): anonymous MCP access is rejected on all MCP transports (HTTP, SSE, WebSocket). The API key is required for all MCP requests.": "）：所有 MCP 傳輸（HTTP、SSE、WebSocket）都會拒絕匿名 MCP 存取。所有 MCP 請求都必須提供 API key。",
+            "anonymous MCP access is rejected on all MCP transports (HTTP, SSE, WebSocket). The API key is required for all MCP requests.": "所有 MCP 傳輸（HTTP、SSE、WebSocket）都會拒絕匿名 MCP 存取。所有 MCP 請求都必須提供 API key。",
+            "Transport Options": "傳輸選項",
+            "Netdata implements the MCP protocol with multiple transport options:": "Netdata 以多種傳輸選項實作 MCP 協議：",
+            "Use Case": "使用場景",
+            "Version Requirement": "版本需求",
+            "Original transport, requires nd-mcp bridge for stdio clients": "原始傳輸方式；stdio 用戶端需要 nd-mcp bridge",
+            "Direct connection from AI clients supporting HTTP": "支援 HTTP 的 AI 用戶端可直接連線",
+            "Server-Sent Events for real-time streaming": "用於即時串流的 Server-Sent Events",
+            "Direct Connection": "直接連線",
+            "Direct Connection (v2.7.2+):": "直接連線（v2.7.2+）：",
+            "AI clients that support HTTP or SSE transports can connect directly to Netdata": "支援 HTTP 或 SSE 傳輸的 AI 用戶端可以直接連接到 Netdata",
+            "Bridge Required": "需要 Bridge",
+            "Bridge Required:": "需要 Bridge：",
+            "All clients that only support stdio need the": "所有只支援 stdio 的用戶端都需要",
+            "AI clients that only support stdio need the": "只支援 stdio 的 AI 用戶端需要",
+            "(stdio-to-websocket) or": "（stdio-to-websocket）或",
+            "(stdio-to-http or stdio-to-sse) bridge": "（stdio-to-http 或 stdio-to-sse）bridge",
+            "Preferred authentication": "推薦驗證方式",
+            "Preferred authentication:": "推薦驗證方式：",
+            "pass the MCP API key via": "透過以下方式傳遞 MCP API key：",
+            "Backward compatibility": "向後相容",
+            "Backward compatibility:": "向後相容：",
+            "WebSocket also accepts": "WebSocket 也接受",
+            "Keep this only for legacy clients, since URL query strings are more likely to be logged by proxies and tools.": "這只應保留給舊版用戶端，因為 URL query string 更容易被代理與工具記錄。",
+            "Keep this only for legacy clients, since URL query string is more likely to be logged by proxies and tools.": "這只應保留給舊版用戶端，因為 URL query string 更容易被代理與工具記錄。",
+            "MCP Access Control in": "MCP 存取控制位置：",
+            "Use a dedicated MCP ACL to control network-level MCP access independently from dashboard and streaming:": "使用專用 MCP ACL，可獨立於 dashboard 與 streaming 之外控制網路層級的 MCP 存取：",
+            "controls": "控制",
+            ", and MCP WebSocket protocol access.": "以及 MCP WebSocket 協議存取。",
+            "and MCP WebSocket protocol access.": "以及 MCP WebSocket 協議存取。",
+            "is still the global first gate for all features.": "仍然是所有功能的全域第一道閘門。",
+            "For internet-facing Parents, keep": "對於面向網際網路的 Parent，請將",
+            "restricted to trusted networks.": "限制在受信任網路內。",
+            "Official MCP Remote Client (mcp-remote)": "官方 MCP Remote Client（mcp-remote）",
+            "If your AI client doesn't support HTTP/SSE directly and you don't want to use": "如果你的 AI 用戶端不直接支援 HTTP / SSE，且你不想使用",
+            ", you can use the official MCP remote client (requires Netdata v2.7.2+):": "，可以使用官方 MCP remote client（需要 Netdata v2.7.2+）：",
+            "The --allow-http flag is required for non-HTTPS connections. Only use this on trusted networks as traffic will not be encrypted.": "--allow-http 旗標是非 HTTPS 連線所必需的。只應在受信任網路中使用，因為流量不會被加密。",
+            "flag is required for non-HTTPS connections. Only use this on trusted networks as traffic will not be encrypted.": "旗標是非 HTTPS 連線所必需的。只應在受信任網路中使用，因為流量不會被加密。",
+            "Finding the nd-mcp Bridge": "尋找 nd-mcp Bridge",
+            "With the new HTTP and SSE transports, many AI clients can now connect directly to Netdata without nd-mcp. Check your AI client's documentation to see if it supports direct HTTP or SSE connections.": "有了新的 HTTP 與 SSE 傳輸，許多 AI 用戶端現在可以不透過 nd-mcp 直接連接到 Netdata。請查看你的 AI 用戶端文件，確認它是否支援直接 HTTP 或 SSE 連線。",
+            "The nd-mcp bridge is only needed for AI clients that:": "只有符合以下情況的 AI 用戶端才需要 nd-mcp bridge：",
+            "Only support": "只支援",
+            "communication (like some desktop applications)": "通訊（例如某些桌面應用程式）",
+            "Cannot use HTTP or SSE transports directly": "無法直接使用 HTTP 或 SSE 傳輸",
+            "Cannot use": "無法使用",
+            "The nd-mcp bridge needs to be available on your desktop or laptop where your AI client runs. Since most users run Netdata on remote servers rather than their local machines, you have two options:": "nd-mcp bridge 必須位於執行 AI 用戶端的桌上型電腦或筆電上。由於多數使用者會在遠端伺服器而不是本機執行 Netdata，因此你有兩個選項：",
+            "bridge needs to be available on your desktop or laptop where your AI client runs. Since most users run Netdata on remote servers rather than their local machines, you have two options:": "bridge 必須位於執行 AI 用戶端的桌上型電腦或筆電上。由於多數使用者會在遠端伺服器而不是本機執行 Netdata，因此你有兩個選項：",
+            "If you have Netdata installed locally": "如果你已在本機安裝 Netdata",
+            "Use the existing nd-mcp": "使用既有的 nd-mcp",
+            "If Netdata is only on remote servers": "如果 Netdata 只在遠端伺服器上",
+            "Build nd-mcp on your desktop/laptop": "請在你的桌上型電腦 / 筆電上建置 nd-mcp",
+            "Option 1: Using Existing nd-mcp": "選項 1：使用既有 nd-mcp",
+            "Common locations:": "常見位置：",
+            "Native packages (apt, yum, etc.):": "原生套件（apt、yum 等）：",
+            "Static installations:": "靜態安裝：",
+            "Built from source:": "從原始碼建置：",
+            "If you have Netdata installed on your desktop/laptop, find the existing bridge:": "如果你的桌上型電腦 / 筆電已安裝 Netdata，請尋找既有 bridge：",
+            "Option 2: Building nd-mcp for Your Desktop": "選項 2：為你的桌面環境建置 nd-mcp",
+            "If you don't have Netdata installed locally you can build just the nd-mcp bridge. Netdata provides three implementations - choose the one that best fits your environment:": "如果本機沒有安裝 Netdata，可以只建置 nd-mcp bridge。Netdata 提供三種實作，請選擇最適合你環境的一種：",
+            "Go bridge (recommended)": "Go bridge（推薦）",
+            "Go bridge source code": "Go bridge 原始碼",
+            "Node.js bridge": "Node.js bridge",
+            "Node.js bridge source code": "Node.js bridge 原始碼",
+            "Python bridge": "Python bridge",
+            "Python bridge source code": "Python bridge 原始碼",
+            "Produces a single binary with no dependencies": "產生無依賴的單一 binary",
+            "Creates executable named": "建立名為以下名稱的可執行檔",
+            "Creates script named": "建立名為以下名稱的 script",
+            "Includes both": "同時包含",
+            "Includes": "包含",
+            "Good if you already have Node.js installed": "如果你已安裝 Node.js，這是好選擇",
+            "Good if you already have Python installed": "如果你已安裝 Python，這是好選擇",
+            "To build:": "建置方式：",
+            "Important:": "重要：",
+            "When configuring your AI client, use the full absolute path to the executable:": "配置 AI 用戶端時，請使用可執行檔的完整絕對路徑：",
+            "Go bridge:": "Go bridge：",
+            "Node.js bridge:": "Node.js bridge：",
+            "Python bridge:": "Python bridge：",
+            "Verify the Bridge Works": "確認 Bridge 正常運作",
+            "Once you have nd-mcp (either from existing installation or built), test it:": "取得 nd-mcp 後（無論來自既有安裝或自行建置），請先測試：",
+            "Using MCP Remote Client": "使用 MCP Remote Client",
+            "The official MCP remote client (": "官方 MCP remote client（",
+            ") is an alternative bridge that enables stdio-only AI clients to connect to Netdata's HTTP and SSE transports (requires Netdata v2.7.2+). Unlike nd-mcp which only supports WebSocket, mcp-remote provides broader transport compatibility.": "）是一個替代 bridge，讓只支援 stdio 的 AI 用戶端可以連接到 Netdata 的 HTTP 與 SSE 傳輸（需要 Netdata v2.7.2+）。不同於只支援 WebSocket 的 nd-mcp，mcp-remote 提供更廣泛的傳輸相容性。",
+            "When to Use MCP Remote": "何時使用 MCP Remote",
+            "when:": "時：",
+            "Your AI client only supports stdio communication": "你的 AI 用戶端只支援 stdio 通訊",
+            "You want to use HTTP or SSE transports instead of WebSocket": "你想使用 HTTP 或 SSE 傳輸，而不是 WebSocket",
+            "You're running Netdata v2.7.2 or later": "你正在執行 Netdata v2.7.2 或更新版本",
+            "You don't want to build/install nd-mcp": "你不想建置 / 安裝 nd-mcp",
+            "No installation required -": "無需安裝 —",
+            "runs via": "透過",
+            "Transport strategy": "傳輸策略",
+            "Transport strategies": "傳輸策略",
+            "supports multiple transport strategies:": "支援多種傳輸策略：",
+            "Common Options": "常用選項",
+            "Option": "選項",
+            "Example": "範例",
+            "Use HTTP transport": "使用 HTTP 傳輸",
+            "Use SSE transport": "使用 SSE 傳輸",
+            "Allow non-HTTPS connections": "允許非 HTTPS 連線",
+            "(required for HTTP URLs)": "（HTTP URL 必需）",
+            "Add custom headers (for authentication)": "新增自訂標頭（用於驗證）",
+            "Enable debug logging": "啟用除錯日誌",
+            "OAuth callback host (default: localhost)": "OAuth callback host（預設：localhost）",
+            "OAuth callback port (optional)": "OAuth callback port（可選）",
+            "Port number": "連接埠號",
+            "(tries SSE, falls back to HTTP)": "（嘗試 SSE，失敗後退回 HTTP）",
+            "For Netdata MCP, pass the API key via the Authorization header:": "對 Netdata MCP，請透過 Authorization 標頭傳遞 API key：",
+            "Clear Authentication State:": "清除驗證狀態：",
+            "Spaces in Arguments:": "含空格的參數：",
+            "Some AI clients (Cursor, Claude Desktop on Windows) have issues with spaces in arguments. Use environment variables as a workaround:": "某些 AI 用戶端（Cursor、Windows 上的 Claude Desktop）在參數含空格時會出問題。可用環境變數作為替代方案：",
+            "Or in AI client configurations:": "或在 AI 用戶端配置中：",
+            "Version Management": "版本管理",
+            "Always use the latest version:": "一律使用最新版本：",
+            "For more details, see the": "更多詳細資訊請參閱",
+            "official mcp-remote documentation": "官方 mcp-remote 文件",
+            "Finding Your API Key": "尋找你的 API Key",
+            "You need the MCP API key when bearer protection is enabled. When bearer protection is disabled, the key is still needed for sensitive functions like logs and live system information. Netdata automatically generates an API key on startup. The key is stored in a file on the Netdata server you want to connect to.": "啟用 bearer 保護時，你需要 MCP API key。停用 bearer 保護時，敏感功能（如日誌與即時系統資訊）仍需要此 key。Netdata 會在啟動時自動生成 API key。這個 key 會存放在你要連接的 Netdata 伺服器上的文件中。",
+            "You need the API key of the Netdata you will connect to (usually a Netdata Parent).": "你需要將要連接的 Netdata API key（通常是 Netdata Parent）。",
+            "Note:": "注意：",
+            "This temporary API key mechanism will eventually be replaced by integration with Netdata Cloud.": "這個臨時 API key 機制最終會被 Netdata Cloud 整合取代。",
+            "Find the API Key File": "尋找 API Key 文件",
+            "Copy the API Key": "複製 API Key",
+            "The file contains a UUID that looks like:": "這個文件包含一個看起來像這樣的 UUID：",
+            "Copy this entire string - you'll need it for your AI client configuration.": "複製整個字串，你會在 AI 用戶端配置中用到它。",
+            "No API Key File?": "沒有 API Key 文件？",
+            "If the file doesn't exist:": "如果文件不存在：",
+            "Ensure you have a recent version of Netdata": "確認你使用的是較新的 Netdata 版本",
+            "Restart Netdata:": "重新啟動 Netdata：",
+            "Check the file again after restart": "重啟後再次檢查該文件",
+            "AI Client Configuration": "AI 用戶端配置",
+            "AI clients can connect to Netdata MCP in different ways depending on their transport support:": "AI 用戶端可依其傳輸支援情況，用不同方式連接 Netdata MCP：",
+            "Direct Connection (HTTP/SSE)": "直接連線（HTTP / SSE）",
+            "For AI clients that support HTTP or SSE transports:": "適用於支援 HTTP 或 SSE 傳輸的 AI 用戶端：",
+            "Or for SSE:": "或 SSE：",
+            "Using nd-mcp Bridge (stdio)": "使用 nd-mcp Bridge（stdio）",
+            "For AI clients that only support stdio:": "適用於只支援 stdio 的 AI 用戶端：",
+            "Using Official MCP Remote Client": "使用官方 MCP Remote Client",
+            "Replace:": "替換：",
+            "Your Netdata instance IP/hostname": "你的 Netdata 實例 IP / hostname",
+            "The API key from the file mentioned above": "上方文件中的 API key",
+            "With your actual nd-mcp path (if using the bridge)": "你的實際 nd-mcp 路徑（如果使用 bridge）",
+            "Multiple MCP Servers": "多個 MCP 伺服器",
+            "You can configure multiple Netdata instances:": "你可以配置多個 Netdata 實例：",
+            "Legacy Query String Support": "舊版 Query String 支援",
+            "For compatibility with older tooling, Netdata still accepts the": "為了相容舊工具，Netdata 仍接受",
+            "query parameter on the": "query 參數，用於",
+            "endpoints. New integrations should prefer the": "端點。新的整合應優先使用",
+            "header, but the query-string form remains available if you are migrating gradually.": "標頭；但如果你正在逐步遷移，query-string 形式仍可使用。",
+            "AI Client Specific Documentation": "AI 用戶端專用文件",
+            "For detailed configuration instructions for specific AI clients, see:": "特定 AI 用戶端的詳細配置說明請參閱：",
+            "Chat Clients:": "聊天用戶端：",
+            "Claude Desktop - Anthropic's desktop AI assistant": "Claude Desktop - Anthropic 的桌面 AI 助理",
+            "Anthropic's desktop AI assistant": "Anthropic 的桌面 AI 助理",
+            "Cursor - AI-powered code editor": "Cursor - AI 驅動的程式碼編輯器",
+            "AI-powered code editor": "AI 驅動的程式碼編輯器",
+            "Visual Studio Code - VS Code with MCP support": "Visual Studio Code - 支援 MCP 的 VS Code",
+            "VS Code with MCP support": "支援 MCP 的 VS Code",
+            "JetBrains IDEs - IntelliJ, PyCharm, WebStorm, etc.": "JetBrains IDEs - IntelliJ、PyCharm、WebStorm 等",
+            "IntelliJ, PyCharm, WebStorm, etc.": "IntelliJ、PyCharm、WebStorm 等",
+            "DevOps Copilots:": "DevOps Copilots：",
+            "Claude Code - Anthropic's CLI for Claude": "Claude Code - Anthropic 的 Claude CLI",
+            "Anthropic's CLI for Claude": "Anthropic 的 Claude CLI",
+            "Gemini CLI - Google's Gemini CLI": "Gemini CLI - Google 的 Gemini CLI",
+            "Google's Gemini CLI": "Google 的 Gemini CLI",
+            "OpenAI Codex CLI - OpenAI's Codex CLI": "OpenAI Codex CLI - OpenAI 的 Codex CLI",
+            "OpenAI's Codex CLI": "OpenAI 的 Codex CLI",
+            "Crush - Charmbracelet's glamorous terminal AI": "Crush - Charmbracelet 的終端 AI",
+            "Charmbracelet's glamorous terminal AI": "Charmbracelet 的終端 AI",
+            "OpenCode - SST's terminal-based AI assistant": "OpenCode - SST 的終端式 AI 助理",
+            "SST's terminal-based AI assistant": "SST 的終端式 AI 助理",
+            "Each guide includes specific transport support matrices and configuration examples optimized for that client.": "每份指南都包含針對該用戶端最佳化的傳輸支援矩陣與配置範例。"
+        };
+    }
+
+    function getMcpContext7DetailTranslations() {
+        return {
+            "Context7 Platform - Up-to-date Code Docs For Any Prompt": "Context7 平台 - 為任何提示詞提供最新程式碼文件",
+            "Add to Cursor": "加入 Cursor",
+            "Up-to-date code docs for any prompt": "為任何提示詞提供最新程式碼文件",
+            "Context7 MCP Server": "Context7 MCP 伺服器",
+            "Context7 pulls up-to-date, version-specific documentation and code examples straight from the source — and places them directly into your prompt.": "Context7 會直接從來源取得最新、特定版本的文件與程式碼範例，並把它們放進你的提示詞中。",
+            "Without Context7": "沒有 Context7",
+            "Why Context7?": "為什麼選擇 Context7？",
+            "LLMs rely on outdated or generic information about the libraries you use. You get:": "LLM 往往依賴過時或籠統的函式庫資訊。你得到的是：",
+            "❌ Code examples are outdated and based on year-old training data": "❌ 程式碼範例過時，基於數年前的訓練資料",
+            "❌ Hallucinated APIs that don't even exist": "❌ 編造出根本不存在的 API",
+            "❌ Generic answers for old package versions": "❌ 針對舊套件版本的籠統回答",
+            "✅ With Context7": "✅ 使用 Context7",
+            "Context7 MCP pulls up-to-date, version-specific documentation and code examples straight from the source — and places them directly into your prompt.": "Context7 MCP 會直接從來源取得最新、特定版本的文件與程式碼範例，並把它們放進你的提示詞中。",
+            "Add": "加入",
+            "to your prompt in Cursor:": "到你在 Cursor 的提示詞中：",
+            "Context7 fetches up-to-date code examples and documentation right into your LLM's context. No tab-switching, no hallucinated APIs that don't exist, no outdated code generation.": "Context7 會把最新的程式碼範例與文件直接抓進你的 LLM 上下文。不用切換分頁，不會出現不存在的幻想 API，也不會生成過時程式碼。",
+            "Context7 fetches up-to-date React documentation and code examples directly into your LLM's context.": "Context7 會把最新的 React 文件與程式碼範例直接抓進你的 LLM 上下文。",
+            "No tab-switching, no hallucinated APIs that don't exist, no outdated code generations.": "不用切換分頁，不會出現不存在的幻想 API，也不會生成過時程式碼。",
+            "No tab-switching, no hallucinated APIs that don't exist, no outdated code generation.": "不用切換分頁，不會出現不存在的幻想 API，也不會生成過時程式碼。",
+            "Works in two modes:": "可用兩種模式運作：",
+            "CLI + Skills": "CLI + Skills",
+            "— installs a skill that guides your agent to fetch docs using": "— 安裝一個 skill，引導你的代理使用",
+            "CLI commands (no MCP required)": "CLI 命令擷取文件（不需要 MCP）",
+            "— registers a Context7 MCP server so your agent can call documentation tools natively": "— 註冊 Context7 MCP 伺服器，讓你的代理可以原生呼叫文件工具",
+            "Getting Started": "開始使用",
+            "Requirements": "需求",
+            "Node.js >= v18.0.0": "Node.js >= v18.0.0",
+            "API Key Recommended:": "建議使用 API Key：",
+            "Get a free API key at": "可在以下位置取得免費 API key：",
+            "for higher rate limits.": "以獲得更高的速率限制。",
+            "Set up Context7 for your coding agents with a single command. The": "用一條命令為你的編程代理設定 Context7。",
+            "CLI requires Node.js 18 or newer.": "CLI 需要 Node.js 18 或更新版本。",
+            "Authenticates via OAuth, generates an API key, and installs the appropriate skill. You can choose between CLI + Skills or MCP mode. Use": "它會透過 OAuth 驗證、生成 API key，並安裝適合的 skill。你可以在 CLI + Skills 或 MCP 模式之間選擇。使用",
+            "to target a specific agent.": "指定特定代理。",
+            "To remove the generated setup later, run": "若之後要移除生成的設定，請執行",
+            "If you globally installed the CLI with": "如果你已用以下方式全域安裝 CLI：",
+            "remove that package separately with": "請另外用以下命令移除該套件：",
+            "To configure manually, use the Context7 server URL": "若要手動配置，請使用 Context7 伺服器 URL",
+            "with your MCP client and pass your API key via the": "搭配你的 MCP 用戶端，並透過",
+            "header. See the link below for client-specific setup instructions.": "標頭傳遞 API key。請參閱下方連結取得各用戶端的設定說明。",
+            "Manual Installation / Other Clients →": "手動安裝 / 其他用戶端 →",
+            "Important Tips": "重要提示",
+            "Use Library Id": "使用函式庫 ID",
+            "If you already know exactly which library you want to use, add its Context7 ID to your prompt. That way, Context7 can skip the library-matching step and directly retrieve docs.": "如果你已經確切知道要使用哪個函式庫，請把它的 Context7 ID 加入提示詞。這樣 Context7 就能跳過函式庫匹配步驟，直接擷取文件。",
+            "The slash syntax tells Context7 exactly which library to load docs for.": "斜線語法會明確告訴 Context7 要載入哪個函式庫的文件。",
+            "Specify a Version": "指定版本",
+            "To get documentation for a specific library version, just mention the version in your prompt:": "若要取得特定函式庫版本的文件，只要在提示詞中提到版本即可：",
+            "Context7 will automatically match the appropriate version.": "Context7 會自動匹配適合的版本。",
+            "Add a Rule": "新增規則",
+            "If you installed via": "如果你是透過",
+            "a skill is configured automatically that triggers Context7 for library-related questions. To set up a rule manually instead, add one to your coding agent:": "安裝，系統會自動配置一個 skill，讓函式庫相關問題觸發 Context7。若要改為手動設定規則，請在你的編程代理中新增一條規則：",
+            "Cursor:": "Cursor：",
+            "Claude Code:": "Claude Code：",
+            "Or the equivalent in your coding agent": "或你的編程代理中的對等位置",
+            "Example rule:": "範例規則：",
+            "Installing via Smithery": "透過 Smithery 安裝",
+            "To install Context7 MCP Server for Claude Desktop automatically via": "若要透過以下工具為 Claude Desktop 自動安裝 Context7 MCP Server：",
+            "Install in Cursor": "在 Cursor 中安裝",
+            "Install in Windsurf": "在 Windsurf 中安裝",
+            "Install in VS Code": "安裝到 VS Code",
+            "Install in VS Code Insiders": "安裝到 VS Code 測試版",
+            "Manual Configuration": "手動配置",
+            "Stdio Transport": "Stdio 傳輸",
+            "Remote Server Connection": "遠端伺服器連線",
+            "SSE Transport": "SSE 傳輸",
+            "Streamable HTTP Transport": "可串流 HTTP 傳輸",
+            "Available Tools": "可用工具",
+            "CLI Commands": "CLI 命令",
+            "Searches the Context7 index by library name and returns matching libraries with their IDs.": "依函式庫名稱搜尋 Context7 索引，並回傳匹配的函式庫及其 ID。",
+            "Retrieves documentation for a library using a Context7-compatible library ID (e.g.,": "使用 Context7 相容的函式庫 ID 擷取函式庫文件（例如",
+            "MCP Tools": "MCP 工具",
+            "Resolves a general library name into a Context7-compatible library ID.": "將一般函式庫名稱解析為 Context7 相容的函式庫 ID。",
+            "(required): The user's question or task (used to rank results by relevance)": "（必填）：使用者的問題或任務（用於按相關性排序結果）",
+            "(required): The name of the library to search for": "（必填）：要搜尋的函式庫名稱",
+            "Retrieves documentation for a library using a Context7-compatible library ID.": "使用 Context7 相容的函式庫 ID 擷取函式庫文件。",
+            "(required): Exact Context7-compatible library ID (e.g.,": "（必填）：精確的 Context7 相容函式庫 ID（例如",
+            "(required): The question or task to get relevant documentation for": "（必填）：用來取得相關文件的問題或任務",
+            "Fetches up-to-date documentation for a library.": "擷取函式庫的最新文件。",
+            "More Documentation": "更多文件",
+            "CLI Reference": "CLI 參考",
+            "Full CLI documentation": "完整 CLI 文件",
+            "MCP Clients": "MCP 用戶端",
+            "Manual MCP installation for 30+ clients": "適用於 30+ 個用戶端的手動 MCP 安裝",
+            "Adding Libraries": "新增函式庫",
+            "Submit your library to Context7": "提交你的函式庫到 Context7",
+            "Common issues and solutions": "常見問題與解法",
+            "API Reference": "API 參考",
+            "REST API documentation": "REST API 文件",
+            "Developer Guide": "開發者指南",
+            "Run Context7 MCP locally": "在本機執行 Context7 MCP",
+            "Packages": "套件",
+            "MCP server": "MCP 伺服器",
+            "CLI": "CLI",
+            "TypeScript SDK": "TypeScript SDK",
+            "Vercel AI SDK tools": "Vercel AI SDK 工具",
+            "pi.dev extension": "pi.dev 擴充功能",
+            "Development": "開發",
+            "Clone the project and install dependencies:": "複製專案並安裝依賴：",
+            "Build:": "建置：",
+            "Test:": "測試：",
+            "Run locally:": "在本機執行：",
+            "Troubleshooting": "疑難排解",
+            "Module Not Found Errors": "找不到模組錯誤",
+            "If you encounter": "如果遇到",
+            "or similar errors, try using": "或類似錯誤，請嘗試使用",
+            "instead of": "而不是",
+            "ESM Resolution Issues": "ESM 解析問題",
+            "TLS/Certificate Issues": "TLS / 憑證問題",
+            "Disclaimer": "免責聲明",
+            "Context7 is a community project. While we strive to provide accurate and up-to-date documentation, we cannot guarantee the accuracy, completeness, or security of any documentation or code examples provided.": "Context7 是一個社群專案。雖然我們致力於提供準確且最新的文件，但無法保證所提供文件或程式碼範例的準確性、完整性或安全性。",
+            "You should always review and test any code examples before using them in production.": "在生產環境使用任何程式碼範例前，都應先審查並測試。",
+            "Context7 projects are community-contributed and while we strive to maintain high quality, we cannot guarantee the accuracy, completeness, or security of all library documentation. Projects listed in Context7 are developed and maintained by their respective owners, not by Context7. If you encounter any suspicious, inappropriate, or potentially harmful content, please use the \"Report\" button on the project page to notify us immediately. We take all reports seriously and will review flagged content promptly to maintain the integrity and safety of our platform. By using Context7, you acknowledge that you do so at your own discretion and risk.": "Context7 專案由社群貢獻；雖然我們致力於維持高品質，但無法保證所有函式庫文件的準確性、完整性或安全性。列在 Context7 中的專案由各自的所有者開發與維護，而不是由 Context7 維護。如果你遇到任何可疑、不適當或可能有害的內容，請使用專案頁面的「Report」按鈕立即通知我們。我們會認真處理所有回報，並及時審查被標記的內容，以維護平台的完整性與安全性。使用 Context7 即表示你理解這是基於自己的判斷與風險。",
+            "This repository hosts the MCP server's source code. The supporting components — API backend, parsing engine, and crawling engine — are private and not part of this repository.": "此倉庫託管 MCP 伺服器的原始碼。支援元件 — API 後端、解析引擎與爬取引擎 — 均為私有，且不屬於此倉庫。",
+            "🤝 Connect with Us": "🤝 聯絡我們",
+            "Connect with Us": "聯絡我們",
+            "Stay updated and join our community:": "取得最新消息並加入我們的社群：",
+            "Follow us on X for the latest news and updates": "在 X 上追蹤我們以取得最新消息與更新",
+            "Visit our Website": "造訪我們的網站",
+            "Website": "網站",
+            "Join our Discord Community": "加入我們的 Discord 社群",
+            "Discord Community": "Discord 社群",
+            "📺 Context7 In Media": "📺 媒體中的 Context7",
+            "Context7 In Media": "媒體中的 Context7",
+            "⭐ Star History": "⭐ Star 歷史",
+            "Star History": "Star 歷史",
+            "Contributing": "貢獻",
+            "License": "授權"
+        };
+    }
+
+    function getMcpChromeDevToolsDetailTranslations() {
+        return {
+            "MCP server for Chrome DevTools": "Chrome DevTools 的 MCP 伺服器",
+            "Chrome DevTools MCP": "Chrome DevTools MCP",
+            "is a Model Context Protocol (MCP) server that lets your coding agent control and inspect a live Chrome browser.": "是一個模型上下文協議（MCP）伺服器，可讓你的編程代理控制並檢查即時 Chrome 瀏覽器。",
+            "This gives your AI coding assistant access to the full power of Chrome DevTools for reliable automation, in-depth debugging, and performance analysis.": "這讓你的 AI 編程助理能使用 Chrome DevTools 的完整能力，進行可靠自動化、深入除錯與效能分析。",
+            "Chrome DevTools MCP allows your AI coding agent to:": "Chrome DevTools MCP 可讓你的 AI 編程代理：",
+            "Verify your code changes in real time": "即時驗證你的程式碼修改",
+            "By controlling a browser, it can directly test the behavior of your application and verify that changes work as expected.": "透過控制瀏覽器，它可以直接測試應用程式行為，並確認修改是否符合預期。",
+            "Diagnose network and console errors": "診斷網路與 console 錯誤",
+            "Inspect network requests and console logs to diagnose runtime issues.": "檢查網路請求與 console 日誌，以診斷執行時問題。",
+            "Analyze runtime behavior": "分析執行時行為",
+            "Inspect the DOM, take screenshots, and evaluate JavaScript in the browser.": "檢查 DOM、擷取截圖，並在瀏覽器中評估 JavaScript。",
+            "Measure performance": "衡量效能",
+            "Use Chrome's performance tools to record traces and analyze bottlenecks.": "使用 Chrome 的效能工具記錄 trace 並分析瓶頸。",
+            "Why use Chrome DevTools MCP?": "為什麼使用 Chrome DevTools MCP？",
+            "Your coding agent can observe the actual behavior of your app in Chrome, not just infer from source code.": "你的編程代理可以觀察應用在 Chrome 中的實際行為，而不是只從原始碼推測。",
+            "This reduces guesswork and helps it make better, more targeted changes.": "這能減少猜測，幫助它做出更好、更精準的修改。",
+            "Requirements": "需求",
+            "Node.js version 22 or newer": "Node.js 22 或更新版本",
+            "Chrome stable or newer": "Chrome stable 或更新版本",
+            "Getting started": "開始使用",
+            "Add the following to your MCP client configuration:": "將以下內容加入你的 MCP 用戶端配置：",
+            "This starts Chrome DevTools MCP with a new browser profile.": "這會以新的瀏覽器設定檔啟動 Chrome DevTools MCP。",
+            "Connecting to an existing Chrome instance": "連接到既有 Chrome 實例",
+            "To connect to an existing Chrome instance, start Chrome with remote debugging enabled:": "若要連接既有 Chrome 實例，請啟動已啟用遠端除錯的 Chrome：",
+            "Then start Chrome DevTools MCP with:": "然後使用以下方式啟動 Chrome DevTools MCP：",
+            "Configuration options": "配置選項",
+            "You can pass the following options to Chrome DevTools MCP:": "你可以將以下選項傳給 Chrome DevTools MCP：",
+            "The browser URL to connect to.": "要連接的瀏覽器 URL。",
+            "Path to a user data directory for Chrome.": "Chrome 使用者資料目錄的路徑。",
+            "Run Chrome in headless mode.": "以 headless 模式執行 Chrome。",
+            "Additional arguments to pass to Chrome.": "傳給 Chrome 的其他參數。",
+            "Tools": "工具",
+            "Chrome DevTools MCP exposes tools for pages, network, console, screenshots, JavaScript evaluation, and performance traces.": "Chrome DevTools MCP 會公開頁面、網路、console、截圖、JavaScript 評估與效能 trace 相關工具。",
+            "Troubleshooting": "疑難排解",
+            "If Chrome fails to start, make sure Chrome is installed and available on your system.": "如果 Chrome 無法啟動，請確認系統已安裝並可使用 Chrome。",
+            "If the connection fails, check that the remote debugging port is reachable.": "如果連線失敗，請確認遠端除錯連接埠可以連上。"
+        };
+    }
+
+    function getMcpPlaywrightDetailTranslations() {
+        return {
+            "Automate web browsers using accessibility trees for testing and data extraction.": "使用無障礙樹自動化瀏覽器，以進行測試與資料擷取。",
+            "Playwright MCP": "Playwright MCP",
+            "A Model Context Protocol (MCP) server that provides browser automation capabilities using": "一個模型上下文協議（MCP）伺服器，使用",
+            "This server enables LLMs to interact with web pages through structured accessibility snapshots, bypassing the need for screenshots or visually-tuned models.": "此伺服器讓 LLM 能透過結構化無障礙快照與網頁互動，不需要截圖或針對視覺調整的模型。",
+            "Key Features": "主要功能",
+            "Fast and lightweight.": "快速且輕量。",
+            "Uses Playwright's accessibility tree, not pixel-based input.": "使用 Playwright 的無障礙樹，而不是基於像素的輸入。",
+            "LLM-friendly.": "對 LLM 友好。",
+            "No vision models needed, operates purely on structured data.": "不需要視覺模型，完全基於結構化資料運作。",
+            "Deterministic tool application.": "確定性的工具應用。",
+            "Avoids ambiguity common with screenshot-based approaches.": "避免截圖式方法常見的歧義。",
+            "Use Cases": "使用場景",
+            "Web navigation and form-filling": "網頁導覽與表單填寫",
+            "Data extraction from structured content": "從結構化內容擷取資料",
+            "Automated testing driven by LLMs": "由 LLM 驅動的自動化測試",
+            "General-purpose browser interaction for agents": "供代理使用的通用瀏覽器互動",
+            "Requirements": "需求",
+            "Node.js 18 or newer": "Node.js 18 或更新版本",
+            "VS Code": "VS Code",
+            "Cursor": "Cursor",
+            "Claude Desktop": "Claude Desktop",
+            "Claude Code": "Claude Code",
+            "Gemini CLI": "Gemini CLI",
+            "Codex": "Codex",
+            "Configuration": "配置",
+            "The Playwright MCP server can be configured using the following command line options.": "Playwright MCP 伺服器可使用以下命令列選項進行配置。",
+            "Options": "選項",
+            "Run browser in headless mode, headed by default": "以 headless 模式執行瀏覽器，預設為有介面模式",
+            "Browser or chrome channel to use, possible values:": "要使用的瀏覽器或 Chrome channel，可用值：",
+            "Browser profile path to use, persistent context will be used when specified": "要使用的瀏覽器設定檔路徑；指定後會使用持久化上下文",
+            "Do not use viewport size, use current browser window size": "不使用 viewport 尺寸，改用目前瀏覽器視窗尺寸",
+            "Save session into the provided storage state file and load it when launching the browser": "將 session 保存到指定的 storage state 文件，並在啟動瀏覽器時載入",
+            "Comma-separated list of additional capabilities to enable, possible values:": "要啟用的額外能力清單，以逗號分隔，可用值：",
+            "Comma-separated list of capabilities to disable, possible values:": "要停用的能力清單，以逗號分隔，可用值：",
+            "Path to the directory for output files": "輸出文件目錄路徑",
+            "Port to listen on for SSE transport": "SSE 傳輸監聽的連接埠",
+            "Port to listen on for HTTP transport": "HTTP 傳輸監聽的連接埠",
+            "Path to the sandbox directory for the filesystem tools": "filesystem 工具使用的沙盒目錄路徑",
+            "Run browser in isolated mode. Browser profile will be created in the sandbox directory and deleted after the session": "以隔離模式執行瀏覽器。瀏覽器設定檔會建立在沙盒目錄中，並在 session 後刪除",
+            "Vision mode": "視覺模式",
+            "To run the server in vision mode, pass the": "若要以視覺模式執行伺服器，請傳入",
+            "flag. This mode uses screenshots instead of accessibility snapshots.": "旗標。此模式使用截圖，而不是無障礙快照。",
+            "Programmatic usage": "程式化用法",
+            "Browser support": "瀏覽器支援",
+            "Chrome / Chromium": "Chrome / Chromium",
+            "Microsoft Edge": "Microsoft Edge",
+            "Firefox": "Firefox",
+            "WebKit": "WebKit",
+            "Tools": "工具",
+            "Interact with web pages": "與網頁互動",
+            "Navigate to a URL": "導覽到 URL",
+            "Go back to the previous page": "返回上一頁",
+            "Go forward to the next page": "前進到下一頁",
+            "Click an element": "點擊元素",
+            "Type text into editable element": "將文字輸入到可編輯元素",
+            "Take a screenshot of the current page": "擷取目前頁面的截圖",
+            "Get accessibility snapshot of the current page": "取得目前頁面的無障礙快照",
+            "Wait for text to appear": "等待文字出現",
+            "Close the page": "關閉頁面"
+        };
+    }
+
+    function getMcpGithubDetailTranslations() {
+        return {
+            "Connect AI assistants to GitHub - manage repos, issues, PRs, and workflows through natural language.": "將 AI 助理連接到 GitHub，透過自然語言管理倉庫、議題、PR 與工作流程。",
+            "GitHub MCP Server": "GitHub MCP 伺服器",
+            "GitHub's official MCP Server": "GitHub 官方 MCP 伺服器",
+            "GitHub's official Model Context Protocol (MCP) server": "GitHub 官方模型上下文協議（MCP）伺服器",
+            "The GitHub MCP Server is a Model Context Protocol (MCP) server that provides seamless integration with GitHub APIs, enabling advanced automation and interaction capabilities for developers and tools.": "GitHub MCP Server 是一個模型上下文協議（MCP）伺服器，可與 GitHub API 無縫整合，為開發者與工具提供進階自動化和互動能力。",
+            "Use Cases": "使用場景",
+            "Automating GitHub workflows and processes.": "自動化 GitHub 工作流程與程序。",
+            "Extracting and analyzing data from GitHub repositories.": "從 GitHub 倉庫擷取並分析資料。",
+            "Building AI-powered tools and applications that interact with GitHub.": "建構能與 GitHub 互動的 AI 驅動工具與應用。",
+            "Key Features": "主要功能",
+            "Repository Management:": "倉庫管理：",
+            "Browse and query repositories, branches, commits, files, and releases.": "瀏覽與查詢倉庫、分支、提交、文件和發布。",
+            "Issues and Pull Requests:": "議題與合併請求：",
+            "Create, update, list, and manage issues and pull requests.": "建立、更新、列出並管理議題與合併請求。",
+            "Actions and Workflows:": "Actions 與工作流程：",
+            "Trigger and inspect GitHub Actions workflows and runs.": "觸發並檢查 GitHub Actions 工作流程與執行紀錄。",
+            "Code Scanning and Security:": "程式碼掃描與安全：",
+            "Retrieve code scanning alerts and security-related information.": "取回程式碼掃描警報與安全相關資訊。",
+            "Notifications:": "通知：",
+            "Access and manage GitHub notifications.": "存取並管理 GitHub 通知。",
+            "Search:": "搜尋：",
+            "Search users, repositories, code, issues, and pull requests.": "搜尋使用者、倉庫、程式碼、議題與合併請求。",
+            "Prerequisites": "前置需求",
+            "A GitHub personal access token with appropriate scopes.": "具備適當 scope 的 GitHub personal access token。",
+            "Docker, if using the Docker image.": "如果使用 Docker image，則需要 Docker。",
+            "Installation": "安裝",
+            "Docker": "Docker",
+            "VS Code": "VS Code",
+            "Manual Installation": "手動安裝",
+            "Configuration": "配置",
+            "Personal Access Token": "Personal Access Token",
+            "To use the GitHub MCP Server, you must provide a GitHub personal access token.": "若要使用 GitHub MCP Server，必須提供 GitHub personal access token。",
+            "Create a new personal access token in your GitHub developer settings.": "在 GitHub 開發者設定中建立新的 personal access token。",
+            "Set the token as an environment variable:": "將 token 設為環境變數：",
+            "Tools": "工具",
+            "The GitHub MCP Server exposes tools for repositories, issues, pull requests, actions, notifications, security alerts, and search.": "GitHub MCP Server 會公開倉庫、議題、合併請求、Actions、通知、安全警報與搜尋相關工具。",
+            "Read-only tools": "唯讀工具",
+            "Write tools": "寫入工具",
+            "Repository tools": "倉庫工具",
+            "Issue tools": "議題工具",
+            "Pull request tools": "合併請求工具",
+            "Workflow tools": "工作流程工具",
+            "Security tools": "安全工具",
+            "Notification tools": "通知工具",
+            "Search tools": "搜尋工具",
+            "Remote GitHub MCP Server": "遠端 GitHub MCP Server",
+            "Local GitHub MCP Server": "本機 GitHub MCP Server",
+            "Using with VS Code": "在 VS Code 中使用",
+            "Using with Claude Desktop": "在 Claude Desktop 中使用",
+            "Using with Docker": "使用 Docker",
+            "Development": "開發",
+            "Contributing": "貢獻",
+            "License": "授權"
+        };
+    }
+
     function getMcpRegistryTranslations() {
         return {
             ...(I18N?.[CONFIG.LANG]?.public?.static || {}),
             ...(I18N?.[CONFIG.LANG]?.mcp?.static || {}),
+            ...(isMcpAnyDetailPage() ? getMcpCommonDetailTranslations() : {}),
             ...(isMcpMarkitdownDetailPage() ? getMcpMarkitdownDetailTranslations() : {}),
+            ...(isMcpNetdataDetailPage() ? getMcpNetdataDetailTranslations() : {}),
+            ...(isMcpContext7DetailPage() ? getMcpContext7DetailTranslations() : {}),
+            ...(isMcpChromeDevToolsDetailPage() ? getMcpChromeDevToolsDetailTranslations() : {}),
+            ...(isMcpPlaywrightDetailPage() ? getMcpPlaywrightDetailTranslations() : {}),
+            ...(isMcpGithubDetailPage() ? getMcpGithubDetailTranslations() : {}),
             ...(I18N?.[CONFIG.LANG]?.mcp?.title?.static || {})
         };
     }
@@ -33186,6 +34059,375 @@ I18N["zh-TW"]["repository/agents"] = {
         document.querySelectorAll(rootSelector).forEach(visit);
         translated = transMcpRegistryContextTitle(dict) || translated;
         translated = transMcpMarkitdownBadges() || translated;
+        translated = transMcpContext7Badges() || translated;
+        translated = transMcpContext7KnownFragments() || translated;
+        translated = transMcpContext7TargetedBlocks() || translated;
+        translated = transMcpNetdataSplitFragments() || translated;
+        translated = transMcpNetdataKnownFragments() || translated;
+        translated = transMcpNetdataSplitBlockFragments() || translated;
+        translated = transMcpNetdataResidualFragments() || translated;
+        translated = transMcpNetdataTargetedListItems() || translated;
+        return translated;
+    }
+
+    function transMcpNetdataKnownFragments() {
+        if (!isMcpNetdataDetailPage() || !document.body) return false;
+
+        const replacements = [
+            ["you can register the Netdata Cloud MCP server from any session with a single command — no JSON editing required:", "你可以從任何 session 用單一命令註冊 Netdata Cloud MCP 伺服器，無需編輯 JSON："],
+            ["and shared with your team (do not use with a raw token; reference an environment variable instead)", "並與你的團隊共享（不要搭配原始 token 使用；請改引用環境變數）"],
+            [/and\s+shared\s+with\s+your\s+team\s+\(do\s+not\s+use\s+with\s+a\s+raw\s+token;\s+reference\s+an\s+environment\s+variable\s+instead\)/g, "並與你的團隊共享（不要搭配原始 token 使用；請改引用環境變數）"],
+            [/do\s+not\s+use\s+with\s+a\s+raw\s+token;\s+reference\s+an\s+environment\s+variable\s+instead/g, "不要搭配原始 token 使用；請改引用環境變數"],
+            ["Check that your Netdata Cloud subscription includes a space in a Paid plan", "確認你的 Netdata Cloud 訂閱包含付費方案中的 space"],
+            [/Check\s+that\s+your\s+Netdata\s+Cloud\s+subscription\s+includes\s+a\s+space\s+in\s+a\s+Paid\s+plan/g, "確認你的 Netdata Cloud 訂閱包含付費方案中的 space"],
+            ["anonymous MCP access works for non-sensitive operations (metrics, alerts, node info). The API key unlocks sensitive operations.", "匿名 MCP 存取可用於非敏感操作（指標、警報、節點資訊）。API key 可解鎖敏感操作。"],
+            ["anonymous MCP access is rejected on all MCP transports (HTTP, SSE, WebSocket). The API key is required for all MCP requests.", "所有 MCP 傳輸（HTTP、SSE、WebSocket）都會拒絕匿名 MCP 存取。所有 MCP 請求都必須提供 API key。"],
+            ["Direct Connection", "直接連線"],
+            ["AI clients that support HTTP or SSE transports can connect directly to Netdata", "支援 HTTP 或 SSE 傳輸的 AI 用戶端可以直接連接到 Netdata"],
+            ["Bridge Required", "需要 Bridge"],
+            ["All clients that only support stdio need the", "所有只支援 stdio 的用戶端都需要"],
+            ["AI clients that only support stdio need the", "只支援 stdio 的 AI 用戶端需要"],
+            ["Preferred authentication", "推薦驗證方式"],
+            ["pass the MCP API key via", "透過以下方式傳遞 MCP API key："],
+            ["Backward compatibility", "向後相容"],
+            ["WebSocket also accepts", "WebSocket 也接受"],
+            ["Keep this only for legacy clients, since URL query strings are more likely to be logged by proxies and tools.", "這只應保留給舊版用戶端，因為 URL query string 更容易被代理與工具記錄。"],
+            ["Keep this only for legacy clients, since URL query string is more likely to be logged by proxies and tools.", "這只應保留給舊版用戶端，因為 URL query string 更容易被代理與工具記錄。"],
+            ["With the new HTTP and SSE transports, many AI clients can now connect directly to Netdata without nd-mcp. Check your AI client's documentation to see if it supports direct HTTP or SSE connections.", "有了新的 HTTP 與 SSE 傳輸，許多 AI 用戶端現在可以不透過 nd-mcp 直接連接到 Netdata。請查看你的 AI 用戶端文件，確認它是否支援直接 HTTP 或 SSE 連線。"],
+            ["Common locations:", "常見位置："],
+            ["Native packages (apt, yum, etc.):", "原生套件（apt、yum 等）："],
+            ["Static installations:", "靜態安裝："],
+            ["Built from source:", "從原始碼建置："],
+            ["Native packages", "原生套件"],
+            ["Static installations", "靜態安裝"],
+            ["Built from source", "從原始碼建置"],
+            ["Go bridge (recommended)", "Go bridge（推薦）"],
+            ["Produces a single binary with no dependencies", "產生無依賴的單一 binary"],
+            ["Creates executable named", "建立名為以下名稱的可執行檔"],
+            ["Creates script named", "建立名為以下名稱的 script"],
+            ["on windows)", "於 Windows）"],
+            ["Includes both", "同時包含"],
+            ["(for Windows)", "（Windows 用）"],
+            ["Good if you already have Node.js installed", "如果你已安裝 Node.js，這是好選擇"],
+            ["Good if you already have Python installed", "如果你已安裝 Python，這是好選擇"],
+            ["To build:", "建置方式："],
+            ["Important: When configuring your AI client, use the full absolute path to the executable:", "重要：配置 AI 用戶端時，請使用可執行檔的完整絕對路徑："],
+            ["When configuring your AI client, use the full absolute path to the executable:", "配置 AI 用戶端時，請使用可執行檔的完整絕對路徑："],
+            ["Verify the Bridge Works", "確認 Bridge 正常運作"],
+            ["The official MCP remote client (", "官方 MCP remote client（"],
+            [") is an alternative bridge that enables stdio-only AI clients to connect to Netdata's HTTP and SSE transports (requires Netdata v2.7.2+). Unlike nd-mcp which only supports WebSocket, mcp-remote provides broader transport compatibility.", "）是一個替代 bridge，讓只支援 stdio 的 AI 用戶端可以連接到 Netdata 的 HTTP 與 SSE 傳輸（需要 Netdata v2.7.2+）。不同於只支援 WebSocket 的 nd-mcp，mcp-remote 提供更廣泛的傳輸相容性。"],
+            ["You want to use HTTP or SSE transports instead of WebSocket", "你想使用 HTTP 或 SSE 傳輸，而不是 WebSocket"],
+            ["No installation required -", "無需安裝 —"],
+            ["runs via", "透過"],
+            ["when:", "時："],
+            ["supports multiple transport strategies:", "支援多種傳輸策略："],
+            ["Common Options", "常用選項"],
+            ["Use HTTP transport", "使用 HTTP 傳輸"],
+            ["Use SSE transport", "使用 SSE 傳輸"],
+            ["Allow non-HTTPS connections", "允許非 HTTPS 連線"],
+            ["(required for HTTP URLs)", "（HTTP URL 必需）"],
+            ["Add custom headers (for authentication)", "新增自訂標頭（用於驗證）"],
+            ["Enable debug logging", "啟用除錯日誌"],
+            ["OAuth callback host (default: localhost)", "OAuth callback host（預設：localhost）"],
+            ["OAuth callback port (optional)", "OAuth callback port（可選）"],
+            ["Port number", "連接埠號"],
+            ["(tries SSE, falls back to HTTP)", "（嘗試 SSE，失敗後退回 HTTP）"],
+            ["Spaces in Arguments:", "含空格的參數："],
+            ["Version Management", "版本管理"],
+            ["Always use the latest version:", "一律使用最新版本："],
+            ["For more details, see the", "更多詳細資訊請參閱"],
+            ["official mcp-remote documentation", "官方 mcp-remote 文件"],
+            ["You need the MCP API key when bearer protection is enabled. When bearer protection is disabled, the key is still needed for sensitive functions like logs and live system information. Netdata automatically generates an API key on startup. The key is stored in a file on the Netdata server you want to connect to.", "啟用 bearer 保護時，你需要 MCP API key。停用 bearer 保護時，敏感功能（如日誌與即時系統資訊）仍需要此 key。Netdata 會在啟動時自動生成 API key。這個 key 會存放在你要連接的 Netdata 伺服器上的文件中。"],
+            ["This temporary API key mechanism will eventually be replaced by integration with Netdata Cloud.", "這個臨時 API key 機制最終會被 Netdata Cloud 整合取代。"],
+            ["The file contains a UUID that looks like:", "這個文件包含一個看起來像這樣的 UUID："],
+            ["If the file doesn't exist:", "如果文件不存在："],
+            ["Check the file again after restart", "重啟後再次檢查該文件"],
+            ["Or for SSE:", "或 SSE："],
+            ["Replace:", "替換："],
+            ["Your Netdata instance IP/hostname", "你的 Netdata 實例 IP / hostname"],
+            ["The API key from the file mentioned above", "上方文件中的 API key"],
+            ["With your actual nd-mcp path (if using the bridge)", "你的實際 nd-mcp 路徑（如果使用 bridge）"],
+            ["Anthropic's desktop AI assistant", "Anthropic 的桌面 AI 助理"],
+            ["AI-powered code editor", "AI 驅動的程式碼編輯器"],
+            ["VS Code with MCP support", "支援 MCP 的 VS Code"],
+            ["IntelliJ, PyCharm, WebStorm, etc.", "IntelliJ、PyCharm、WebStorm 等"],
+            ["Anthropic's CLI for Claude", "Anthropic 的 Claude CLI"],
+            ["Google's Gemini CLI", "Google 的 Gemini CLI"],
+            ["OpenAI's Codex CLI", "OpenAI 的 Codex CLI"],
+            ["Charmbracelet's glamorous terminal AI", "Charmbracelet 的終端 AI"],
+            ["SST's terminal-based AI assistant", "SST 的終端式 AI 助理"]
+        ];
+        const skipSelector = [
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '#command-palette-pjax-container',
+            '.js-command-palette',
+            'script',
+            'style',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]'
+        ].join(', ');
+        const nextMeaningfulSibling = node => {
+            let sibling = node?.nextSibling;
+            while (sibling && sibling.nodeType === Node.TEXT_NODE && !normalizeHeaderTooltipText(sibling.data)) {
+                sibling = sibling.nextSibling;
+            }
+            return sibling;
+        };
+        const previousMeaningfulSibling = node => {
+            let sibling = node?.previousSibling;
+            while (sibling && sibling.nodeType === Node.TEXT_NODE && !normalizeHeaderTooltipText(sibling.data)) {
+                sibling = sibling.previousSibling;
+            }
+            return sibling;
+        };
+        let translated = false;
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        let node;
+
+        while ((node = walker.nextNode())) {
+            const parent = getNodeElement(node);
+            if (!parent || parent.closest?.(skipSelector)) continue;
+
+            let updated = node.data;
+            replacements.forEach(([source, target]) => {
+                if (source instanceof RegExp) {
+                    updated = updated.replace(source, target);
+                } else if (updated.includes(source)) {
+                    updated = updated.split(source).join(target);
+                }
+            });
+
+            if (normalizeHeaderTooltipText(updated) === "in") {
+                const previous = normalizeHeaderTooltipText(previousMeaningfulSibling(node)?.textContent);
+                const next = normalizeHeaderTooltipText(nextMeaningfulSibling(node)?.textContent);
+                if (previous === "API Tokens" && next === "Netdata Cloud") {
+                    updated = updated.replace(node.data.trim(), "於");
+                }
+            }
+
+            if (updated === node.data) continue;
+            node.data = updated;
+            translated = true;
+        }
+
+        return translated;
+    }
+
+    function transMcpNetdataTargetedListItems() {
+        if (!isMcpNetdataDetailPage() || !document.body) return false;
+
+        const skipSelector = [
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '#command-palette-pjax-container',
+            '.js-command-palette',
+            'script',
+            'style',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]'
+        ].join(', ');
+        let translated = false;
+
+        document.querySelectorAll('li').forEach(item => {
+            if (!item || item.closest?.(skipSelector)) return;
+            const text = normalizeHeaderTooltipText(item.textContent);
+
+            if (/--scope project\b/.test(text) && text.includes(".mcp.json")) {
+                const finalHtml = '<code>--scope project</code> — 此專案，會寫入 <code>.mcp.json</code> 並與你的團隊共享（不要搭配原始 token 使用；請改引用環境變數）';
+                if (item.innerHTML !== finalHtml) {
+                    item.innerHTML = finalHtml;
+                    translated = true;
+                }
+                return;
+            }
+
+            if (/Netdata Cloud 帳戶|Netdata Cloud account/.test(text) && /with a Paid plan/.test(text)) {
+                const finalHtml = '<strong>Netdata Cloud 帳戶</strong>，使用付費方案';
+                if (item.innerHTML !== finalHtml) {
+                    item.innerHTML = finalHtml;
+                    translated = true;
+                }
+                return;
+            }
+
+            if (/API token/.test(text) && /scope:mcp/.test(text)) {
+                item.childNodes.forEach(child => {
+                    if (child.nodeType !== Node.TEXT_NODE) return;
+                    const updated = child.data.replace(/\bwith\b/g, "，具有");
+                    if (updated === child.data) return;
+                    child.data = updated;
+                    translated = true;
+                });
+            }
+        });
+
+        return translated;
+    }
+
+    function transMcpNetdataResidualFragments() {
+        if (!isMcpNetdataDetailPage() || !document.body) return false;
+
+        const skipSelector = [
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '#command-palette-pjax-container',
+            '.js-command-palette',
+            'script',
+            'style',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]'
+        ].join(', ');
+        const replacements = [
+            [/and\s+shared\s+with\s+your\s+team\s+\(do\s+not\s+use\s+with\s+a\s+raw\s+token;\s+reference\s+an\s+environment\s+variable\s+instead\)/g, "並與你的團隊共享（不要搭配原始 token 使用；請改引用環境變數）"],
+            [/and\s+shared\s+with\s+your\s+team\s+\(do\s+not\s+use\s+with\s+a\s+raw\s*$/g, "並與你的團隊共享（不要搭配原始"],
+            [/^\s*token;\s+reference\s+an\s+environment\s+variable\s+instead\)/g, " token 使用；請改引用環境變數）"],
+            [/and[\s\u00a0]+shared[\s\u00a0]+with[\s\u00a0]+your[\s\u00a0]+team/g, "並與你的團隊共享"],
+            [/\(do[\s\u00a0]+not[\s\u00a0]+use[\s\u00a0]+with[\s\u00a0]+a[\s\u00a0]+raw/g, "（不要搭配原始"],
+            [/token;[\s\u00a0]*reference[\s\u00a0]+an[\s\u00a0]+environment[\s\u00a0]+variable[\s\u00a0]+instead\)/g, " token 使用；請改引用環境變數）"],
+            [/with[\s\u00a0]+a[\s\u00a0]+Paid[\s\u00a0]+plan/g, "使用付費方案"],
+            [/API[\s\u00a0]+token[\s\u00a0]+with/g, "API token，具有"],
+            [/Create[\s\u00a0]+one[\s\u00a0]+in[\s\u00a0]+API[\s\u00a0]+Tokens[\s\u00a0]+settings/g, "在 API Tokens settings 中建立"],
+            [/Important:/g, "重要："],
+            [/Important/g, "重要"]
+        ];
+        const visited = new WeakSet();
+        let translated = false;
+
+        const visit = root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                const parent = getNodeElement(node);
+                if (!parent || parent.closest?.(skipSelector)) continue;
+
+                let updated = node.data;
+                replacements.forEach(([source, target]) => {
+                    updated = updated.replace(source, target);
+                });
+
+                if (updated === node.data) continue;
+                node.data = updated;
+                translated = true;
+            }
+
+            root.querySelectorAll?.('*').forEach(element => {
+                if (element.shadowRoot) {
+                    visit(element.shadowRoot);
+                }
+            });
+        };
+
+        visit(document.body);
+        return translated;
+    }
+
+    function transMcpNetdataSplitBlockFragments() {
+        if (!isMcpNetdataDetailPage() || !document.body) return false;
+
+        const skipSelector = [
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '#command-palette-pjax-container',
+            '.js-command-palette',
+            'script',
+            'style',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]'
+        ].join(', ');
+        const textNodeReplacements = [
+            [/and\s+shared\s+with\s+your\s+team\s+\(do\s+not\s+use\s+with\s+a\s+raw\s+token;\s+reference\s+an\s+environment\s+variable\s+instead\)/g, "並與你的團隊共享（不要搭配原始 token 使用；請改引用環境變數）"],
+            [/and\s+shared\s+with\s+your\s+team\s+\(do\s+not\s+use\s+with\s+a\s+raw\s*$/g, "並與你的團隊共享（不要搭配原始"],
+            [/^\s*token;\s+reference\s+an\s+environment\s+variable\s+instead\)/g, " token 使用；請改引用環境變數）"],
+            [/Check\s+that\s+your\s+Netdata\s+Cloud\s+subscription\s+includes\s+a\s+space\s+in\s+a\s+Paid\s+plan/g, "確認你的 Netdata Cloud 訂閱包含付費方案中的 space"],
+            [/Check\s+that\s+your\s+Netdata\s+Cloud\s+subscription\s*$/g, "確認你的 Netdata Cloud 訂閱"],
+            [/^\s*includes\s+a\s+space\s+in\s+a\s+Paid\s+plan/g, "包含付費方案中的 space"],
+            [/Important:/g, "重要："]
+        ];
+        const targetSelector = [
+            'li',
+            'p',
+            'strong',
+            'b',
+            'blockquote',
+            'td',
+            'th'
+        ].join(', ');
+        const blockPatterns = [
+            /and\s+shared\s+with\s+your\s+team[\s\S]*environment\s+variable\s+instead/i,
+            /Check\s+that\s+your\s+Netdata\s+Cloud\s+subscription[\s\S]*includes\s+a\s+space\s+in\s+a\s+Paid\s+plan/i,
+            /^Important:\s*配置 AI 用戶端時/
+        ];
+        let translated = false;
+
+        document.querySelectorAll(targetSelector).forEach(element => {
+            if (!element || element.closest?.(skipSelector)) return;
+            const blockText = element.textContent || "";
+            if (!blockPatterns.some(pattern => pattern.test(blockText))) return;
+
+            const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                const parent = getNodeElement(node);
+                if (!parent || parent.closest?.(skipSelector)) continue;
+
+                let updated = node.data;
+                textNodeReplacements.forEach(([source, target]) => {
+                    updated = updated.replace(source, target);
+                });
+
+                if (updated === node.data) continue;
+                node.data = updated;
+                translated = true;
+            }
+        });
+
+        return translated;
+    }
+
+    function transMcpNetdataSplitFragments() {
+        if (!isMcpNetdataDetailPage() || !document.body) return false;
+
+        const nextMeaningfulSibling = node => {
+            let sibling = node?.nextSibling;
+            while (sibling && sibling.nodeType === Node.TEXT_NODE && !normalizeHeaderTooltipText(sibling.data)) {
+                sibling = sibling.nextSibling;
+            }
+            return sibling;
+        };
+        let translated = false;
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        let node;
+
+        while ((node = walker.nextNode())) {
+            if (normalizeHeaderTooltipText(node.data) !== "The") continue;
+
+            const parent = getNodeElement(node);
+            if (!parent || parent.closest?.('qbsearch-input, query-builder, react-app[app-name="command-palette"], script, style, pre, kbd, [contenteditable="true"]')) continue;
+
+            const next = nextMeaningfulSibling(node);
+            const codeText = normalizeHeaderTooltipText(next?.textContent);
+            if (next?.nodeType !== Node.ELEMENT_NODE || next.tagName?.toLowerCase() !== 'code') continue;
+            if (!["--allow-http", "nd-mcp"].includes(codeText)) continue;
+
+            node.data = node.data.replace(node.data.trim(), "這個");
+            translated = true;
+        }
+
         return translated;
     }
 
@@ -33261,6 +34503,296 @@ I18N["zh-TW"]["repository/agents"] = {
             }
             if (img.getAttribute('alt') !== target.alt) {
                 img.setAttribute('alt', target.alt);
+                translated = true;
+            }
+        });
+
+        return translated;
+    }
+
+    function transMcpContext7Badges() {
+        if (!isMcpContext7DetailPage()) return false;
+
+        const makeBadgeDataUri = (label, message, color, labelWidth, messageWidth) => {
+            const width = labelWidth + messageWidth;
+            const svg = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="20" role="img" aria-label="${label}: ${message}">
+                    <linearGradient id="s" x2="0" y2="100%">
+                        <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
+                        <stop offset="1" stop-opacity=".1"/>
+                    </linearGradient>
+                    <clipPath id="r">
+                        <rect width="${width}" height="20" rx="3" fill="#fff"/>
+                    </clipPath>
+                    <g clip-path="url(#r)">
+                        <rect width="${labelWidth}" height="20" fill="#555"/>
+                        <rect x="${labelWidth}" width="${messageWidth}" height="20" fill="${color}"/>
+                        <rect width="${width}" height="20" fill="url(#s)"/>
+                    </g>
+                    <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110">
+                        <text aria-hidden="true" x="${labelWidth * 5}" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="${Math.max(labelWidth - 10, 20) * 10}">${label}</text>
+                        <text x="${labelWidth * 5}" y="140" transform="scale(.1)" textLength="${Math.max(labelWidth - 10, 20) * 10}">${label}</text>
+                        <text aria-hidden="true" x="${(labelWidth + messageWidth / 2) * 10}" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="${Math.max(messageWidth - 10, 20) * 10}">${message}</text>
+                        <text x="${(labelWidth + messageWidth / 2) * 10}" y="140" transform="scale(.1)" textLength="${Math.max(messageWidth - 10, 20) * 10}">${message}</text>
+                    </g>
+                </svg>
+            `.replace(/\s{2,}/g, ' ').trim();
+            return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+        };
+        const decodeBadgeText = text => {
+            try {
+                return decodeURIComponent(text || "")
+                    .replace(/--/g, "-")
+                    .replace(/_/g, " ");
+            } catch (e) {
+                return text || "";
+            }
+        };
+        const normalizeBadgeColor = color => {
+            const value = decodeBadgeText(color).replace(/^#/, "");
+            const namedColors = {
+                blue: "#007ec6",
+                brightgreen: "#4c1",
+                green: "#97ca00",
+                yellow: "#dfb317",
+                yellowgreen: "#a4a61d",
+                orange: "#fe7d37",
+                red: "#e05d44",
+                lightgrey: "#9f9f9f",
+                lightgray: "#9f9f9f",
+                grey: "#555",
+                gray: "#555"
+            };
+            if (/^[0-9a-f]{3,6}$/i.test(value)) return `#${value}`;
+            return namedColors[value.toLowerCase()] || "#007ec6";
+        };
+        const widthFor = text => {
+            const value = text || "";
+            const hasCjk = /[\u3400-\u9fff]/.test(value);
+            return Math.max(36, Math.ceil(value.length * (hasCjk ? 14 : 8) + 16));
+        };
+        const translatedLabels = {
+            Website: "網站",
+            website: "網站",
+            Calls: "呼叫",
+            calls: "呼叫",
+            license: "授權",
+            License: "授權",
+            docs: "文件"
+        };
+        const fallbackBadges = [
+            { altMatches: ["Add to Cursor"], label: "加入 Cursor", message: "", color: "#1f2328", button: true },
+            { altMatches: ["Website"], label: "網站", message: "context7.com", color: "#007ec6" },
+            { altMatches: ["Calls", "Context7 Calls"], label: "呼叫", message: "4.18k", color: "#fe7d37" },
+            { altMatches: ["npm", "npm version"], label: "npm", message: "v3.2.2", color: "#cb3837" },
+            { altMatches: ["license", "License"], label: "授權", message: "MIT", color: "#4c1" }
+        ];
+        const makeCursorButtonDataUri = () => {
+            const svg = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="252" height="56" role="img" aria-label="加入 Cursor">
+                    <rect width="252" height="56" rx="6" fill="#1f2328"/>
+                    <path d="M32 16l24 12-24 12 8-12-8-12z" fill="#f6f8fa"/>
+                    <path d="M32 16l8 12 16 0-24-12z" fill="#8c959f"/>
+                    <text x="72" y="36" fill="#f6f8fa" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif" font-size="24" font-weight="600">加入 Cursor</text>
+                </svg>
+            `.replace(/\s{2,}/g, ' ').trim();
+            return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+        };
+        const parseBadgeSource = source => {
+            const match = String(source || "").match(/\/badge\/([^/?#]+)/);
+            if (!match) return null;
+
+            const parts = match[1].split("-");
+            if (parts.length < 3) return null;
+
+            const label = decodeBadgeText(parts.shift());
+            const color = normalizeBadgeColor(parts.pop());
+            const message = decodeBadgeText(parts.join("-"));
+            const translatedLabel = translatedLabels[label];
+            if (!translatedLabel) return null;
+
+            return {
+                label: translatedLabel,
+                message,
+                color
+            };
+        };
+        let translated = false;
+
+        document.querySelectorAll('main img, [role="main"] img, react-app img').forEach(img => {
+            const canonical = img.getAttribute('data-canonical-src') || "";
+            const src = img.getAttribute('src') || "";
+            const alt = img.getAttribute('alt') || "";
+            const normalizedAlt = normalizeHeaderTooltipText(alt);
+            const parsed = parseBadgeSource(canonical) || parseBadgeSource(src);
+            const fallback = fallbackBadges.find(item => item.altMatches.some(match => normalizedAlt === match || normalizedAlt.includes(match)));
+            const target = parsed || fallback;
+            if (!target) return;
+
+            const targetSrc = target.button
+                ? makeCursorButtonDataUri()
+                : makeBadgeDataUri(
+                    target.label,
+                    target.message,
+                    target.color,
+                    widthFor(target.label),
+                    widthFor(target.message)
+                );
+            const targetAlt = target.button ? target.label : `${target.label}: ${target.message}`;
+
+            if (src !== targetSrc) {
+                img.setAttribute('src', targetSrc);
+                translated = true;
+            }
+            if (canonical && img.getAttribute('data-canonical-src') !== canonical) {
+                img.setAttribute('data-canonical-src', canonical);
+                translated = true;
+            }
+            if (img.getAttribute('alt') !== targetAlt) {
+                img.setAttribute('alt', targetAlt);
+                translated = true;
+            }
+        });
+
+        return translated;
+    }
+
+    function transMcpContext7KnownFragments() {
+        if (!isMcpContext7DetailPage() || !document.body) return false;
+
+        const skipSelector = [
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '#command-palette-pjax-container',
+            '.js-command-palette',
+            'script',
+            'style',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]'
+        ].join(', ');
+        const replacements = [
+            ["API Key Recommended: Get a free API key at", "建議使用 API Key：可在以下位置取得免費 API key："],
+            ["a skill is configured automatically that triggers Context7 for library-related questions. To set up a rule manually instead, add one to your coding agent:", "安裝，系統會自動配置一個 skill，讓函式庫相關問題觸發 Context7。若要改為手動設定規則，請在你的編程代理中新增一條規則："],
+            ["Searches the Context7 index by library name and returns matching libraries with their IDs.", "依函式庫名稱搜尋 Context7 索引，並回傳匹配的函式庫及其 ID。"],
+            ["Retrieves documentation for a library using a Context7-compatible library ID.", "使用 Context7 相容的函式庫 ID 擷取函式庫文件。"],
+            ["Retrieves documentation for a library using a Context7-compatible library ID (e.g.,", "使用 Context7 相容的函式庫 ID 擷取函式庫文件（例如"],
+            ["Resolves a general library name into a Context7-compatible library ID.", "將一般函式庫名稱解析為 Context7 相容的函式庫 ID。"],
+            ["Follow us on", "在"],
+            ["for the latest news and updates", "上追蹤我們以取得最新消息與更新"],
+            ["Visit our", "造訪我們的"],
+            ["Join our", "加入我們的"]
+        ];
+        let translated = false;
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        let node;
+
+        while ((node = walker.nextNode())) {
+            const parent = getNodeElement(node);
+            if (!parent || parent.closest?.(skipSelector)) continue;
+
+            let updated = node.data;
+            replacements.forEach(([source, target]) => {
+                updated = updated.split(source).join(target);
+            });
+
+            if (updated === node.data) continue;
+            node.data = updated;
+            translated = true;
+        }
+
+        return translated;
+    }
+
+    function transMcpContext7TargetedBlocks() {
+        if (!isMcpContext7DetailPage() || !document.body) return false;
+
+        const skipSelector = [
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '#command-palette-pjax-container',
+            '.js-command-palette',
+            'script',
+            'style',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]'
+        ].join(', ');
+        let translated = false;
+
+        const setPlainText = (element, text) => {
+            if (!element || normalizeHeaderTooltipText(element.textContent) === text) return;
+            element.textContent = text;
+            translated = true;
+        };
+
+        document.querySelectorAll('h1, h2, h3').forEach(heading => {
+            if (!heading || heading.closest?.(skipSelector)) return;
+            const text = normalizeHeaderTooltipText(heading.textContent);
+            if (text === "Without Context7" || text === "❌ Without Context7") {
+                setPlainText(heading, "❌ 沒有 Context7");
+            }
+            if (text === "License" || text === "📄 License") {
+                setPlainText(heading, "📄 授權");
+            }
+        });
+
+        document.querySelectorAll('blockquote p, p, li').forEach(element => {
+            if (!element || element.closest?.(skipSelector)) return;
+            const text = normalizeHeaderTooltipText(element.textContent);
+
+            if (/API Key Recommended:|Get a free API key at/.test(text) && text.includes("context7.com/dashboard")) {
+                element.innerHTML = '<strong>建議使用 API Key：</strong> 可在 <a href="https://context7.com/dashboard">context7.com/dashboard</a> 取得免費 API key，以獲得更高的速率限制。';
+                translated = true;
+                return;
+            }
+
+            if (/If you installed via ctx7 setup, a skill is configured automatically that triggers Context7 for library-related questions/.test(text)) {
+                element.innerHTML = '如果你是透過 <code>ctx7 setup</code> 安裝，系統會自動配置一個 skill，讓函式庫相關問題觸發 Context7。若要改為手動設定規則，請在你的編程代理中新增一條規則：';
+                translated = true;
+                return;
+            }
+
+            if (/^ctx7 library <name> <query>:\s*Searches the Context7 index by library name and returns matching libraries with their IDs\.$/.test(text)) {
+                element.innerHTML = '<code>ctx7 library &lt;name&gt; &lt;query&gt;</code>：依函式庫名稱搜尋 Context7 索引，並回傳匹配的函式庫及其 ID。';
+                translated = true;
+                return;
+            }
+
+            if (/^ctx7 docs <libraryId> <query>:\s*Retrieves documentation for a library using a Context7-compatible library ID/.test(text)) {
+                element.innerHTML = '<code>ctx7 docs &lt;libraryId&gt; &lt;query&gt;</code>：使用 Context7 相容的函式庫 ID 擷取函式庫文件（例如 <code>/mongodb/docs</code>，<code>/vercel/next.js</code>）。';
+                translated = true;
+                return;
+            }
+
+            if (/^resolve-library-id:\s*Resolves a general library name into a Context7-compatible library ID\.$/.test(text)) {
+                element.innerHTML = '<code>resolve-library-id</code>：將一般函式庫名稱解析為 Context7 相容的函式庫 ID。';
+                translated = true;
+                return;
+            }
+
+            if (/^query-docs:\s*Retrieves documentation for a library using a Context7-compatible library ID\.$/.test(text)) {
+                element.innerHTML = '<code>query-docs</code>：使用 Context7 相容的函式庫 ID 擷取函式庫文件。';
+                translated = true;
+                return;
+            }
+        });
+
+        document.querySelectorAll('p').forEach(paragraph => {
+            if (!paragraph || paragraph.closest?.(skipSelector)) return;
+            const text = normalizeHeaderTooltipText(paragraph.textContent);
+
+            if (/^1- Context7 projects are community-contributed/.test(text)) {
+                paragraph.textContent = '1- Context7 專案由社群貢獻；雖然我們致力於維持高品質，但無法保證所有函式庫文件的準確性、完整性或安全性。列在 Context7 中的專案由各自的所有者開發與維護，而不是由 Context7 維護。如果你遇到任何可疑、不適當或可能有害的內容，請使用專案頁面的「Report」按鈕立即通知我們。我們會認真處理所有回報，並及時審查被標記的內容，以維護平台的完整性與安全性。使用 Context7 即表示你理解這是基於自己的判斷與風險。';
+                translated = true;
+                return;
+            }
+
+            if (/^2- This repository hosts the MCP server/.test(text)) {
+                paragraph.textContent = '2- 此倉庫託管 MCP 伺服器的原始碼。支援元件 — API 後端、解析引擎與爬取引擎 — 均為私有，且不屬於此倉庫。';
                 translated = true;
             }
         });
