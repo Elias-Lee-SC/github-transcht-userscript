@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.12.52
+// @version      local.12.56
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -30295,7 +30295,7 @@ I18N["zh-TW"]["repository/agents"] = {
         marketplacePageFastPending: false,
         mcpRegistryPagePending: false,
         mcpRegistryPageFastPending: false,
-        sponsorableUserSearchPending: false,
+        searchPagePending: false,
         topicsPagePending: false,
         settingsTrendingLanguagePending: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
@@ -30352,7 +30352,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupExplorePageInteractions();
         setupMarketplacePageInteractions();
         setupMcpRegistryPageInteractions();
-        setupSponsorableUserSearchInteractions();
+        setupSearchPageInteractions();
         setupTopicsPageInteractions();
         setupDashboardShortcutMenuTranslations();
         setupCopilotShellInteractions();
@@ -30409,7 +30409,7 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleMarketplacePageTrans();
             scheduleMcpRegistryFastTrans();
             scheduleMcpRegistryPageTrans();
-            scheduleSponsorableUserSearchPageTrans();
+            scheduleSearchPageTrans();
         }
 
         if (document.readyState === 'interactive' || document.readyState === 'complete') {
@@ -30467,6 +30467,7 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleMarketplacePageTrans();
             scheduleMcpRegistryFastTrans();
             scheduleMcpRegistryPageTrans();
+            scheduleSearchPageTrans();
         }
 
     }
@@ -30516,7 +30517,7 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleMarketplacePageTrans();
         scheduleMcpRegistryFastTrans();
         scheduleMcpRegistryPageTrans();
-        scheduleSponsorableUserSearchPageTrans();
+        scheduleSearchPageTrans();
         scheduleTopicsPageTrans();
         scheduleSettingsTrendingSpokenLanguageTrans();
 
@@ -30777,7 +30778,7 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleMarketplacePageTrans();
         scheduleMcpRegistryFastTrans();
         scheduleMcpRegistryPageTrans();
-        scheduleSponsorableUserSearchPageTrans();
+        scheduleSearchPageTrans();
         scheduleTopicsPageTrans();
         scheduleSettingsTrendingSpokenLanguageTrans();
     }
@@ -36270,19 +36271,14 @@ I18N["zh-TW"]["repository/agents"] = {
         return translated;
     }
 
-    function isSponsorableUserSearchPage() {
-        if (!/^\/search\/?$/.test(window.location.pathname)) return false;
-
-        const params = new URLSearchParams(window.location.search);
-        const type = (params.get('type') || '').toLowerCase();
-        const query = params.get('q') || '';
-        return type === 'users' && /(?:^|\s)is:sponsorable(?:\s|$)/i.test(query);
+    function isSearchPage() {
+        return /^\/search\/?$/.test(window.location.pathname);
     }
 
-    function setupSponsorableUserSearchInteractions() {
+    function setupSearchPageInteractions() {
         const schedule = () => {
-            if (isSponsorableUserSearchPage()) {
-                scheduleSponsorableUserSearchPageTrans();
+            if (isSearchPage()) {
+                scheduleSearchPageTrans();
             }
         };
 
@@ -36291,22 +36287,22 @@ I18N["zh-TW"]["repository/agents"] = {
         document.addEventListener('keyup', schedule, true);
     }
 
-    function scheduleSponsorableUserSearchPageTrans() {
-        if (!isSponsorableUserSearchPage() || State.sponsorableUserSearchPending) return;
-        State.sponsorableUserSearchPending = true;
+    function scheduleSearchPageTrans() {
+        if (!isSearchPage() || State.searchPagePending) return;
+        State.searchPagePending = true;
 
         [0, 25, 75, 200, 500, 1000, 1600, 2400].forEach(delay => {
             setTimeout(() => {
-                safe(transSponsorableUserSearchPage, '可贊助使用者搜尋頁補翻')();
+                safe(transSearchResultsPage, '搜尋結果頁補翻')();
                 if (delay === 2400) {
-                    State.sponsorableUserSearchPending = false;
+                    State.searchPagePending = false;
                 }
             }, delay);
         });
     }
 
-    function transSponsorableUserSearchPage() {
-        if (!isSponsorableUserSearchPage() || !document.body) return false;
+    function transSearchResultsPage() {
+        if (!isSearchPage() || !document.body) return false;
 
         const fixedDict = {
             "Filter by": "篩選",
@@ -36332,12 +36328,27 @@ I18N["zh-TW"]["repository/agents"] = {
             "Location": "地點",
             "Language": "語言",
             "Creation date": "建立日期",
+            "Owner": "所有者",
+            "Size": "大小",
+            "Number of forks": "複刻數量",
+            "Number of stars": "星標數量",
+            "Date created": "建立日期",
+            "Date pushed": "推送日期",
+            "Topic": "主題",
+            "License": "授權",
+            "Archived": "已封存",
             "Sponsorable": "可接受贊助",
             "Advanced search": "進階搜尋",
             "Best match": "最佳匹配",
             "Sort by:": "排序方式：",
             "Sort by": "排序方式",
             "Sort by: Best match": "排序方式：最佳匹配",
+            "Most stars": "最多星標",
+            "Fewest stars": "最少星標",
+            "Most forks": "最多複刻",
+            "Fewest forks": "最少複刻",
+            "Recently updated": "最近更新",
+            "Least recently updated": "最早更新",
             "Most followers": "最多追蹤者",
             "Fewest followers": "最少追蹤者",
             "Most recently joined": "最近加入",
@@ -36348,8 +36359,11 @@ I18N["zh-TW"]["repository/agents"] = {
             "Save": "儲存",
             "View search docs": "查看搜尋文件",
             "Give feedback": "提供回饋",
+            "How can we improve search?": "我們如何改進搜尋？",
             "Follow": "追蹤",
             "Sponsor": "贊助",
+            "Star": "星標",
+            "Public archive": "公開封存",
             "Previous": "上一頁",
             "Next": "下一頁",
             "Sponsor open source projects you depend on": "贊助您所依賴的開源專案",
@@ -36368,35 +36382,92 @@ I18N["zh-TW"]["repository/agents"] = {
             "Austin, TX": "美國德克薩斯州奧斯汀",
             "United Kingdom": "英國"
         };
-        const resultRowSelector = '[class*="Users-module__resultRow"]';
         let translated = false;
+        const shouldSkip = element => {
+            if (!element) return true;
+            try {
+                return !!element.closest?.([
+                    'header',
+                    '[role="banner"]',
+                    '.AppHeader',
+                    '.Header',
+                    'qbsearch-input',
+                    'query-builder',
+                    'react-app[app-name="command-palette"]',
+                    'script',
+                    'style',
+                    'code',
+                    'pre',
+                    'kbd',
+                    '[contenteditable="true"]'
+                ].join(', '));
+            } catch (e) {
+                return true;
+            }
+        };
+        const translateSearchPhrase = source => {
+            let result = fixedDict[source];
+            if (result) return result;
+
+            const translateElapsed = text => text?.replace(/\bms\b/g, '毫秒');
+            let match = source.match(/^[\(（]([\d.,]+\s*ms)[\)）]$/i);
+            if (match) return `（${translateElapsed(match[1])}）`;
+
+            match = source.match(/^([\d.,]+[kMB]?) 個結果(?:\s*[\(（]([^)）]+)[\)）])?$/i);
+            if (match) return `${match[1]} 個結果${match[2] ? `（${translateElapsed(match[2])}）` : ''}`;
+
+            match = source.match(/^([\d.,]+[kMB]?) results?(?: \(([^)]+)\))?$/i);
+            if (match) {
+                const elapsed = translateElapsed(match[2]);
+                return `${match[1]} 個結果${elapsed ? `（${elapsed}）` : ''}`;
+            }
+
+            match = source.match(/^Updated(?: on)? (.+)$/);
+            if (match) {
+                const time = transRelativeTimeValue(match[1]);
+                return `更新於 ${time || match[1]}`;
+            }
+
+            match = source.match(/^Star (.+)$/);
+            if (match) return `星標 ${match[1]}`;
+
+            return false;
+        };
+        const isElapsedResultCountTextNode = (node, parent) => {
+            if (!/\bms\b/i.test(node.data || '')) return false;
+
+            let current = parent;
+            for (let depth = 0; current && depth < 4; depth += 1) {
+                const text = normalizeHeaderTooltipText(current.textContent);
+                if (text.length > 120) return false;
+                if (/(?:個結果|results?).*[\(（][^)）]*\bms\b/i.test(text)) return true;
+                current = current.parentElement;
+            }
+
+            return false;
+        };
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
         let node;
 
         while ((node = walker.nextNode())) {
             const parent = getNodeElement(node);
-            if (!parent || isDebugElementInSearchSurface(parent)) continue;
+            if (shouldSkip(parent)) continue;
 
             const source = normalizeHeaderTooltipText(node.data);
-            const resultRow = parent.closest?.(resultRowSelector);
-            if (resultRow) {
-                const isFollowControl = source === 'Follow' && !!parent.closest?.('a, button');
-                const isSponsorControl = source === 'Sponsor' && !!parent.closest?.('[class*="Users-module__sponsorButton"], a[aria-label^="Sponsor @"]');
-                if (!isFollowControl && !isSponsorControl) continue;
+            if (isElapsedResultCountTextNode(node, parent)) {
+                node.data = node.data.replace(/\bms\b/gi, '毫秒');
+                translated = true;
+                continue;
             }
 
-            let result = fixedDict[source];
-            if (!result) {
-                const match = source.match(/^([\d,]+) results$/);
-                if (match) result = `${match[1]} 個結果`;
-            }
+            const result = translateSearchPhrase(source);
             if (!result || result === source) continue;
 
             node.data = node.data.replace(node.data.trim(), result);
             translated = true;
         }
 
-        document.querySelectorAll(`${resultRowSelector} ul[class*="Footer-module__footer"] li[class*="Footer-module__footerItem"] > span:only-child`).forEach(element => {
+        document.querySelectorAll('[class*="Users-module__resultRow"] ul[class*="Footer-module__footer"] li[class*="Footer-module__footerItem"] > span:only-child').forEach(element => {
             if (element.parentElement?.querySelector('svg')) return;
             const source = normalizeHeaderTooltipText(element.textContent);
             const result = locationDict[source];
@@ -36406,16 +36477,13 @@ I18N["zh-TW"]["repository/agents"] = {
         });
 
         document.querySelectorAll('[aria-label], [title]').forEach(element => {
-            if (isDebugElementInSearchSurface(element)) return;
-            const resultRow = element.closest?.(resultRowSelector);
+            if (shouldSkip(element)) return;
 
             ['aria-label', 'title'].forEach(attributeName => {
                 const source = normalizeHeaderTooltipText(element.getAttribute(attributeName));
-                let result = fixedDict[source];
-                if (resultRow) {
-                    const sponsorMatch = source.match(/^Sponsor (@?[A-Za-z0-9](?:[A-Za-z0-9-]{0,38}))$/);
-                    result = sponsorMatch ? `贊助 ${sponsorMatch[1]}` : false;
-                }
+                let result = translateSearchPhrase(source);
+                const sponsorMatch = source.match(/^Sponsor (@?[A-Za-z0-9](?:[A-Za-z0-9-]{0,38}))$/);
+                if (sponsorMatch) result = `贊助 ${sponsorMatch[1]}`;
                 if (!result || result === source) return;
                 element.setAttribute(attributeName, result);
                 translated = true;
