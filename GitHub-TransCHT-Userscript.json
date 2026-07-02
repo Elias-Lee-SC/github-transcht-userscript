@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.12.56
+// @version      local.12.57
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -22276,60 +22276,60 @@ I18N["zh-TW"]["search"] = { // 搜尋頁面
             // "Advanced search": "高級搜尋",
             "Search": "搜尋",
             "Advanced options": "高級選項",
-            "From these owners": "指定作者",
+            "From these owners": "指定擁有者",
             "In these repositories": "指定倉庫",
-            "Created on the dates": "創建日期",
+            "Created on the dates": "建立日期",
             "Written in this language": "使用語言",
             "Any language": "任何語言",
                 "Popular": "熱門",
                 "Everything else": "其他語言",
 
             "Repositories options": "倉庫選項",
-            "With this many stars": "指定星標數",
-            "With this many forks": "指定複刻數",
+            "With this many stars": "星標數",
+            "With this many forks": "複刻數",
             "Of this size": "倉庫大小",
-            "Pushed to": "推送於",
-            "With this license": "用何種許可證",
-                "Any license": "任意許可證",
-                "Licenses": "許可證",
-                "License families": "許可證系列",
-            "Return repositories": "搜尋結果",
+            "Pushed to": "推送日期",
+            "With this license": "授權條款",
+                "Any license": "任意授權",
+                "Licenses": "授權",
+                "License families": "授權系列",
+            "Return repositories": "回傳倉庫",
             "not": "不",
             // "and": "要",
             "only": "僅",
             "including forks.": "包含複刻倉庫。",
 
             "Code options": "程式碼選項",
-            "With this extension": "文件後綴",
+            "With this extension": "副檔名",
             "Of this file size": "文件大小",
             "In this path": "文件路徑",
-            "With this file name": "檔名稱",
-            "Return code": "搜尋結果",
+            "With this file name": "文件名稱",
+            "Return code": "回傳程式碼",
             // "Return code from forked repositories": "搜尋結果包括被Fork的倉庫。",
 
             "Issues options": "議題選項",
-            "In the state": "議題狀態",
-                "open/closed": "打開/關閉",
-                "open": "打開",
+            "In the state": "狀態",
+                "open/closed": "開啟／已關閉",
+                "open": "開啟",
                 "closed": "已關閉",
             "With the reason": "原因",
                 "any reason": "任何原因",
                 "completed": "已完成",
-                "not planned": "無計劃",
-                "reopened": "重新打開",
-            "With this many comments": "評論數量",
-            "With the labels": "議題標籤",
-            "Opened by the author": "提議人",
-            "Mentioning the users": "提及誰",
-            "Assigned to the users": "分配給誰",
-            "Updated before the date": "更新於",
+                "not planned": "未計劃",
+                "reopened": "重新開啟",
+            "With this many comments": "評論數",
+            "With the labels": "標籤",
+            "Opened by the author": "由作者開啟",
+            "Mentioning the users": "提及使用者",
+            "Assigned to the users": "指派給使用者",
+            "Updated before the date": "更新早於此日期",
 
-            "Users options": "用戶選項",
-            "With this full name": "用戶全稱",
-            "From this location": "來自哪裡",
-            "With this many followers": "有多少追蹤者",
-            "With this many public repositories": "有多少公共倉庫",
-            "Working in this language": "擅長什麼語言",
+            "Users options": "使用者選項",
+            "With this full name": "全名",
+            "From this location": "所在地",
+            "With this many followers": "追蹤者數",
+            "With this many public repositories": "公開倉庫數",
+            "Working in this language": "使用語言",
             "Wiki options": "Wiki 選項",
 
     },
@@ -36275,9 +36275,13 @@ I18N["zh-TW"]["repository/agents"] = {
         return /^\/search\/?$/.test(window.location.pathname);
     }
 
+    function isAdvancedSearchPage() {
+        return /^\/search\/advanced\/?$/.test(window.location.pathname);
+    }
+
     function setupSearchPageInteractions() {
         const schedule = () => {
-            if (isSearchPage()) {
+            if (isSearchPage() || isAdvancedSearchPage()) {
                 scheduleSearchPageTrans();
             }
         };
@@ -36288,12 +36292,13 @@ I18N["zh-TW"]["repository/agents"] = {
     }
 
     function scheduleSearchPageTrans() {
-        if (!isSearchPage() || State.searchPagePending) return;
+        if (!(isSearchPage() || isAdvancedSearchPage()) || State.searchPagePending) return;
         State.searchPagePending = true;
 
         [0, 25, 75, 200, 500, 1000, 1600, 2400].forEach(delay => {
             setTimeout(() => {
                 safe(transSearchResultsPage, '搜尋結果頁補翻')();
+                safe(transAdvancedSearchPage, '高級搜尋頁補翻')();
                 if (delay === 2400) {
                     State.searchPagePending = false;
                 }
@@ -36486,6 +36491,150 @@ I18N["zh-TW"]["repository/agents"] = {
                 if (sponsorMatch) result = `贊助 ${sponsorMatch[1]}`;
                 if (!result || result === source) return;
                 element.setAttribute(attributeName, result);
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function transAdvancedSearchPage() {
+        if (!isAdvancedSearchPage() || !document.body) return false;
+
+        const fixedDict = {
+            "Advanced search": "高級搜尋",
+            "Search": "搜尋",
+            "Advanced options": "高級選項",
+            "From these owners": "指定擁有者",
+            "In these repositories": "指定倉庫",
+            "Created on the dates": "建立日期",
+            "Written in this language": "使用語言",
+            "Any language": "任何語言",
+            "Popular": "熱門",
+            "Everything else": "其他語言",
+            "Repositories options": "倉庫選項",
+            "With this many stars": "星標數",
+            "With this many forks": "複刻數",
+            "Of this size": "倉庫大小",
+            "Pushed to": "推送日期",
+            "With this license": "授權條款",
+            "Any license": "任意授權",
+            "Licenses": "授權",
+            "License families": "授權系列",
+            "Return repositories": "回傳倉庫",
+            "not": "不",
+            "and": "要",
+            "only": "僅",
+            "including forks.": "包含複刻。",
+            "Code options": "程式碼選項",
+            "With this extension": "副檔名",
+            "Of this file size": "文件大小",
+            "In this path": "文件路徑",
+            "With this file name": "文件名稱",
+            "Return code": "回傳程式碼",
+            "Issues options": "議題選項",
+            "In the state": "狀態",
+            "open/closed": "開啟／已關閉",
+            "open": "開啟",
+            "closed": "已關閉",
+            "With the reason": "原因",
+            "any reason": "任何原因",
+            "completed": "已完成",
+            "not planned": "未計劃",
+            "reopened": "重新開啟",
+            "With this many comments": "評論數",
+            "With the labels": "標籤",
+            "Opened by the author": "由作者開啟",
+            "Mentioning the users": "提及使用者",
+            "Assigned to the users": "指派給使用者",
+            "Updated before the date": "更新早於此日期",
+            "Users options": "使用者選項",
+            "With this full name": "全名",
+            "From this location": "所在地",
+            "With this many followers": "追蹤者數",
+            "With this many public repositories": "公開倉庫數",
+            "Working in this language": "使用語言",
+            "Wiki options": "Wiki 選項"
+        };
+        const roots = [
+            document.querySelector('main'),
+            document.querySelector('#search_form'),
+            ...document.querySelectorAll('.advanced-search-form')
+        ].filter(Boolean);
+        const visited = new WeakSet();
+        let translated = false;
+        const shouldSkip = element => {
+            if (!element) return true;
+            try {
+                return !!element.closest?.([
+                    'header',
+                    '[role="banner"]',
+                    '.AppHeader',
+                    '.Header',
+                    'qbsearch-input',
+                    'query-builder',
+                    'react-app[app-name="command-palette"]',
+                    'script',
+                    'style',
+                    'code',
+                    'pre',
+                    'kbd',
+                    '[contenteditable="true"]'
+                ].join(', '));
+            } catch (e) {
+                return true;
+            }
+        };
+        const translateTextNode = node => {
+            const parent = getNodeElement(node);
+            if (shouldSkip(parent)) return;
+
+            const source = normalizeHeaderTooltipText(node.data);
+            const result = fixedDict[source];
+            if (!result || result === source) return;
+
+            node.data = node.data.replace(node.data.trim(), result);
+            translated = true;
+        };
+        const translateElementText = element => {
+            if (!element || shouldSkip(element)) return;
+
+            const source = normalizeHeaderTooltipText(element.textContent);
+            const result = fixedDict[source];
+            if (!result || result === source) return;
+
+            element.textContent = result;
+            translated = true;
+        };
+
+        roots.forEach(root => {
+            if (!root || visited.has(root)) return;
+            visited.add(root);
+
+            if (root.nodeType === Node.TEXT_NODE) {
+                translateTextNode(root);
+                return;
+            }
+
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                translateTextNode(node);
+            }
+
+            root.querySelectorAll?.('option').forEach(translateElementText);
+            root.querySelectorAll?.('optgroup[label]').forEach(optgroup => {
+                const source = normalizeHeaderTooltipText(optgroup.getAttribute('label'));
+                const result = fixedDict[source];
+                if (!result || result === source) return;
+                optgroup.setAttribute('label', result);
+                translated = true;
+            });
+            root.querySelectorAll?.('input[type="submit"], input[type="button"], button').forEach(element => {
+                const source = normalizeHeaderTooltipText(element.getAttribute('value'));
+                const result = fixedDict[source];
+                if (!result || result === source) return;
+                element.setAttribute('value', result);
                 translated = true;
             });
         });
