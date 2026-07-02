@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.12.64
+// @version      local.12.66
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -30296,8 +30296,6 @@ I18N["zh-TW"]["repository/agents"] = {
         mcpRegistryPagePending: false,
         mcpRegistryPageFastPending: false,
         searchPagePending: false,
-        searchResultInDebugPending: false,
-        searchResultInDebugLastSignature: '',
         topicsPagePending: false,
         settingsTrendingLanguagePending: false,
         urlChangeHandler: null,  // 存儲URL變化處理器
@@ -30781,7 +30779,6 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleMcpRegistryFastTrans();
         scheduleMcpRegistryPageTrans();
         scheduleSearchPageTrans();
-        scheduleSearchResultInDebugSnapshot('mutation');
         scheduleTopicsPageTrans();
         scheduleSettingsTrendingSpokenLanguageTrans();
     }
@@ -36300,10 +36297,8 @@ I18N["zh-TW"]["repository/agents"] = {
 
         [0, 25, 75, 200, 500, 1000, 1600, 2400, 3600, 6000, 9000, 12000].forEach(delay => {
             setTimeout(() => {
-                safe(debugSearchResultInTextNodes, '搜尋結果摘要 in 除錯採樣')(`before-${delay}`, { silent: true });
                 safe(transSearchResultsPage, '搜尋結果頁補翻')();
                 safe(transAdvancedSearchPage, '高級搜尋頁補翻')();
-                safe(debugSearchResultInTextNodes, '搜尋結果摘要 in 除錯採樣')(`after-${delay}`, { silent: true });
                 if (delay === 12000) {
                     State.searchPagePending = false;
                 }
@@ -36347,6 +36342,8 @@ I18N["zh-TW"]["repository/agents"] = {
             "Topic": "主題",
             "License": "授權",
             "Archived": "已封存",
+            "Public": "公開",
+            "Private": "私密",
             "Sponsorable": "可接受贊助",
             "Advanced search": "進階搜尋",
             "Best match": "最佳匹配",
@@ -36567,32 +36564,6 @@ I18N["zh-TW"]["repository/agents"] = {
         return false;
     }
 
-    function shouldSkipSearchResultInDebugElement(element) {
-        if (!element) return true;
-        try {
-            return !!element.closest?.([
-                'header',
-                '[role="banner"]',
-                '.AppHeader',
-                '.Header',
-                '.flash',
-                '.js-stale-session-flash',
-                '.session-flash',
-                'qbsearch-input',
-                'query-builder',
-                'react-app[app-name="command-palette"]',
-                'script',
-                'style',
-                'code',
-                'pre',
-                'kbd',
-                '[contenteditable="true"]'
-            ].join(', '));
-        } catch (e) {
-            return true;
-        }
-    }
-
     function isSearchResultSummaryLikeText(text) {
         return /(?:個結果|results?)/i.test(text) &&
             /[\(（][^)）]*(?:毫秒|ms)[\)）]/i.test(text);
@@ -36617,228 +36588,6 @@ I18N["zh-TW"]["repository/agents"] = {
             current = current.parentElement;
         }
         return null;
-    }
-
-    function getSearchResultInDebugContext(node, parent) {
-        const ancestors = [];
-        let current = parent;
-
-        for (let depth = 0; current && depth < 8; depth += 1) {
-            const text = normalizeHeaderTooltipText(current.textContent);
-            const isBroadContainer = current === document.body ||
-                current === document.documentElement ||
-                current.matches?.('main, [role="main"]') ||
-                text.length > 900;
-            ancestors.push({
-                depth,
-                element: describeDebugElement(current),
-                path: getDebugCssPath(current),
-                text: text.slice(0, 220),
-                textLength: text.length,
-                isBroadContainer,
-                isSummaryScope: isSearchResultSummaryScope(current),
-                hasResultCount: !isBroadContainer && /(?:個結果|results?)/i.test(text),
-                hasElapsed: !isBroadContainer && /[\(（][^)）]*(?:毫秒|ms)[\)）]/i.test(text),
-                hasIn: /\bin\b/i.test(text),
-                hasTranslatedIn: /於/.test(text),
-                hasTokenLikeElement: !!current.querySelector?.('button, a, [role="button"], [data-testid], [class*="Token"], [class*="token"]')
-            });
-            if (current.matches?.('main, [role="main"]') || current === document.body || current === document.documentElement) break;
-            current = current.parentElement;
-        }
-
-        return ancestors;
-    }
-
-    function collectSearchResultInDebugCandidates() {
-        if (!isSearchPage() || !document.body) return [];
-
-        const candidates = [];
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-        let node;
-
-        while ((node = walker.nextNode())) {
-            const parent = getNodeElement(node);
-            if (shouldSkipSearchResultInDebugElement(parent)) continue;
-
-            const text = normalizeHeaderTooltipText(node.data);
-            const isStandaloneIn = /^(?:in|於)$/i.test(text);
-            const summaryScope = getSearchResultSummaryScope(parent);
-            const inSummaryTextNode = !!summaryScope && /(?:\bin\b|於)/i.test(text);
-            if (!isStandaloneIn && !inSummaryTextNode) continue;
-
-            const ancestors = getSearchResultInDebugContext(node, parent);
-            const summaryAncestor = summaryScope
-                ? ancestors.find(ancestor => ancestor.depth === summaryScope.depth)
-                : null;
-            if (!summaryScope && !isStandaloneIn) continue;
-
-            const rect = getTextNodeRect(node);
-            const matchReason = getSearchResultOwnerFilterInMatchReason(node, parent) || '';
-            const heading = parent?.closest?.('h1, h2, h3, [class*="Heading"], [class*="heading"]');
-            const previousText = normalizeHeaderTooltipText(node.previousSibling?.textContent || '').slice(-120);
-            const nextText = normalizeHeaderTooltipText(node.nextSibling?.textContent || '').slice(0, 120);
-
-            candidates.push({
-                index: candidates.length,
-                text,
-                rawText: node.data,
-                alreadyTranslated: text === '於',
-                matchReason,
-                wouldTranslate: !!matchReason,
-                visible: isDebugRectVisible(rect),
-                x: Math.round(rect?.left || 0),
-                y: Math.round(rect?.top || 0),
-                w: Math.round(rect?.width || 0),
-                h: Math.round(rect?.height || 0),
-                element: describeDebugElement(parent),
-                path: getDebugCssPath(parent),
-                headingText: normalizeHeaderTooltipText(heading?.textContent || '').slice(0, 220),
-                previousText,
-                nextText,
-                summaryAncestorDepth: summaryAncestor?.depth ?? null,
-                summaryAncestorText: summaryAncestor?.text || '',
-                summaryScopeElement: summaryScope ? describeDebugElement(summaryScope.element) : '',
-                summaryScopePath: summaryScope ? getDebugCssPath(summaryScope.element) : '',
-                ancestors
-            });
-        }
-
-        return candidates;
-    }
-
-    function recordSearchResultInDebugSnapshot(snapshot, options = {}) {
-        const store = window.__ghchtSearchResultInDebugSnapshots || [];
-        store.push(snapshot);
-        while (store.length > 120) store.shift();
-
-        window.__ghchtSearchResultInDebugSnapshots = store;
-        window.__ghchtSearchResultInDebugLastReport = formatSearchResultInDebugReport(store.slice(-5));
-        if (typeof unsafeWindow !== 'undefined') {
-            unsafeWindow.__ghchtSearchResultInDebugSnapshots = store;
-            unsafeWindow.__ghchtSearchResultInDebugLastReport = window.__ghchtSearchResultInDebugLastReport;
-        }
-
-        const signature = snapshot.candidates
-            .map(candidate => `${candidate.text}:${candidate.wouldTranslate}:${candidate.x}:${candidate.y}:${candidate.path}`)
-            .join('|');
-        const shouldLog = !options.silent || signature !== State.searchResultInDebugLastSignature;
-        State.searchResultInDebugLastSignature = signature;
-        if (!shouldLog) return;
-
-        const table = snapshot.candidates.map(candidate => ({
-            index: candidate.index,
-            text: candidate.text,
-            wouldTranslate: candidate.wouldTranslate,
-            matchReason: candidate.matchReason,
-            visible: candidate.visible,
-            x: candidate.x,
-            y: candidate.y,
-            w: candidate.w,
-            h: candidate.h,
-            summaryDepth: candidate.summaryAncestorDepth,
-            element: candidate.element,
-            path: candidate.path
-        }));
-
-        const report = formatSearchResultInDebugReport([snapshot]);
-        console.group(`[GitHub 中文化插件] Search result in debug: ${snapshot.label}`);
-        console.log('URL:', snapshot.url);
-        console.log('elapsedMs:', snapshot.elapsedMs);
-        console.log('summary:', snapshot.summary);
-        console.log('Copyable report:\n' + report);
-        console.table(table);
-        console.log('Full snapshot:', snapshot);
-        console.log('All snapshots:', store);
-        console.groupEnd();
-    }
-
-    function formatSearchResultInDebugReport(snapshotsOrLimit = 5) {
-        const store = window.__ghchtSearchResultInDebugSnapshots || [];
-        const snapshots = Array.isArray(snapshotsOrLimit)
-            ? snapshotsOrLimit
-            : store.slice(-Math.max(1, Number(snapshotsOrLimit) || 5));
-
-        if (!snapshots.length) {
-            return '[GitHub 中文化插件] Search result in debug report\n(no snapshots)';
-        }
-
-        const lines = ['[GitHub 中文化插件] Search result in debug report'];
-        snapshots.forEach((snapshot, snapshotIndex) => {
-            lines.push('');
-            lines.push(`#${snapshotIndex + 1} label=${snapshot.label} elapsedMs=${snapshot.elapsedMs} at=${snapshot.at}`);
-            lines.push(`url=${snapshot.url}`);
-            lines.push(`summary=${JSON.stringify(snapshot.summary)}`);
-
-            if (!snapshot.candidates?.length) {
-                lines.push('candidates=(none)');
-                return;
-            }
-
-            snapshot.candidates.forEach(candidate => {
-                lines.push(`candidate[${candidate.index}] text=${JSON.stringify(candidate.text)} raw=${JSON.stringify(candidate.rawText)} wouldTranslate=${candidate.wouldTranslate} reason=${candidate.matchReason || '(none)'}`);
-                lines.push(`  visible=${candidate.visible} rect=${candidate.x},${candidate.y},${candidate.w}x${candidate.h} summaryDepth=${candidate.summaryAncestorDepth ?? '(none)'}`);
-                lines.push(`  element=${candidate.element}`);
-                lines.push(`  path=${candidate.path}`);
-                if (candidate.summaryScopeElement || candidate.summaryScopePath) {
-                    lines.push(`  summaryScope=${candidate.summaryScopeElement}`);
-                    lines.push(`  summaryScopePath=${candidate.summaryScopePath}`);
-                }
-                if (candidate.headingText) lines.push(`  heading=${candidate.headingText}`);
-                if (candidate.previousText || candidate.nextText) {
-                    lines.push(`  siblings prev=${JSON.stringify(candidate.previousText)} next=${JSON.stringify(candidate.nextText)}`);
-                }
-                if (candidate.summaryAncestorText) {
-                    lines.push(`  summaryAncestor=${candidate.summaryAncestorText}`);
-                }
-                (candidate.ancestors || []).slice(0, 5).forEach(ancestor => {
-                    lines.push(`  ancestor[${ancestor.depth}] summaryScope=${ancestor.isSummaryScope} broad=${ancestor.isBroadContainer} result=${ancestor.hasResultCount} elapsed=${ancestor.hasElapsed} in=${ancestor.hasIn} zh=${ancestor.hasTranslatedIn} token=${ancestor.hasTokenLikeElement} len=${ancestor.textLength}`);
-                    lines.push(`    ${ancestor.element}`);
-                    lines.push(`    text=${ancestor.text}`);
-                });
-            });
-        });
-
-        return lines.join('\n');
-    }
-
-    function getSearchResultInDebugReport(limit = 5) {
-        const report = formatSearchResultInDebugReport(limit);
-        console.log(report);
-        return report;
-    }
-
-    function debugSearchResultInTextNodes(label = 'manual', options = {}) {
-        if (!isSearchPage() || !document.body) return [];
-
-        const candidates = collectSearchResultInDebugCandidates();
-        const snapshot = {
-            label,
-            at: new Date().toISOString(),
-            elapsedMs: Math.round(performance.now()),
-            url: window.location.href,
-            summary: {
-                candidates: candidates.length,
-                untranslatedIn: candidates.filter(candidate => candidate.text === 'in').length,
-                translatedIn: candidates.filter(candidate => candidate.text === '於').length,
-                wouldTranslate: candidates.filter(candidate => candidate.wouldTranslate).length,
-                visible: candidates.filter(candidate => candidate.visible).length
-            },
-            candidates
-        };
-
-        recordSearchResultInDebugSnapshot(snapshot, options);
-        return options.returnCandidates ? candidates : window.__ghchtSearchResultInDebugLastReport;
-    }
-
-    function scheduleSearchResultInDebugSnapshot(label = 'scheduled') {
-        if (!isSearchPage() || State.searchResultInDebugPending) return;
-        State.searchResultInDebugPending = true;
-
-        setTimeout(() => {
-            State.searchResultInDebugPending = false;
-            safe(debugSearchResultInTextNodes, '搜尋結果摘要 in 除錯採樣')(label, { silent: true });
-        }, 80);
     }
 
     function transAdvancedSearchPage() {
@@ -38356,19 +38105,13 @@ I18N["zh-TW"]["repository/agents"] = {
 
     function setupDebugHelpers() {
         window.__ghchtDebugDashboardContext = debugDashboardContextTextNodes;
-        window.__ghchtDebugSearchResultIn = debugSearchResultInTextNodes;
-        window.__ghchtSearchResultInDebugReport = getSearchResultInDebugReport;
 
         if (typeof unsafeWindow !== 'undefined') {
             unsafeWindow.__ghchtDebugDashboardContext = debugDashboardContextTextNodes;
-            unsafeWindow.__ghchtDebugSearchResultIn = debugSearchResultInTextNodes;
-            unsafeWindow.__ghchtSearchResultInDebugReport = getSearchResultInDebugReport;
         }
 
         if (typeof GM_registerMenuCommand === 'function') {
             GM_registerMenuCommand('Debug Dashboard context', debugDashboardContextTextNodes);
-            GM_registerMenuCommand('Debug search result in', debugSearchResultInTextNodes);
-            GM_registerMenuCommand('Debug search result in report', getSearchResultInDebugReport);
         }
     }
 
