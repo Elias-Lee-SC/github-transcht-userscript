@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.12.51
+// @version      local.12.52
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -30221,7 +30221,7 @@ I18N["zh-TW"]["repository/agents"] = {
             header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]) span[class*="Search-module__placeholder"] {
                 visibility: hidden !important;
             }
-            header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"])::after {
+            header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]):has(span[class*="Search-module__placeholder"])::after {
                 content: "輸入 / 以搜尋";
                 position: absolute;
                 left: 3rem;
@@ -30233,6 +30233,9 @@ I18N["zh-TW"]["repository/agents"] = {
                 line-height: 1;
                 white-space: nowrap;
                 pointer-events: none;
+            }
+            header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]):has(span[class*="Search-module__text"][class*="Search-module__value"]:not([class*="Search-module__placeholder"]))::after {
+                content: none;
             }
             /* 暗色主題適配 - 使用 prefers-color-scheme */
             @media (prefers-color-scheme: dark) {
