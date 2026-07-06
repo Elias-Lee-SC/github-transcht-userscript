@@ -4,7 +4,7 @@
 // @description  中文化 GitHub 界面的部分菜單及內容。原作者為樓教主(http://www.52cik.com/)。
 // @copyright    2021, 沙漠之子 (https://maboloshi.github.io/Blog)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.12.66
+// @version      local.12.70
 // @author       沙漠之子
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -2185,6 +2185,7 @@ I18N["zh-TW"]["page-dashboard"] = { // 已登入的首頁 - 儀表板（含組�
         "Top Repositories": "置頂倉庫", // 安卓UA
         "New": "新建",
         "Find a repository…": "搜尋倉庫…",
+        "Find a repository...": "搜尋倉庫…",
         "Your teams": "您的團隊",
             "You don’t belong to any teams yet!": "您還不屬於任何團隊！",
         "Find a team…": "搜尋團隊…",
@@ -30219,23 +30220,41 @@ I18N["zh-TW"]["repository/agents"] = {
                 position: relative !important;
             }
             header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]) span[class*="Search-module__placeholder"] {
-                visibility: hidden !important;
+                visibility: visible !important;
+                display: inline-flex !important;
+                align-items: center;
+                gap: 0.35rem;
+                font-size: 0 !important;
             }
-            header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]):has(span[class*="Search-module__placeholder"])::after {
-                content: "輸入 / 以搜尋";
-                position: absolute;
-                left: 3rem;
-                top: 50%;
-                transform: translateY(-50%);
+            header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]) span[class*="Search-module__placeholder"] kbd {
+                font-size: var(--text-body-size-small, 12px) !important;
+            }
+            header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]):has(span[class*="Search-module__placeholder"]) span[class*="Search-module__placeholder"]::before {
+                content: "輸入";
                 color: var(--fgColor-muted, var(--color-fg-muted, #8b949e)) !important;
                 font: inherit;
+                font-size: var(--text-body-size-medium, 14px) !important;
                 font-weight: inherit;
                 line-height: 1;
                 white-space: nowrap;
                 pointer-events: none;
             }
-            header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]):has(span[class*="Search-module__text"][class*="Search-module__value"]:not([class*="Search-module__placeholder"]))::after {
+            header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]):has(span[class*="Search-module__placeholder"]) span[class*="Search-module__placeholder"]::after {
+                content: "以搜尋";
+                color: var(--fgColor-muted, var(--color-fg-muted, #8b949e)) !important;
+                font: inherit;
+                font-size: var(--text-body-size-medium, 14px) !important;
+                font-weight: inherit;
+                line-height: 1;
+                white-space: nowrap;
+                pointer-events: none;
+            }
+            header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]):has(span[class*="Search-module__text"][class*="Search-module__value"]:not([class*="Search-module__placeholder"])) span[class*="Search-module__placeholder"]::before,
+            header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]):has(span[class*="Search-module__text"][class*="Search-module__value"]:not([class*="Search-module__placeholder"])) span[class*="Search-module__placeholder"]::after {
                 content: none;
+            }
+            header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]):has(span[class*="Search-module__text"][class*="Search-module__value"]:not([class*="Search-module__placeholder"])) span[class*="Search-module__placeholder"] {
+                display: none !important;
             }
             /* 暗色主題適配 - 使用 prefers-color-scheme */
             @media (prefers-color-scheme: dark) {
@@ -38309,6 +38328,7 @@ I18N["zh-TW"]["repository/agents"] = {
 
         transDashboardShortcutMenus();
         transDashboardPromptPlaceholder();
+        transDashboardTopRepositorySearchPlaceholders();
         transDashboardNewRepositoryButtons();
         transDashboardActivityFeed();
         transDashboardChangelog();
@@ -38667,6 +38687,82 @@ I18N["zh-TW"]["repository/agents"] = {
         );
     }
 
+    function transDashboardTopRepositorySearchPlaceholders() {
+        if (!isDashboardPage()) return false;
+
+        let translated = false;
+        document.querySelectorAll('input[placeholder]').forEach(input => {
+            if (!getDashboardTopRepositorySearchInput(input)) return;
+
+            const source = normalizeHeaderTooltipText(input.getAttribute('placeholder'));
+            if (source !== 'Find a repository...' && source !== 'Find a repository…' && source !== 'Find a repository') return;
+
+            input.setAttribute('placeholder', '搜尋倉庫…');
+            translated = true;
+        });
+
+        return translated;
+    }
+
+    function getDashboardTopRepositorySearchInput(element) {
+        if (!isDashboardPage()) return null;
+
+        const node = getNodeElement(element);
+        const input = node?.matches?.('input')
+            ? node
+            : node?.closest?.('input');
+        if (!input || input.nodeType !== Node.ELEMENT_NODE) return null;
+        if (!isDashboardShortcutMenuElementVisible(input)) return null;
+
+        try {
+            if (input.closest?.('header, [role="banner"], qbsearch-input, query-builder, react-app[app-name="command-palette"], #command-palette-pjax-container, .js-command-palette, modal-dialog, dialog, [role="dialog"], .Overlay, .Popover, [role="menu"], [role="listbox"]')) {
+                return null;
+            }
+        } catch (e) {
+            return null;
+        }
+
+        const placeholder = normalizeHeaderTooltipText(input.getAttribute('placeholder'));
+        const allowedPlaceholders = new Set([
+            'Find a repository...',
+            'Find a repository…',
+            'Find a repository',
+            '搜尋倉庫…'
+        ]);
+        if (!allowedPlaceholders.has(placeholder)) return null;
+
+        let current = input.parentElement;
+        for (let depth = 0; current && depth < 8; depth += 1) {
+            const text = normalizeHeaderTooltipText(current.textContent);
+            if (
+                text.includes('Top repositories') ||
+                text.includes('Popular repositories') ||
+                text.includes('熱門倉庫') ||
+                text.includes('置頂倉庫')
+            ) {
+                return input;
+            }
+            current = current.parentElement;
+        }
+
+        return null;
+    }
+
+    function isDashboardTopRepositorySearchInteraction(event) {
+        return !!getDashboardTopRepositorySearchInput(event?.target);
+    }
+
+    function scheduleDashboardTopRepositorySearchTrans() {
+        if (!isDashboardPage()) return;
+
+        [0, 25, 100, 300, 700].forEach(delay => {
+            setTimeout(() => {
+                safe(transDashboardTopRepositorySearchPlaceholders, '儀表板熱門倉庫搜尋提示補翻')();
+                safe(transDashboardContextBreadcrumb, '儀表板頂欄熱門倉庫搜尋補翻')();
+            }, delay);
+        });
+    }
+
     function transDashboardRepositoryPickerSearchPlaceholders() {
         document.querySelectorAll('input[placeholder="Search"]').forEach(input => {
             if (!isDashboardRepositoryPickerSearchInput(input)) return;
@@ -38887,6 +38983,11 @@ I18N["zh-TW"]["repository/agents"] = {
     function setupDashboardContextProtection() {
         const restoreBeforeInteraction = event => {
             if (!isDashboardPage()) return;
+            if (isDashboardTopRepositorySearchInteraction(event)) {
+                State.dashboardContextSearchSeen = true;
+                scheduleDashboardTopRepositorySearchTrans();
+                return;
+            }
             if (isDashboardSearchInteraction(event)) {
                 State.dashboardContextSearchSeen = true;
             }
@@ -38969,6 +39070,7 @@ I18N["zh-TW"]["repository/agents"] = {
 
     function isDashboardSearchActive() {
         const active = getNodeElement(document.activeElement);
+        if (active && getDashboardTopRepositorySearchInput(active)) return false;
         if (active && isDashboardSearchInteraction({ target: active })) return true;
 
         const selector = [
