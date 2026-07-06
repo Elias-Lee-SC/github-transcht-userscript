@@ -1,0 +1,43 @@
+# GitHub 中文化插件（繁體單檔維護版）
+
+這是一個用於將 GitHub 網頁介面翻譯為**繁體中文**的 Userscript（使用者腳本），旨在為習慣繁體中文的開發者提供更在地化、更易讀的 GitHub 瀏覽體驗。
+
+## 📌 專案由來與致謝 (Credits & Origin)
+
+本專案是基於開源社群前輩的心血修改而來，並遵守 **GPL-3.0 開源協議**：
+- **原始專案**：[github-chinese](https://github.com/maboloshi/github-chinese)
+- **原創作者**：[樓教主 (52cik)](https://github.com/52cik)
+- **後續主要維護者**：[沙漠之子 (maboloshi)](https://github.com/maboloshi)
+
+## 🚀 本版本特色與改進 (Features)
+
+作為本衍生版本的主要維護者，**Elias Lee** 在原專案的基礎上進行了以下重大調整與優化：
+
+1. **單檔案架構 (Single File Integration)**
+   將原本分離的控制腳本與詞庫（`locals.js`）合併為單一 `JSON / Userscript` 檔案，徹底解決外部依賴與安裝繁瑣的問題，簡化更新流程。
+2. **深度繁體中文優化 (Traditional Chinese Localization)**
+   針對台灣及繁體中文使用者的資訊術語習慣，重新校對並翻譯了大量詞條（例如採用「發佈」、「專案」等在地化用語），大幅減少生硬的「簡轉繁」帶來的語意偏差。
+3. **支援 GitHub 最新功能 (Modern GitHub UI Support)**
+   本專案新增了對 GitHub 最新介面與動態加載組件的中文化支持，包括但不限於：
+   - GitHub Copilot 對話框與 AI 代理頁面
+   - GitHub Spark
+   - MCP Registry (Model Context Protocol) 及其詳情頁面
+   - 新版全域搜尋結果、主題探索 (Topics)、贊助頁面 (Sponsors)
+4. **修復動態載入的英文殘留 Bug (Dynamic DOM Fixes)**
+   實作了更密集的重試機制與精確的 DOM 攔截，有效解決了 GitHub 使用 React、Turbo 與 Shadow DOM 渲染時，刷新頁面後中文又變回英文的閃爍與殘留問題。
+
+## 🛠️ 安裝方式
+
+1. 首先安裝使用者腳本管理器，例如：[Tampermonkey](https://www.tampermonkey.net/) 或 [Violentmonkey](https://violentmonkey.github.io/)。
+2. 點擊下方連結安裝本腳本：
+   - [安裝 GitHub 中文化插件（繁體單檔版）](https://raw.githubusercontent.com/Elias-Lee-SC/github-transcht-userscript/main/GitHub-TransCHT-Userscript.json) (⚠️ 請在公開倉庫後確認此連結的正確性)
+3. 重新整理你的 GitHub 頁面即可生效。
+
+## 🤝 參與貢獻與回報
+
+如果你在使用過程中遇到任何翻譯遺漏、語句不順暢或是頁面錯誤，非常歡迎至 [Issues](https://github.com/Elias-Lee-SC/github-transcht-userscript/issues) 提交回報！
+
+## 📄 授權協議 (License)
+
+本專案沿用原始專案的 [GPL-3.0 License](https://www.gnu.org/licenses/gpl-3.0.html)。
+你可以自由地使用、修改及散佈本程式碼，但請務必遵守該協議保留原作者與本專案的版權聲明，並且任何衍生作品也必須以 GPL-3.0 開源發佈。
