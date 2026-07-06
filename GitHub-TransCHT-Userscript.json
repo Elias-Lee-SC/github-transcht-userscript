@@ -4,7 +4,7 @@
 // @description  基於 maboloshi/github-chinese 修改的繁體中文單檔版。原作者為樓教主與沙漠之子，由 Elias Lee 進行單檔合併、繁體字詞習慣優化與持續維護。
 // @copyright    2016-2021 樓教主, 2021-2024 沙漠之子, 2026-當前 Elias Lee (https://github.com/Elias-Lee-SC)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.12.88
+// @version      local.12.90
 // @author       Elias Lee (基於 沙漠之子 & 樓教主 的原創專案)
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -17726,6 +17726,7 @@ I18N["zh-TW"]["repository/settings"] = { // 倉庫設置 - 通常 /<user-name>/<
 
             // 刪除倉庫對話框
                 // [/Delete/, "刪除"],
+                "Delete repository": "刪除倉庫",
                 "I want to delete this repository": "我想刪除這個倉庫",
 
                 "This will permanently delete the": "這將永久刪除",
@@ -17742,7 +17743,7 @@ I18N["zh-TW"]["repository/settings"] = { // 倉庫設置 - 通常 /<user-name>/<
         [/Make ([^ ]+) public/, "將 $1 設為公開"],
         [/(\d+) stars?/, "$1 位星標者"],
         [/(\d+) watchers?/, "$1 位追蹤者"],
-        [/To confirm, type \"([^ ]+)\" in the box below/, "要確認，請在下面的方框中輸入 \"$1\""],
+        [/To confirm, type \"([^ ]+)\" in the box below/, "若要確認，請在下方方框中輸入 “$1”"],
         [/Your repository \"([^ ]+)\" was successfully archived./, "您的倉庫 “$1” 已成功存檔。"], //倉庫存檔
         [/Your repository \"([^ ]+)\" was successfully unarchived./, "您的倉庫 “$1” 已成功解除存檔。"], //倉庫解除存檔
         [/is already the branch name./, "已經是分支的名稱了。"],
@@ -36968,12 +36969,20 @@ I18N["zh-TW"]["repository/agents"] = {
             if (!isRepositorySettingsGeneralPage()) return;
             scheduleRepositorySettingsGeneralPageTrans();
         };
+        const scheduleFast = () => {
+            if (!isRepositorySettingsGeneralPage()) return;
+            scheduleRepositorySettingsGeneralPageInteractionTrans();
+        };
 
         document.addEventListener('pointerover', schedule, true);
         document.addEventListener('mouseover', schedule, true);
+        document.addEventListener('pointerdown', scheduleFast, true);
         document.addEventListener('click', schedule, true);
+        document.addEventListener('click', scheduleFast, true);
         document.addEventListener('focusin', schedule, true);
+        document.addEventListener('focusin', scheduleFast, true);
         document.addEventListener('keyup', schedule, true);
+        document.addEventListener('keyup', scheduleFast, true);
     }
 
     function setupRepositoryTransferPageInteractions() {
@@ -37001,6 +37010,16 @@ I18N["zh-TW"]["repository/agents"] = {
                 if (delay === 12000) {
                     State.repositorySettingsGeneralPagePending = false;
                 }
+            }, delay);
+        });
+    }
+
+    function scheduleRepositorySettingsGeneralPageInteractionTrans() {
+        if (!isRepositorySettingsGeneralPage()) return;
+
+        [0, 16, 33, 75, 150, 300, 600, 1000, 1800].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositorySettingsGeneralPageDynamicText, '倉庫常規設置頁互動補翻')();
             }, delay);
         });
     }
@@ -37671,6 +37690,14 @@ I18N["zh-TW"]["repository/agents"] = {
             [
                 /^([\d,]+) watchers?$/,
                 (_, count) => `${count} 位追蹤者`
+            ],
+            [
+                /^Delete ([^ ]+\/[^ ]+)$/,
+                (_, repositoryName) => `刪除 ${repositoryName}`
+            ],
+            [
+                /^To confirm, type ["“](.+)["”] in the box below$/,
+                (_, repositoryName) => `若要確認，請在下方方框中輸入 “${repositoryName}”`
             ],
             [
                 /^The default branch is considered the [“"]base[”"] branch in your repository, against which all pull requests and code commits are automatically made, unless you specify a different branch\.$/,
