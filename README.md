@@ -1,6 +1,6 @@
-# GitHub 中文化插件（繁體單檔維護版）
+# GitHub 中文化插件（正體單檔維護版）
 
-這是一個用於將 GitHub 網頁介面翻譯為**繁體中文**的 Userscript（使用者腳本），旨在為習慣繁體中文的開發者提供更在地化、更易讀的 GitHub 瀏覽體驗。
+這是一個用於將 GitHub 網頁介面翻譯為**正體中文**的 Userscript（使用者腳本），旨在為習慣正體中文的使用者提供更易讀的 GitHub 瀏覽體驗。
 
 ## 📌 專案由來與致謝 (Credits & Origin)
 
@@ -11,12 +11,10 @@
 
 ## 🚀 本版本特色與改進 (Features)
 
-作為本衍生版本的主要維護者，**Elias Lee** 在原專案的基礎上進行了以下重大調整與優化：
+在原專案的基礎上進行了以下調整與優化：
 
 1. **單檔案架構 (Single File Integration)**
    將原本分離的控制腳本與詞庫（`locals.js`）合併為單一 `JSON / Userscript` 檔案，徹底解決外部依賴與安裝繁瑣的問題，簡化更新流程。
-2. **繁體中文優化 (Traditional Chinese Localization)**
-   針對台灣及繁體中文使用者的資訊術語習慣，重新校對並翻譯了大量詞條（例如採用「發佈」、「專案」等在地化用語），大幅減少生硬的「簡轉繁」帶來的語意偏差。
 3. **支援 GitHub 最新功能 (Modern GitHub UI Support)**
    本專案新增了對 GitHub 最新介面與動態加載組件的中文化支持，包括但不限於：
    - GitHub Copilot 對話框與 AI 代理頁面
