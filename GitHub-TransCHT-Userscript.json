@@ -4,7 +4,7 @@
 // @description  基於 maboloshi/github-chinese 修改的繁體中文單檔版。原作者為樓教主與沙漠之子，由 Elias Lee 進行單檔合併、繁體字詞習慣優化與持續維護。
 // @copyright    2016-2021 樓教主, 2021-2024 沙漠之子, 2026-當前 Elias Lee (https://github.com/Elias-Lee-SC)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.12.90
+// @version      local.13.11
 // @author       Elias Lee (基於 沙漠之子 & 樓教主 的原創專案)
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -86,7 +86,7 @@ I18N.conf = {
     rePagePathOrg: /^\/[^\/]+\/[^\/]+\/(repositories\/new|repositories|sponsoring|discussions|projects|packages|teams|new-team|people|outside-collaborators|pending_collaborators|dashboard|billing_managers\/new|invitations?|settings\/(profile|billing|roles|member_privileges|teams|import-export|blocked_users|interaction_limits|code_review_limits|moderators|repository-defaults|rules|codespaces|copilot|actions|hooks|discussions|packages|pages|projects|security_analysis|security|dependabot_rules|domains|secrets|variables|oauth_application_policy|installations|personal-access-token|reminders|sponsors-log|audit-log|deleted_repositories|applications\/new|applications|apps\/new|apps|publisher|policies\/repositories)|topics|domain\/new|audit-log\/event_settings|billing\/(history|plans)|policies\/applications)|^\/[^\/]+\/(enterprise_plan|sponsoring)/,
 
     // 特定頁面，啟用`字符資料`監測
-    characterDataPage: ['repository/new', 'repository/edit', 'new', 'new/import', 'orgs/repositories/new', 'repository/blob', 'repository/pull', 'marketplace', 'homepage', 'repository/issues', 'repository/commit', 'copilot', 'spark', 'repository/settings/rules', 'pulls'],
+    characterDataPage: ['repository/new', 'repository/edit', 'new', 'new/import', 'orgs/repositories/new', 'repository/blob', 'repository/pull', 'marketplace', 'homepage', 'repository/issues', 'repository/commit', 'copilot', 'spark', 'repository/settings/rules', 'pulls', 'repository/branches'],
 
     // 特定頁面，忽略突變元素規則
     ignoreMutationSelectorPage: {
@@ -9044,6 +9044,8 @@ I18N["zh-TW"]["repository"] = { // 倉庫頁面 /<user-name>/<repo-name>/
                         // GitHub CLI
                         "Work fast with our official CLI.": "使用我們的官方 CLI 快速工作。",
                         "Learn more about the CLI": "瞭解更多關於 CLI 的訊息",
+                        "Learn more": "瞭解更多",
+                        "Copy command to clipboard": "複製命令到剪切板",
 
                     "Open with GitHub Desktop": "在 GitHub Desktop 中打開",
                         "Launching GitHub Desktop": "GitHub Desktop 啟動中",
@@ -9419,7 +9421,7 @@ I18N["zh-TW"]["repository"] = { // 倉庫頁面 /<user-name>/<repo-name>/
             "Top": "頂部",
             "Jump to file": "跳轉到文件",
 
-            "Name": "檔名",
+            "Name": "名稱",
             "Last commit message": "最後提交消息",
             "Last commit date": "最後提交時間",
 
@@ -10901,6 +10903,8 @@ I18N["zh-TW"]["repository/pull"] = { // 倉庫 - 某個合併請求頁面
                 "Local": "本地",
                     "Checkout with GitHub CLI": "使用 GitHub CLI 檢出",
                     "Work fast with our official CLI.": "使用我們的官方 CLI 快速工作。",
+                    "Learn more": "瞭解更多",
+                    "Copy command to clipboard": "複製命令到剪切板",
                     "Checkout with GitHub Desktop": "使用 GitHub Desktop 檢出",
                         "Launching GitHub Desktop": "GitHub Desktop 啟動中",
                         "If nothing happens,": "如果沒有響應",
@@ -14832,6 +14836,7 @@ I18N["zh-TW"]["repository/branches"] = { // 倉庫 - 分支頁面
 
         // 分支頁面 branches  /<user-name>/<repo-name>/branches
             // 標籤卡欄
+            "Branches": "分支",
             "Overview": "概況",
             "Yours": "您的",
             "Active": "活躍的",
@@ -14845,8 +14850,11 @@ I18N["zh-TW"]["repository/branches"] = { // 倉庫 - 分支頁面
                     "Choose from this fork or its upstream repository.": "從此複刻或其上游倉庫中進行選擇。",
                     "Choose a source branch": "選擇源分支",
                 "Share feedback": "分享回饋",
+            "Search branches...": "搜尋分支…",
             "Search branches…": "搜尋分支…",
-            "Copy branch name to clipboard": "複製分支名到剪切板",
+            "Search branches": "搜尋分支",
+            "Copy to clipboard": "複製到剪貼板",
+            "Copy branch name to clipboard": "複製分支名稱到剪貼板",
 
             "Default branch": "預設分支",
             "Switch default branch": "切換預設分支",
@@ -14939,11 +14947,13 @@ I18N["zh-TW"]["repository/branches"] = { // 倉庫 - 分支頁面
                     "No branches match the search": "沒有符合搜尋條件的分支",
 
                 "Check status": "檢查狀態",
+                "Branch": "分支",
                 "Behind": "落後",
                 "Ahead": "領先",
                 "Pull request": "合併請求",
 
-                "Copy branch name to clipboard": "將分支名稱複製到剪貼板",
+                "Copy to clipboard": "複製到剪貼板",
+                "Copy branch name to clipboard": "複製分支名稱到剪貼板",
                 "This branch is protected by branch protections": "該分支受分支保護的保護",
 
                 "Branch menu": "分支選單",
@@ -14951,6 +14961,7 @@ I18N["zh-TW"]["repository/branches"] = { // 倉庫 - 分支頁面
                     "View rules": "查看規則",
                         "There are no rulesets associated with this branch.": "該分支沒有相關的規則集。",
 
+                "Cancel": "取消",
                 "View more branches": "查看更多分支",
 
                 // 底部提醒
@@ -30157,7 +30168,8 @@ I18N["zh-TW"]["repository/agents"] = {
             "You have unread notifications": "您有未讀通知",
             "You have no unread notifications": "您沒有未讀通知",
             "Notifications": "通知",
-            "Open user navigation menu": "打開用戶導航選單"
+            "Open user navigation menu": "打開用戶導航選單",
+            "Account switcher": "帳戶切換"
         },
         HEADER_TOOLTIP_SHORTCUTS: {
             "所有議題": ["G", "I"],
@@ -30182,6 +30194,7 @@ I18N["zh-TW"]["repository/agents"] = {
             "In a space": "在空間",
             "Download for...": "下載外掛…",
             "Download for…": "下載外掛…",
+            "Account switcher": "帳戶切換",
             "Settings": "設置",
             "New issue": "新建議題",
             "New repository": "新建倉庫",
@@ -30344,6 +30357,178 @@ I18N["zh-TW"]["repository/agents"] = {
             header button[aria-label^="Search or jump"][class*="Search-module__searchButton"]:not([aria-expanded="true"]):has(span[class*="Search-module__text"][class*="Search-module__value"]:not([class*="Search-module__placeholder"])) span[class*="Search-module__placeholder"] {
                 display: none !important;
             }
+            html.ghcht-repository-branches-page main h1:first-of-type,
+            html.ghcht-repository-branches-page [role="main"] h1:first-of-type {
+                font-size: 0 !important;
+            }
+            html.ghcht-repository-branches-page main h1:first-of-type::before,
+            html.ghcht-repository-branches-page [role="main"] h1:first-of-type::before {
+                content: "分支";
+                color: inherit !important;
+                font-size: var(--text-title-size-large, 32px) !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+            }
+            html.ghcht-repository-branches-page main a[href$="/branches/new"],
+            html.ghcht-repository-branches-page main a[href*="/branches/new?"],
+            html.ghcht-repository-branches-page main a[data-ghcht-branches-new-button="true"],
+            html.ghcht-repository-branches-page main button[data-ghcht-branches-new-button="true"],
+            html.ghcht-repository-branches-page [role="main"] a[href$="/branches/new"],
+            html.ghcht-repository-branches-page [role="main"] a[href*="/branches/new?"],
+            html.ghcht-repository-branches-page [role="main"] a[data-ghcht-branches-new-button="true"],
+            html.ghcht-repository-branches-page [role="main"] button[data-ghcht-branches-new-button="true"] {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                font-size: 0 !important;
+                box-sizing: border-box !important;
+                min-width: 104px !important;
+                position: relative !important;
+                text-align: center !important;
+            }
+            html.ghcht-repository-branches-page main a[href$="/branches/new"]::before,
+            html.ghcht-repository-branches-page main a[href*="/branches/new?"]::before,
+            html.ghcht-repository-branches-page main a[data-ghcht-branches-new-button="true"]::before,
+            html.ghcht-repository-branches-page main button[data-ghcht-branches-new-button="true"]::before,
+            html.ghcht-repository-branches-page [role="main"] a[href$="/branches/new"]::before,
+            html.ghcht-repository-branches-page [role="main"] a[href*="/branches/new?"]::before,
+            html.ghcht-repository-branches-page [role="main"] a[data-ghcht-branches-new-button="true"]::before,
+            html.ghcht-repository-branches-page [role="main"] button[data-ghcht-branches-new-button="true"]::before {
+                content: "新建分支";
+                position: absolute !important;
+                inset: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                color: inherit !important;
+                font-size: var(--text-body-size-medium, 14px) !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+                text-align: center !important;
+                white-space: nowrap;
+            }
+            nav[aria-label*="Repository"] span[data-content="Code"],
+            nav[aria-label*="repository"] span[data-content="Code"],
+            nav[aria-label*="倉庫"] span[data-content="Code"],
+            nav[aria-label*="Repository"] span[data-content="Issues"],
+            nav[aria-label*="repository"] span[data-content="Issues"],
+            nav[aria-label*="倉庫"] span[data-content="Issues"],
+            nav[aria-label*="Repository"] span[data-content="Pull requests"],
+            nav[aria-label*="repository"] span[data-content="Pull requests"],
+            nav[aria-label*="倉庫"] span[data-content="Pull requests"],
+            nav[aria-label*="Repository"] span[data-content="Agents"],
+            nav[aria-label*="repository"] span[data-content="Agents"],
+            nav[aria-label*="倉庫"] span[data-content="Agents"],
+            nav[aria-label*="Repository"] span[data-content="Discussions"],
+            nav[aria-label*="repository"] span[data-content="Discussions"],
+            nav[aria-label*="倉庫"] span[data-content="Discussions"],
+            nav[aria-label*="Repository"] span[data-content="Actions"],
+            nav[aria-label*="repository"] span[data-content="Actions"],
+            nav[aria-label*="倉庫"] span[data-content="Actions"],
+            nav[aria-label*="Repository"] span[data-content="Projects"],
+            nav[aria-label*="repository"] span[data-content="Projects"],
+            nav[aria-label*="倉庫"] span[data-content="Projects"],
+            nav[aria-label*="Repository"] span[data-content="Security and quality"],
+            nav[aria-label*="repository"] span[data-content="Security and quality"],
+            nav[aria-label*="倉庫"] span[data-content="Security and quality"],
+            nav[aria-label*="Repository"] span[data-content="Insights"],
+            nav[aria-label*="repository"] span[data-content="Insights"],
+            nav[aria-label*="倉庫"] span[data-content="Insights"],
+            nav[aria-label*="Repository"] span[data-content="Settings"],
+            nav[aria-label*="repository"] span[data-content="Settings"],
+            nav[aria-label*="倉庫"] span[data-content="Settings"] {
+                font-size: 0 !important;
+            }
+            nav[aria-label*="Repository"] span[data-content="Code"]::before,
+            nav[aria-label*="repository"] span[data-content="Code"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Code"]::before,
+            nav[aria-label*="Repository"] span[data-content="Issues"]::before,
+            nav[aria-label*="repository"] span[data-content="Issues"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Issues"]::before,
+            nav[aria-label*="Repository"] span[data-content="Pull requests"]::before,
+            nav[aria-label*="repository"] span[data-content="Pull requests"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Pull requests"]::before,
+            nav[aria-label*="Repository"] span[data-content="Agents"]::before,
+            nav[aria-label*="repository"] span[data-content="Agents"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Agents"]::before,
+            nav[aria-label*="Repository"] span[data-content="Discussions"]::before,
+            nav[aria-label*="repository"] span[data-content="Discussions"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Discussions"]::before,
+            nav[aria-label*="Repository"] span[data-content="Actions"]::before,
+            nav[aria-label*="repository"] span[data-content="Actions"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Actions"]::before,
+            nav[aria-label*="Repository"] span[data-content="Projects"]::before,
+            nav[aria-label*="repository"] span[data-content="Projects"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Projects"]::before,
+            nav[aria-label*="Repository"] span[data-content="Security and quality"]::before,
+            nav[aria-label*="repository"] span[data-content="Security and quality"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Security and quality"]::before,
+            nav[aria-label*="Repository"] span[data-content="Insights"]::before,
+            nav[aria-label*="repository"] span[data-content="Insights"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Insights"]::before,
+            nav[aria-label*="Repository"] span[data-content="Settings"]::before,
+            nav[aria-label*="repository"] span[data-content="Settings"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Settings"]::before {
+                display: inline !important;
+                visibility: visible !important;
+                width: auto !important;
+                height: auto !important;
+                overflow: visible !important;
+                color: inherit !important;
+                font-size: var(--text-body-size-medium, 14px) !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+            }
+            nav[aria-label*="Repository"] span[data-content="Code"]::before,
+            nav[aria-label*="repository"] span[data-content="Code"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Code"]::before {
+                content: "程式碼";
+            }
+            nav[aria-label*="Repository"] span[data-content="Issues"]::before,
+            nav[aria-label*="repository"] span[data-content="Issues"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Issues"]::before {
+                content: "議題";
+            }
+            nav[aria-label*="Repository"] span[data-content="Pull requests"]::before,
+            nav[aria-label*="repository"] span[data-content="Pull requests"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Pull requests"]::before {
+                content: "合併請求";
+            }
+            nav[aria-label*="Repository"] span[data-content="Agents"]::before,
+            nav[aria-label*="repository"] span[data-content="Agents"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Agents"]::before {
+                content: "AI 代理";
+            }
+            nav[aria-label*="Repository"] span[data-content="Discussions"]::before,
+            nav[aria-label*="repository"] span[data-content="Discussions"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Discussions"]::before {
+                content: "討論";
+            }
+            nav[aria-label*="Repository"] span[data-content="Actions"]::before,
+            nav[aria-label*="repository"] span[data-content="Actions"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Actions"]::before {
+                content: "操作";
+            }
+            nav[aria-label*="Repository"] span[data-content="Projects"]::before,
+            nav[aria-label*="repository"] span[data-content="Projects"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Projects"]::before {
+                content: "專案";
+            }
+            nav[aria-label*="Repository"] span[data-content="Security and quality"]::before,
+            nav[aria-label*="repository"] span[data-content="Security and quality"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Security and quality"]::before {
+                content: "安全和質量";
+            }
+            nav[aria-label*="Repository"] span[data-content="Insights"]::before,
+            nav[aria-label*="repository"] span[data-content="Insights"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Insights"]::before {
+                content: "分析";
+            }
+            nav[aria-label*="Repository"] span[data-content="Settings"]::before,
+            nav[aria-label*="repository"] span[data-content="Settings"]::before,
+            nav[aria-label*="倉庫"] span[data-content="Settings"]::before {
+                content: "設置";
+            }
             /* 暗色主題適配 - 使用 prefers-color-scheme */
             @media (prefers-color-scheme: dark) {
                 :root {
@@ -30405,6 +30590,10 @@ I18N["zh-TW"]["repository/agents"] = {
         mcpRegistryPageFastPending: false,
         searchPagePending: false,
         topicsPagePending: false,
+        repositoryCodePagePending: false,
+        repositoryCodeDropdownPending: false,
+        repositoryBranchesPagePending: false,
+        repositoryBranchesInteractionPending: false,
         repositorySettingsGeneralPagePending: false,
         repositoryTransferPagePending: false,
         settingsTrendingLanguagePending: false,
@@ -30464,6 +30653,8 @@ I18N["zh-TW"]["repository/agents"] = {
         setupMcpRegistryPageInteractions();
         setupSearchPageInteractions();
         setupTopicsPageInteractions();
+        setupRepositoryCodePageInteractions();
+        setupRepositoryBranchesPageInteractions();
         setupRepositorySettingsGeneralPageInteractions();
         setupRepositoryTransferPageInteractions();
         setupDashboardShortcutMenuTranslations();
@@ -30510,6 +30701,8 @@ I18N["zh-TW"]["repository/agents"] = {
                 scheduleInitialDiscussionsContextTranslation();
                 scheduleInitialCodespacesContextTranslation();
                 scheduleTopicsPageTrans();
+                scheduleRepositoryCodePageTrans();
+                scheduleRepositoryBranchesPageTrans();
                 scheduleRepositorySettingsGeneralPageTrans();
                 scheduleRepositoryTransferPageTrans();
                 scheduleSettingsTrendingSpokenLanguageTrans();
@@ -30524,6 +30717,8 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleMcpRegistryFastTrans();
             scheduleMcpRegistryPageTrans();
             scheduleSearchPageTrans();
+            scheduleRepositoryCodePageTrans();
+            scheduleRepositoryBranchesPageTrans();
             scheduleRepositorySettingsGeneralPageTrans();
             scheduleRepositoryTransferPageTrans();
         }
@@ -30584,6 +30779,8 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleMcpRegistryFastTrans();
             scheduleMcpRegistryPageTrans();
             scheduleSearchPageTrans();
+            scheduleRepositoryCodePageTrans();
+            scheduleRepositoryBranchesPageTrans();
             scheduleRepositorySettingsGeneralPageTrans();
             scheduleRepositoryTransferPageTrans();
         }
@@ -30636,6 +30833,8 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleMcpRegistryFastTrans();
         scheduleMcpRegistryPageTrans();
         scheduleSearchPageTrans();
+        scheduleRepositoryCodeDropdownTrans();
+        scheduleRepositoryBranchesPageTrans();
         scheduleRepositorySettingsGeneralPageTrans();
         scheduleRepositoryTransferPageTrans();
         scheduleTopicsPageTrans();
@@ -30661,6 +30860,7 @@ I18N["zh-TW"]["repository/agents"] = {
         } else if (newType !== State.pageConfig?.currentPageType) {
             State.pageConfig = buildPageConfig(newType);
         }
+        syncRepositoryBranchesPageClass();
         console.log(`【Debug】${trigger}觸發, 頁面類型為 ${State.pageConfig?.currentPageType}`);
     }
 
@@ -30722,7 +30922,8 @@ I18N["zh-TW"]["repository/agents"] = {
         const isMcpRegistry = site === 'github' && /^\/mcp(?:\/|$)/.test(pathname);
         const isHomepage = pathname === '/' && site === 'github';
         const isProfile = document.body.classList.contains("page-profile") || metaLocation === '/<user-name>';
-        const isRepository = /\/<user-name>\/<repo-name>/.test(metaLocation);
+        const repoPathMatch = pathname.match(I18N.conf.rePagePathRepo);
+        const isRepository = /\/<user-name>\/<repo-name>/.test(metaLocation) || !!repoPathMatch;
         const isOrganization = /\/<org-login>/.test(metaLocation) || /^\/(?:orgs|organizations)/.test(pathname);
 
         let pageType;
@@ -30748,7 +30949,7 @@ I18N["zh-TW"]["repository/agents"] = {
                 pageType = isLogin ? 'dashboard' : 'homepage';
                 break;
             case isRepository: { // 代碼倉庫頁面
-                const repoMatch = pathname.match(I18N.conf.rePagePathRepo);
+                const repoMatch = repoPathMatch;
                 pageType = repoMatch ? `repository/${repoMatch[1]}` : 'repository';
                 break;
             }
@@ -30901,6 +31102,7 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleMcpRegistryPageTrans();
         scheduleSearchPageTrans();
         scheduleRepositorySettingsGeneralPageTrans();
+        scheduleRepositoryBranchesInteractionTrans();
         scheduleRepositoryTransferPageTrans();
         scheduleTopicsPageTrans();
         scheduleSettingsTrendingSpokenLanguageTrans();
@@ -31477,7 +31679,7 @@ I18N["zh-TW"]["repository/agents"] = {
             '[popover]',
             '.Overlay',
             '.Popover-message',
-            '.ActionList'
+            '.ActionList',
         ].join(', ');
         const hasIssuesQueryInput = !!document.querySelector([
             'input[placeholder="Search Issues"]',
@@ -31746,7 +31948,7 @@ I18N["zh-TW"]["repository/agents"] = {
             'anchored-position',
             '.Overlay',
             '.Popover-message',
-            '.ActionList'
+            '.ActionList',
         ].join(', ');
         document.querySelectorAll(dynamicSurfaces).forEach(surface => {
             if (!surface.closest?.('header, [role="banner"], .AppHeader, .Header')) {
@@ -36960,8 +37162,60 @@ I18N["zh-TW"]["repository/agents"] = {
         );
     }
 
+    function isRepositoryCodePage() {
+        return (
+            State.pageConfig?.currentPageType === 'repository' ||
+            State.pageConfig?.currentPageType === 'repository/tree' ||
+            /^\/[^\/]+\/[^\/]+\/?$/.test(window.location.pathname) ||
+            /^\/[^\/]+\/[^\/]+\/tree\/[^\/]+(?:\/.*)?$/.test(window.location.pathname)
+        );
+    }
+
+    function isRepositoryBranchesPage() {
+        return (
+            State.pageConfig?.currentPageType === 'repository/branches' ||
+            isRepositoryBranchesPath()
+        );
+    }
+
+    function isRepositoryBranchesPath() {
+        return /^\/[^\/]+\/[^\/]+\/branches(?:\/(?:yours|active|stale|all))?\/?$/.test(window.location.pathname);
+    }
+
+    function syncRepositoryBranchesPageClass() {
+        document.documentElement.classList.toggle(
+            'ghcht-repository-branches-page',
+            isRepositoryBranchesPath()
+        );
+    }
+
     function isRepositoryTopNavigationTranslationPage() {
         return isRepositorySettingsGeneralPage() || isRepositoryTransferPage();
+    }
+
+    function setupRepositoryCodePageInteractions() {
+        const scheduleDropdown = () => {
+            if (!isRepositoryCodePage()) return;
+            scheduleRepositoryCodeDropdownTrans();
+        };
+
+        document.addEventListener('click', scheduleDropdown, true);
+        document.addEventListener('pointerdown', scheduleDropdown, true);
+        document.addEventListener('focusin', scheduleDropdown, true);
+    }
+
+    function setupRepositoryBranchesPageInteractions() {
+        const schedule = () => {
+            if (!isRepositoryBranchesPage()) return;
+            scheduleRepositoryBranchesInteractionTrans();
+        };
+
+        document.addEventListener('pointerover', schedule, true);
+        document.addEventListener('mouseover', schedule, true);
+        document.addEventListener('pointerdown', schedule, true);
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('focusin', schedule, true);
+        document.addEventListener('keyup', schedule, true);
     }
 
     function setupRepositorySettingsGeneralPageInteractions() {
@@ -36997,6 +37251,358 @@ I18N["zh-TW"]["repository/agents"] = {
         document.addEventListener('click', schedule, true);
         document.addEventListener('focusin', schedule, true);
         document.addEventListener('keyup', schedule, true);
+    }
+
+    function scheduleRepositoryCodePageTrans() {
+        if (!isRepositoryCodePage()) return;
+        if (State.repositoryCodePagePending) return;
+        State.repositoryCodePagePending = true;
+
+        [0, 50, 150, 350, 900, 1600, 3000, 5000, 8000, 12000].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositoryCodePageDynamicText, '倉庫 Code 頁補翻')();
+                if (delay === 12000) {
+                    State.repositoryCodePagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleRepositoryCodePageInteractionTrans() {
+        if (!isRepositoryCodePage()) return;
+    }
+
+    function scheduleRepositoryCodeDropdownTrans() {
+        if (!isRepositoryCodePage()) return;
+        if (State.repositoryCodeDropdownPending) return;
+        State.repositoryCodeDropdownPending = true;
+
+        [0, 50, 120, 250, 500, 900, 1500, 2400].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositoryCodeDropdownSurfaces, '倉庫 Code 頁下拉浮層補翻')();
+                if (delay === 2400) {
+                    State.repositoryCodeDropdownPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleRepositoryBranchesPageTrans() {
+        if (!isRepositoryBranchesPage()) return;
+        if (State.repositoryBranchesPagePending) return;
+        State.repositoryBranchesPagePending = true;
+
+        [0, 50, 150, 350, 700, 1200, 2000, 3500, 6000, 9000, 12000].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositoryBranchesPageDynamicText, '倉庫 Branches 頁補翻')();
+                if (delay === 12000) {
+                    State.repositoryBranchesPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleRepositoryBranchesInteractionTrans() {
+        if (!isRepositoryBranchesPage()) return;
+        if (State.repositoryBranchesInteractionPending) return;
+        State.repositoryBranchesInteractionPending = true;
+
+        [0, 16, 50, 120, 250, 500, 900, 1500, 2400].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositoryBranchesPageDynamicText, '倉庫 Branches 頁互動補翻')();
+                if (delay === 2400) {
+                    State.repositoryBranchesInteractionPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function getRepositoryBranchesPageFixedDict() {
+        return {
+            ...(I18N?.[CONFIG.LANG]?.['repository/branches']?.static || {}),
+            "Branches": "分支",
+            "Overview": "概況",
+            "Yours": "您的",
+            "Active": "活躍的",
+            "Stale": "陳舊的",
+            "All": "所有",
+            "New branch": "新建分支",
+            "Search branches...": "搜尋分支…",
+            "Search branches…": "搜尋分支…",
+            "Search branches": "搜尋分支",
+            "Default": "預設",
+            "Branch": "分支",
+            "Updated": "更新於",
+            "Check status": "檢查狀態",
+            "Behind": "落後",
+            "Ahead": "領先",
+            "Pull request": "合併請求",
+            "Copy to clipboard": "複製到剪貼板",
+            "Copy branch name to clipboard": "複製分支名稱到剪貼板",
+            "Delete branch": "刪除分支",
+            "Branch menu": "分支選單",
+            "Activity": "活動",
+            "View rules": "查看規則",
+            "Rename branch": "重命名分支",
+            "Cancel": "取消",
+            "You can't delete the default branch.": "您不能刪除預設分支。",
+            "You can't delete this protected branch.": "您無法刪除此受保護分支。",
+            "Branch could not be deleted.": "不能刪除分支。"
+        };
+    }
+
+    function transRepositoryBranchesPageDynamicText() {
+        if (!isRepositoryBranchesPage() || !document.body) return false;
+        syncRepositoryBranchesPageClass();
+
+        const dict = getRepositoryBranchesPageFixedDict();
+        const roots = new Set();
+        const main = document.querySelector('main, [role="main"]');
+        if (main) roots.add(main);
+
+        document.querySelectorAll([
+            'turbo-frame[id*="branch"]',
+            '[data-hpc]',
+            '[data-testid*="branch"]',
+            '.UnderlineNav',
+            '.Box',
+            'tool-tip',
+            '[role="tooltip"]',
+            '[role="menu"]',
+            '[role="listbox"]',
+            '[role="dialog"]',
+            '[aria-modal="true"]',
+            'dialog',
+            'modal-dialog',
+            '[popover]',
+            'anchored-position',
+            '.Overlay',
+            '[class*="Overlay"]',
+            '.Popover',
+            '.Popover-message',
+            '[class*="Popover"]',
+            '.ActionList',
+            '[class*="ActionList"]',
+            '#js-flash-container',
+            '.flash',
+            '.flash-error',
+            '.flash-messages',
+            '.js-notice',
+            '.js-notification',
+            '.Toast',
+            '.Toast-content',
+            '[class*="Toast"]',
+            '[role="alert"]',
+            '[aria-live]'
+        ].join(', ')).forEach(root => {
+            if (root.closest?.('header, [role="banner"], .AppHeader, .Header, qbsearch-input, query-builder, react-app[app-name="command-palette"]')) return;
+            roots.add(root);
+        });
+
+        let translated = false;
+        roots.forEach(root => {
+            translated = transRepositoryBranchesRoot(root, dict) || translated;
+        });
+        translated = transRepositoryBranchesHeaderControls(dict) || translated;
+        translated = transRepositoryBranchesRelativeTimes() || translated;
+
+        return translated;
+    }
+
+    function transRepositoryBranchesHeaderControls(dict) {
+        if (!isRepositoryBranchesPage() || !document.body) return false;
+
+        let translated = false;
+        const roots = [
+            document.querySelector('main, [role="main"]'),
+            document.body
+        ].filter(Boolean);
+        const visited = new WeakSet();
+
+        const translateWholeElement = element => {
+            if (!element || visited.has(element) || shouldSkipRepositoryBranchesNode(element)) return;
+            visited.add(element);
+
+            const source = normalizeHeaderTooltipText(element.textContent);
+            const result = dict[source];
+            if (!result || result === source) return;
+
+            element.textContent = result;
+            translated = true;
+        };
+
+        roots.forEach(root => {
+            root.querySelectorAll?.('h1, h2').forEach(element => {
+                if (normalizeHeaderTooltipText(element.textContent) !== 'Branches') return;
+                translateWholeElement(element);
+            });
+
+            root.querySelectorAll?.('a, button').forEach(element => {
+                const source = normalizeHeaderTooltipText(element.textContent);
+                const aria = normalizeHeaderTooltipText(element.getAttribute?.('aria-label'));
+                const title = normalizeHeaderTooltipText(element.getAttribute?.('title'));
+                const href = element.getAttribute?.('href') || '';
+                const isNewBranchControl = (
+                    source === 'New branch' ||
+                    source === '新建分支' ||
+                    aria === 'New branch' ||
+                    aria === '新建分支' ||
+                    title === 'New branch' ||
+                    title === '新建分支' ||
+                    /\/branches\/new(?:$|[?#])/.test(href)
+                );
+                if (!isNewBranchControl) return;
+
+                element.setAttribute('data-ghcht-branches-new-button', 'true');
+                translateWholeElement(element);
+                ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text'].forEach(attr => {
+                    const value = element.getAttribute?.(attr);
+                    const result = getRepositoryBranchesTranslation(value, dict);
+                    if (!result || result === value) return;
+                    element.setAttribute(attr, result);
+                    translated = true;
+                });
+            });
+        });
+
+        return translated;
+    }
+
+    function transRepositoryBranchesRoot(root, dict) {
+        if (!root || !dict) return false;
+        const visited = new WeakSet();
+        let translated = false;
+
+        const visit = currentRoot => {
+            if (!currentRoot || visited.has(currentRoot)) return;
+            visited.add(currentRoot);
+            if (currentRoot.shadowRoot) visit(currentRoot.shadowRoot);
+
+            const walker = document.createTreeWalker(currentRoot, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                if (shouldSkipRepositoryBranchesNode(node)) continue;
+                const result = getRepositoryBranchesTranslation(node.data, dict);
+                if (!result || result === node.data) continue;
+                node.data = result;
+                translated = true;
+            }
+
+            currentRoot.querySelectorAll?.('*').forEach(element => {
+                if (shouldSkipRepositoryBranchesNode(element)) return;
+                ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text', 'data-visible-text', 'data-disable-with', 'placeholder', 'aria-placeholder', 'data-placeholder'].forEach(attr => {
+                    const value = element.getAttribute?.(attr);
+                    const result = getRepositoryBranchesTranslation(value, dict);
+                    if (!result || result === value) return;
+                    element.setAttribute(attr, result);
+                    translated = true;
+                });
+
+                if (element.matches?.('input[type="button"], input[type="submit"], input[type="reset"]')) {
+                    const source = element.value || element.getAttribute('value');
+                    const result = getRepositoryBranchesTranslation(source, dict);
+                    if (result && result !== source) {
+                        element.value = result;
+                        element.setAttribute('value', result);
+                        translated = true;
+                    }
+                }
+
+                if (element.shadowRoot) visit(element.shadowRoot);
+            });
+        };
+
+        visit(root);
+        return translated;
+    }
+
+    function shouldSkipRepositoryBranchesNode(node) {
+        const element = getNodeElement(node);
+        if (!element) return true;
+        const ignoredSelector = [
+            'script',
+            'style',
+            'template',
+            'noscript',
+            'code',
+            'pre',
+            'kbd',
+            'textarea',
+            'select',
+            'option',
+            '[contenteditable="true"]',
+            'article.markdown-body',
+            '.markdown-body',
+            'header',
+            '[role="banner"]',
+            '.AppHeader',
+            '.Header',
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '.AppHeader-search',
+            '.AppHeader-searchButton',
+            '[data-target*="query-builder"]',
+            '[data-target*="qbsearch-input"]'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function getRepositoryBranchesTranslation(text, dict) {
+        if (!text) return false;
+        const source = normalizeHeaderTooltipText(text);
+        if (!source) return false;
+
+        const exact = dict[source];
+        if (exact) return text.replace(text.trim(), exact);
+
+        const relativeTime = transRelativeTimeText(text);
+        if (relativeTime) return relativeTime;
+
+        const patterns = [
+            [/^Delete branch$/, "刪除分支"],
+            [/^Branch menu$/, "分支選單"],
+            [/^Copy branch name to clipboard$/, "複製分支名稱到剪貼板"],
+            [/^Ahead behind count: (\d+)$/, (_, count) => `領先落後數：${count}`],
+            [/^(\d+) commits? ahead, (\d+) commits? behind (.+)$/, (_, ahead, behind, branch) => `領先 ${ahead} 個提交，落後 ${behind} 個提交於 ${branch}`],
+            [/^(\d+) commits? behind (.+)$/, (_, count, branch) => `落後 ${count} 個提交於 ${branch}`],
+            [/^(\d+) commits? ahead (.+)$/, (_, count, branch) => `領先 ${count} 個提交於 ${branch}`]
+        ];
+
+        for (const [pattern, replacement] of patterns) {
+            const match = source.match(pattern);
+            if (!match) continue;
+            const result = typeof replacement === 'function'
+                ? replacement(...match)
+                : replacement;
+            return text.replace(text.trim(), result);
+        }
+
+        return false;
+    }
+
+    function transRepositoryBranchesRelativeTimes() {
+        if (!isRepositoryBranchesPage() || !document.body) return false;
+        let translated = false;
+        const main = document.querySelector('main, [role="main"]');
+        if (!main) return false;
+
+        main.querySelectorAll('relative-time, time-ago, time[datetime]').forEach(element => {
+            const before = normalizeHeaderTooltipText(element.textContent);
+            transTimeElement(element);
+            bindRelativeTimeElementObserver(element);
+            if (element.shadowRoot) {
+                transTimeElement(element.shadowRoot);
+            }
+            translated = normalizeHeaderTooltipText(element.textContent) !== before || translated;
+        });
+
+        return translated;
     }
 
     function scheduleRepositorySettingsGeneralPageTrans() {
@@ -37047,6 +37653,588 @@ I18N["zh-TW"]["repository/agents"] = {
                 safe(transRepositoryTransferPageDynamicText, '倉庫轉讓頁互動補翻')();
             }, delay);
         });
+    }
+
+    function getRepositoryCodePageFixedDict() {
+        return {
+            ...(I18N?.[CONFIG.LANG]?.repository?.static || {}),
+            "Code": "程式碼",
+            "Issues": "議題",
+            "Pull requests": "合併請求",
+            "Agents": "AI 代理",
+            "Discussions": "討論",
+            "Actions": "操作",
+            "Projects": "專案",
+            "Security and quality": "安全和質量",
+            "Insights": "分析",
+            "Settings": "設置",
+            "Public": "公開",
+            "Private": "私密",
+            "Internal": "內部",
+            "Pin": "置頂",
+            "Pin this repository to your profile": "置頂此倉庫到您的個人資料",
+            "Watch": "追蹤",
+            "Unwatch": "取消追蹤",
+            "Fork": "複刻",
+            "Star": "星標",
+            "Unstar": "取消星標",
+            "Add file": "新增文件",
+            "Create new file": "新建文件",
+            "Upload files": "上傳文件",
+            "Go to file": "轉到文件",
+            "Branch": "分支",
+            "Branches": "分支",
+            "Tags": "標籤",
+            "Commits": "提交",
+            "Switch branches/tags": "切換分支/標籤",
+            "Find or create a branch...": "尋找或創建分支…",
+            "Find or create a branch…": "尋找或創建分支…",
+            "Search or create a new tag": "搜尋或創建新標籤",
+            "View all branches": "查看所有分支",
+            "View all tags": "查看所有標籤",
+            "Nothing to show": "沒有可顯示的內容",
+            "default": "預設",
+            "Participating and @mentions": "參與和 @提及",
+            "Only receive notifications from this repository when participating or @mentioned.": "僅在參與或被 @提及時接收此倉庫的通知。",
+            "All Activity": "所有活動",
+            "Notified of all notifications on this repository.": "接收此倉庫的所有通知。",
+            "Ignore": "忽略",
+            "Never be notified.": "永不接收通知。",
+            "Custom": "自定義",
+            "Select events you want to be notified of in addition to participating and @mentions.": "選擇除參與和 @提及之外還要接收通知的事件。",
+            "Security alerts": "安全警報",
+            "Cancel": "取消",
+            "Apply": "套用",
+            "Existing forks": "現有複刻",
+            "You don't have any forks of this repository.": "您沒有此倉庫的任何複刻。",
+            "Cannot fork because you own this repository and are not a member of any organizations.": "無法複刻，因為您擁有此倉庫，而且不是任何組織的成員。",
+            "Cannot fork because repository is empty.": "無法複刻，因為倉庫是空的。",
+            "Cannot fork because repository is locked.": "無法複刻，因為倉庫被鎖定。",
+            "Lists": "清單",
+            "Create list": "創建清單",
+            "Add this repository to a list": "將此倉庫加入清單",
+            "Create a list to organize your starred repositories.": "創建一個清單來整理您的星標倉庫。",
+            "Name": "檔名",
+            "Name this list": "為此清單命名",
+            "Description": "描述",
+            "Write a description": "撰寫描述",
+            "Private": "私密",
+            "Enabling this makes the list visible only to you.": "啟用後，此清單僅對您可見。",
+            "Create": "創建",
+            "Tip: type : to add emoji to the name or description.": "提示：輸入 : 可將 emoji 加入名稱或描述。",
+            "Local": "本地",
+            "Codespaces": "程式碼空間",
+            "Clone": "複製",
+            "Use Web URL clone.": "使用 Web URL 複製。",
+            "Copy URL to clipboard": "將 URL 複製到剪貼簿",
+            "Open in GitHub Copilot app": "在 GitHub Copilot app 中打開",
+            "Open with GitHub Desktop": "在 GitHub Desktop 中打開",
+            "Download ZIP": "下載 ZIP 壓縮包",
+            "Your workspaces in the cloud": "您在雲端的工作區",
+            "No codespaces": "尚無程式碼空間",
+            "You don't have any codespaces with this repository checked out": "您沒有任何簽出此倉庫的程式碼空間",
+            "Learn more about codespaces...": "深入了解程式碼空間…",
+            "Learn more about codespaces…": "深入了解程式碼空間…",
+            "New with options...": "使用選項新建…",
+            "New with options…": "使用選項新建…",
+            "Configure dev container": "配置開發容器",
+            "Set up prebuilds": "設置預建",
+            "Manage codespaces": "管理程式碼空間",
+            "Share a deep link": "分享深層連結",
+            "What are codespaces?": "什麼是程式碼空間？",
+            "About": "關於",
+            "Readme": "自述文件",
+            "Activity": "活動",
+            "Releases": "發行版本",
+            "Create a new release": "創建發行版本",
+            "Packages": "套件",
+            "No packages published": "尚未發佈套件",
+            "Publish your first package": "發佈您的第一個套件",
+            "Contributors": "貢獻者",
+            "Close": "關閉",
+            "Close menu": "關閉選單"
+        };
+    }
+
+    function transRepositoryCodePageDynamicText() {
+        if (!isRepositoryCodePage() || !document.body) return false;
+
+        const dict = getRepositoryCodePageFixedDict();
+        const roots = new Set();
+        const main = document.querySelector('main, [role="main"]');
+        if (main) roots.add(main);
+
+        document.querySelectorAll([
+            'aside',
+            'nav[aria-label*="Repository"]',
+            'nav[aria-label*="repository"]',
+            '[data-testid*="repository-navigation"]',
+            '.UnderlineNav'
+        ].join(', ')).forEach(root => {
+            if (root.closest?.('header, [role="banner"], .AppHeader, .Header')) return;
+            roots.add(root);
+        });
+
+        let translated = false;
+        roots.forEach(root => {
+            translated = transRepositoryCodeRoot(root, dict) || translated;
+        });
+        translated = transRepositoryCodeFields(dict) || translated;
+        translated = transRepositoryCodeRelativeTimes() || translated;
+
+        return translated;
+    }
+
+    function transRepositoryCodeDropdownSurfaces() {
+        if (!isRepositoryCodePage() || !document.body) return false;
+
+        const dict = getRepositoryCodePageFixedDict();
+        const selector = [
+            'tool-tip',
+            '[role="tooltip"]',
+            '[data-testid*="tooltip"]',
+            '[class*="Tooltip"]',
+            '[class*="tooltip"]',
+            '[role="menu"]',
+            '[role="listbox"]',
+            '[role="dialog"]',
+            '[aria-modal="true"]',
+            'dialog',
+            'modal-dialog',
+            '[popover]',
+            'anchored-position',
+            'details-menu',
+            'details-dialog',
+            'body > div',
+            'body > span',
+            '.Overlay',
+            '.Overlay-backdrop',
+            '[class*="Overlay"]',
+            '[class*="overlay"]',
+            '.Popover',
+            '.Popover-message',
+            '[class*="Popover"]',
+            '[class*="popover"]',
+            '.SelectMenu',
+            '[class*="SelectMenu"]',
+            '.ActionList',
+            '[class*="ActionList"]',
+            '[class*="SelectPanel"]',
+            '[class*="select-panel"]',
+            '[class*="Dialog"]',
+            '[class*="dialog"]',
+            '[data-target*="menu"]',
+            '[data-target*="dropdown"]',
+            '[data-target*="notification"]',
+            '[data-target*="codespaces"]',
+            '[data-target*="get-repo"]',
+            '[data-testid*="menu"]',
+            '[data-testid*="dropdown"]',
+            '[data-testid*="popover"]',
+            '[data-testid*="overlay"]',
+            '[data-testid*="dialog"]'
+        ].join(', ');
+
+        let translated = false;
+        document.querySelectorAll(selector).forEach(surface => {
+            if (!isRepositoryCodeDropdownSurface(surface, dict)) return;
+            translated = transRepositoryCodeDropdownRoot(surface, dict) || translated;
+        });
+
+        return translated;
+    }
+
+    function isRepositoryCodeDropdownSurface(surface, dict) {
+        if (!surface || surface.nodeType !== Node.ELEMENT_NODE) return false;
+        if (surface.closest?.('qbsearch-input, query-builder, react-app[app-name="command-palette"], .AppHeader-search, .AppHeader-searchButton')) return false;
+
+        const text = normalizeHeaderTooltipText(surface.textContent);
+        if (!text || text.length > 1200) return false;
+
+        const hasKnownText = [
+            "Existing forks",
+            "You don't have any forks of this repository.",
+            "Cannot fork because you own this repository and are not a member of any organizations.",
+            "Cannot fork because repository is empty.",
+            "Cannot fork because repository is locked.",
+            "Participating and @mentions",
+            "Only receive notifications from this repository when participating or @mentioned.",
+            "All Activity",
+            "Notified of all notifications on this repository.",
+            "Ignore",
+            "Never be notified.",
+            "Custom",
+            "Select events you want to be notified of in addition to participating and @mentions.",
+            "Subscribe to events for",
+            "Security alerts",
+            "Cancel",
+            "Apply",
+            "Lists",
+            "Create list",
+            "Add this repository to a list",
+            "Create a list to organize your starred repositories.",
+            "Name this list",
+            "Write a description",
+            "Enabling this makes the list visible only to you.",
+            "Tip: type : to add emoji to the name or description.",
+            "Create new file",
+            "Upload files",
+            "Switch branches/tags",
+            "View all branches",
+            "View all tags",
+            "Nothing to show",
+            "Local",
+            "Codespaces",
+            "Clone",
+            "Use Web URL clone.",
+            "Copy URL to clipboard",
+            "Open in GitHub Copilot app",
+            "Open with GitHub Desktop",
+            "Download ZIP",
+            "Your workspaces in the cloud",
+            "No codespaces",
+            "You don't have any codespaces with this repository checked out",
+            "Create codespace on",
+            "Create a codespace on",
+            "Learn more about codespaces",
+            "Codespace usage for this repository is paid for by",
+            "New with options",
+            "Configure dev container",
+            "Set up prebuilds",
+            "Manage codespaces",
+            "Share a deep link",
+            "What are codespaces?"
+        ].some(source => text.includes(source) || text.includes(dict[source]));
+        if (!hasKnownText) return false;
+
+        const rect = surface.getBoundingClientRect?.();
+        if (rect && rect.width > 0 && rect.height > 0) {
+            if (rect.width > 1000 || rect.height > 900) return false;
+        }
+
+        return true;
+    }
+
+    function transRepositoryCodeDropdownRoot(root, dict) {
+        let translated = false;
+
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+            if (shouldSkipRepositoryCodeDropdownNode(node)) continue;
+            const result = getRepositoryCodeTranslation(node.data, dict);
+            if (!result || result === node.data) continue;
+            node.data = result;
+            translated = true;
+        }
+
+        root.querySelectorAll?.('[aria-label], [title], [data-tooltip], [data-tooltip-text], [data-visible-text], [data-disable-with]').forEach(element => {
+            if (shouldSkipRepositoryCodeDropdownNode(element)) return;
+            ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text', 'data-visible-text', 'data-disable-with'].forEach(attr => {
+                const value = element.getAttribute?.(attr);
+                const result = getRepositoryCodeTranslation(value, dict);
+                if (!result || result === value) return;
+                element.setAttribute(attr, result);
+                translated = true;
+            });
+        });
+
+        root.querySelectorAll?.('input[placeholder], textarea[placeholder], input[aria-label], textarea[aria-label]').forEach(element => {
+            if (shouldSkipRepositoryCodeDropdownField(element)) return;
+            ['placeholder', 'aria-label'].forEach(attr => {
+                const value = element.getAttribute?.(attr);
+                const result = getRepositoryCodeTranslation(value, dict);
+                if (!result || result === value) return;
+                element.setAttribute(attr, result);
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function shouldSkipRepositoryCodeDropdownField(element) {
+        if (!element) return true;
+        const ignoredSelector = [
+            'script',
+            'style',
+            'template',
+            'noscript',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]',
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '.AppHeader-search',
+            '.AppHeader-searchButton',
+            '[data-target*="query-builder"]',
+            '[data-target*="qbsearch-input"]'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function shouldSkipRepositoryCodeDropdownNode(node) {
+        const element = getNodeElement(node);
+        if (!element) return true;
+        const ignoredSelector = [
+            'input',
+            'textarea',
+            'select',
+            'option',
+            'script',
+            'style',
+            'template',
+            'noscript',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]',
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function transRepositoryCodeRelativeTimes() {
+        if (!isRepositoryCodePage() || !document.body) return false;
+        let translated = false;
+        const roots = new Set();
+        const main = document.querySelector('main, [role="main"]');
+        if (main) roots.add(main);
+
+        document.querySelectorAll([
+            'include-fragment[src*="/file-list"]',
+            '[data-testid="file-row"]',
+            'tr.react-directory-row',
+            '.react-directory-filename-column',
+            '.react-directory-commit-age',
+            '.Box'
+        ].join(', ')).forEach(root => {
+            if (root.closest?.('header, [role="banner"], .AppHeader, .Header, qbsearch-input, query-builder, react-app[app-name="command-palette"]')) return;
+            roots.add(root);
+        });
+
+        roots.forEach(root => {
+            root.querySelectorAll?.('relative-time, time-ago, time[datetime]').forEach(element => {
+                const before = normalizeHeaderTooltipText(element.textContent);
+                transTimeElement(element);
+                bindRelativeTimeElementObserver(element);
+                if (element.shadowRoot) {
+                    transTimeElement(element.shadowRoot);
+                }
+                translated = normalizeHeaderTooltipText(element.textContent) !== before || translated;
+            });
+        });
+
+        return translated;
+    }
+
+    function transRepositoryCodeFields(dict) {
+        if (!isRepositoryCodePage() || !document.body) return false;
+        let translated = false;
+
+        document.querySelectorAll('input[placeholder], input[aria-label], textarea[placeholder], textarea[aria-label]').forEach(element => {
+            if (element.closest?.('header, [role="banner"], .AppHeader-search, .AppHeader-searchButton, qbsearch-input, query-builder, react-app[app-name="command-palette"], [role="menu"], [role="listbox"], [role="dialog"], [aria-modal="true"], dialog, modal-dialog, [popover], anchored-position, .Overlay, .Overlay-backdrop, [class*="Overlay"], [class*="overlay"], .Popover, .Popover-message, [class*="Popover"], [class*="popover"], .ActionList, [class*="ActionList"], [class*="SelectPanel"], [class*="select-panel"], [class*="Dialog"], [class*="dialog"], [data-testid*="popover"], [data-testid*="overlay"], [data-testid*="dialog"]')) return;
+
+            ['placeholder', 'aria-label'].forEach(attr => {
+                const value = element.getAttribute?.(attr);
+                const result = getRepositoryCodeTranslation(value, dict);
+                if (!result || result === value) return;
+                element.setAttribute(attr, result);
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function transRepositoryCodeRoot(root, dict) {
+        if (!root || !dict) return false;
+        const visited = new WeakSet();
+        let translated = false;
+
+        const visit = currentRoot => {
+            if (!currentRoot || visited.has(currentRoot)) return;
+            visited.add(currentRoot);
+            if (currentRoot.shadowRoot) visit(currentRoot.shadowRoot);
+
+            const walker = document.createTreeWalker(currentRoot, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                if (shouldSkipRepositoryCodeNode(node)) continue;
+
+                const result = getRepositoryCodeTranslation(node.data, dict);
+                if (!result || result === node.data) continue;
+                node.data = result;
+                translated = true;
+            }
+
+            currentRoot.querySelectorAll?.('*').forEach(element => {
+                if (shouldSkipRepositoryCodeNode(element)) return;
+                ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text', 'data-visible-text', 'data-disable-with', 'placeholder', 'aria-placeholder', 'data-placeholder'].forEach(attr => {
+                    const value = element.getAttribute?.(attr);
+                    const result = getRepositoryCodeTranslation(value, dict);
+                    if (!result || result === value) return;
+                    element.setAttribute(attr, result);
+                    translated = true;
+                });
+
+                if (element.matches?.('input[type="button"], input[type="submit"], input[type="reset"]')) {
+                    const source = element.value || element.getAttribute('value');
+                    const result = getRepositoryCodeTranslation(source, dict);
+                    if (result && result !== source) {
+                        element.value = result;
+                        element.setAttribute('value', result);
+                        translated = true;
+                    }
+                }
+
+                if (element.shadowRoot) visit(element.shadowRoot);
+            });
+        };
+
+        visit(root);
+        return translated;
+    }
+
+    function shouldSkipRepositoryCodeNode(node) {
+        const element = getNodeElement(node);
+        if (!element) return true;
+        const ignoredSelector = [
+            'script',
+            'style',
+            'template',
+            'noscript',
+            'code',
+            'pre',
+            'kbd',
+            'textarea',
+            'select',
+            'option',
+            '[contenteditable="true"]',
+            'input:not([type="button"]):not([type="submit"]):not([type="reset"])',
+            'article.markdown-body',
+            '.markdown-body',
+            'tr.react-directory-row',
+            '[data-testid="file-row"]',
+            '[data-testid="file-tree"] tr',
+            '[role="menu"]',
+            '[role="listbox"]',
+            '[role="dialog"]',
+            '[aria-modal="true"]',
+            'dialog',
+            'modal-dialog',
+            '[popover]',
+            'anchored-position',
+            '.Overlay',
+            '.Overlay-backdrop',
+            '.Popover-message',
+            '.ActionList',
+            'tool-tip',
+            '[role="tooltip"]',
+            '[data-testid*="tooltip"]',
+            '[class*="Tooltip"]',
+            '[class*="tooltip"]',
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '.AppHeader-search',
+            '.AppHeader-searchButton',
+            '[data-target*="query-builder"]',
+            '[data-target*="qbsearch-input"]'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function getRepositoryCodeTranslation(text, dict) {
+        if (!text) return false;
+        const source = normalizeHeaderTooltipText(text);
+        const exact = dict[source];
+        if (exact) return text.replace(text.trim(), exact);
+
+        const patterns = [
+            [
+                /^([\d,]+)\s+Branches?$/,
+                (_, count) => `${count} 個分支`
+            ],
+            [
+                /^([\d,]+)\s+Tags?$/,
+                (_, count) => `${count} 個標籤`
+            ],
+            [
+                /^([\d,]+)\s+Commits?$/,
+                (_, count) => `${count} 次提交`
+            ],
+            [
+                /^([\d,]+)\s+Stars?$/,
+                (_, count) => `${count} 個星標`
+            ],
+            [
+                /^([\d,]+)\s+Watchers?$/,
+                (_, count) => `${count} 個追蹤`
+            ],
+            [
+                /^([\d,]+)\s+Forks?$/,
+                (_, count) => `${count} 個複刻`
+            ],
+            [
+                /^(Watch|Fork|Star)\s+([\d,]+)$/,
+                (_, action, count) => `${dict[action] || action} ${count}`
+            ],
+            [
+                /^Star this repository$/,
+                "星標此倉庫"
+            ],
+            [
+                /^Unstar this repository$/,
+                "取消此倉庫星標"
+            ],
+            [
+                /^Subscribe to events for (.+)$/,
+                (_, repo) => `訂閱 ${repo} 的事件`
+            ],
+            [
+                /^Create a codespace on (.+)$/,
+                (_, branch) => `在 ${branch} 上創建程式碼空間`
+            ],
+            [
+                /^Create codespace on (.+)$/,
+                (_, branch) => `在 ${branch} 上創建程式碼空間`
+            ],
+            [
+                /^Codespace usage for this repository is paid for by (.+)\.$/,
+                (_, owner) => `此倉庫的程式碼空間使用費由 ${owner} 支付。`
+            ]
+        ];
+
+        for (const [pattern, replacement] of patterns) {
+            const match = source.match(pattern);
+            if (!match) continue;
+            const result = typeof replacement === 'function'
+                ? replacement(...match)
+                : replacement;
+            return text.replace(text.trim(), result);
+        }
+
+        return false;
     }
 
     function getRepositorySettingsGeneralFixedDict() {
@@ -37280,6 +38468,7 @@ I18N["zh-TW"]["repository/agents"] = {
             "Issues": "議題",
             "Pull requests": "合併請求",
             "Agents": "AI 代理",
+            "Discussions": "討論",
             "Actions": "操作",
             "Projects": "專案",
             "Security and quality": "安全和質量",
