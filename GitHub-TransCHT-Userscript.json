@@ -4,7 +4,7 @@
 // @description  基於 maboloshi/github-chinese 修改的繁體中文單檔版。原作者為樓教主與沙漠之子，由 Elias Lee 進行單檔合併、繁體字詞習慣優化與持續維護。
 // @copyright    2016-2021 樓教主, 2021-2024 沙漠之子, 2026-當前 Elias Lee (https://github.com/Elias-Lee-SC)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.13.16
+// @version      local.13.20
 // @author       Elias Lee (基於 沙漠之子 & 樓教主 的原創專案)
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -14265,9 +14265,13 @@ I18N["zh-TW"]["repository/new"] = { // 倉庫 - 新建/編輯/上傳/刪除文�
 
         // 新建文件頁面 /<user-name>/<repo-name>/new/<branch>
             // 文件樹側邊欄
+                "Files": "文件樹",
                 "Expand file tree": "展開文件樹",
                 "Collapse file tree": "摺疊文件樹",
                 "Add file": "新增文件",
+                "Cancel": "取消",
+                "Close": "關閉",
+                "Close menu": "關閉選單",
                 // 搜尋框
                     "Search this repository": "搜尋此倉庫",
                     "Go to file": "轉到文件",
@@ -14282,8 +14286,10 @@ I18N["zh-TW"]["repository/new"] = { // 倉庫 - 新建/編輯/上傳/刪除文�
                 "You have unsaved changes. Do you want to discard them?": "您有未保存的更改。您想丟棄它們嗎？",
             "Commit changes...": "提交更改…",
 
+            "Edit": "編輯",
             "Preview": "預覽",
                 "Loading preview…": "載入預覽…",
+                    "Enter file contents here": "在此輸入文件內容",
                     "There is no content to preview.": "沒有可預覽的內容。",
                     "There has been an error generating the preview.": "生成預覽時發生錯誤。",
                     "Unable to load this preview, sorry.": "抱歉，無法加載此預覽。",
@@ -14345,11 +14351,12 @@ I18N["zh-TW"]["repository/new"] = { // 倉庫 - 新建/編輯/上傳/刪除文�
                 "Something went wrong. Please fork the project, then try from your fork.": "出錯了。請複刻該專案，然後從您的複刻處嘗試。",
 
             // 底部欄
+                "Use Control + Shift + m to toggle the tab key moving focus. Alternatively, use esc then tab to move to the next interactive element on the page.": "使用 Control + Shift + m 切換 Tab 鍵移動焦點。或者使用 esc，然後按 Tab 移動到頁面上的下一個互動元素。",
                 "Use": "使用",
                 "to toggle the": "切換",
-                "key moving focus. Alternatively, use": "鍵移動對焦。或者使用",
-                "then": "鍵，然後",
-                "to move to the next interactive element on the page.": "鍵移動到頁面上的下一個交互元素。",
+                "key moving focus. Alternatively, use": "鍵移動焦點。或者使用",
+                "then": "然後按",
+                "to move to the next interactive element on the page.": "移動到頁面上的下一個互動元素。",
 
             // 頂部提醒
             // [/Your license is ready. Please review it below and either commit it to the ([^ ]+) branch or to a new branch./, "您的許可證已準備就緒。請在下面審查它並將其提交到 $1 分支或新分支。"],
@@ -30568,6 +30575,17 @@ I18N["zh-TW"]["repository/agents"] = {
             nav[aria-label*="倉庫"] span[data-content="Settings"]::before {
                 content: "設置";
             }
+            html.ghcht-repository-new-file-page .cm-placeholder {
+                font-size: 0 !important;
+            }
+            html.ghcht-repository-new-file-page .cm-placeholder::before {
+                content: "在此輸入文件內容";
+                color: inherit !important;
+                font-size: var(--text-body-size-medium, 14px) !important;
+                font-family: inherit !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+            }
             /* 暗色主題適配 - 使用 prefers-color-scheme */
             @media (prefers-color-scheme: dark) {
                 :root {
@@ -30631,6 +30649,8 @@ I18N["zh-TW"]["repository/agents"] = {
         topicsPagePending: false,
         repositoryCodePagePending: false,
         repositoryCodeDropdownPending: false,
+        repositoryNewFilePagePending: false,
+        repositoryNewFileInteractionPending: false,
         repositoryBranchesPagePending: false,
         repositoryBranchesInteractionPending: false,
         repositoryReleasesTagsPagePending: false,
@@ -30695,6 +30715,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupSearchPageInteractions();
         setupTopicsPageInteractions();
         setupRepositoryCodePageInteractions();
+        setupRepositoryNewFilePageInteractions();
         setupRepositoryBranchesPageInteractions();
         setupRepositoryReleasesTagsPageInteractions();
         setupRepositorySettingsGeneralPageInteractions();
@@ -30744,6 +30765,7 @@ I18N["zh-TW"]["repository/agents"] = {
                 scheduleInitialCodespacesContextTranslation();
                 scheduleTopicsPageTrans();
                 scheduleRepositoryCodePageTrans();
+                scheduleRepositoryNewFilePageTrans();
                 scheduleRepositoryBranchesPageTrans();
                 scheduleRepositoryReleasesTagsPageTrans();
                 scheduleRepositorySettingsGeneralPageTrans();
@@ -30761,6 +30783,7 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleMcpRegistryPageTrans();
             scheduleSearchPageTrans();
             scheduleRepositoryCodePageTrans();
+            scheduleRepositoryNewFilePageTrans();
             scheduleRepositoryBranchesPageTrans();
             scheduleRepositoryReleasesTagsPageTrans();
             scheduleRepositorySettingsGeneralPageTrans();
@@ -30824,6 +30847,7 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleMcpRegistryPageTrans();
             scheduleSearchPageTrans();
             scheduleRepositoryCodePageTrans();
+            scheduleRepositoryNewFilePageTrans();
             scheduleRepositoryBranchesPageTrans();
             scheduleRepositoryReleasesTagsPageTrans();
             scheduleRepositorySettingsGeneralPageTrans();
@@ -30839,6 +30863,8 @@ I18N["zh-TW"]["repository/agents"] = {
      */
     function setupTurboEvents() {
         document.addEventListener('turbo:load', handleTurboLoad);
+        window.addEventListener('pageshow', handlePageShow);
+        window.addEventListener('popstate', handleHistoryNavigation);
     }
 
     /**
@@ -30846,8 +30872,38 @@ I18N["zh-TW"]["repository/agents"] = {
      * 在新頁面加載後執行必要的翻譯
      */
     function handleTurboLoad() {
-        if (!State.pageConfig) return;
+        runNavigationTranslationPass('Turbo 頁面加載');
+    }
 
+    /**
+     * 處理瀏覽器返回 / 前進與 bfcache 恢復。
+     * GitHub 從編輯器頁返回倉庫 Code 頁時，DOM 可能已恢復但不會觸發完整刷新。
+     */
+    function handlePageShow(event) {
+        if (!event.persisted) return;
+        scheduleNavigationRetranslate('pageshow 恢復');
+    }
+
+    function handleHistoryNavigation() {
+        scheduleNavigationRetranslate('history 返回/前進');
+    }
+
+    function scheduleNavigationRetranslate(trigger) {
+        [80, 250, 700, 1500].forEach(delay => {
+            setTimeout(() => {
+                safe(runNavigationTranslationPass, `${trigger} 補翻`)(
+                    `${trigger} ${delay}ms`
+                );
+            }, delay);
+        });
+    }
+
+    function runNavigationTranslationPass(trigger) {
+        State.currentURL = window.location.href;
+        updatePageConfig(trigger);
+        if (!State.pageConfig || !document.body) return;
+
+        safe(traverseNode, `${trigger} 遍歷`)(document.body);
         transTitle(); // 翻譯頁面標題
         transBySelector(); // 通過選擇器翻譯特定元素
         scheduleHeaderTooltipTrans();
@@ -30878,6 +30934,8 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleMcpRegistryFastTrans();
         scheduleMcpRegistryPageTrans();
         scheduleSearchPageTrans();
+        scheduleRepositoryCodePageTrans();
+        scheduleRepositoryNewFilePageTrans();
         scheduleRepositoryCodeDropdownTrans();
         scheduleRepositoryBranchesPageTrans();
         scheduleRepositoryReleasesTagsPageTrans();
@@ -30906,6 +30964,7 @@ I18N["zh-TW"]["repository/agents"] = {
         } else if (newType !== State.pageConfig?.currentPageType) {
             State.pageConfig = buildPageConfig(newType);
         }
+        syncRepositoryNewFilePageClass();
         syncRepositoryBranchesPageClass();
         syncRepositoryReleasesTagsPageClass();
         console.log(`【Debug】${trigger}觸發, 頁面類型為 ${State.pageConfig?.currentPageType}`);
@@ -31148,6 +31207,8 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleMcpRegistryFastTrans();
         scheduleMcpRegistryPageTrans();
         scheduleSearchPageTrans();
+        scheduleRepositoryCodePageTrans();
+        scheduleRepositoryNewFilePageTrans();
         scheduleRepositorySettingsGeneralPageTrans();
         scheduleRepositoryBranchesInteractionTrans();
         scheduleRepositoryTransferPageTrans();
@@ -37218,6 +37279,13 @@ I18N["zh-TW"]["repository/agents"] = {
         );
     }
 
+    function isRepositoryNewFilePage() {
+        return (
+            State.pageConfig?.currentPageType === 'repository/new' ||
+            /^\/[^\/]+\/[^\/]+\/new\/[^\/]+(?:\/.*)?$/.test(window.location.pathname)
+        );
+    }
+
     function isRepositoryBranchesPage() {
         return (
             State.pageConfig?.currentPageType === 'repository/branches' ||
@@ -37248,6 +37316,13 @@ I18N["zh-TW"]["repository/agents"] = {
         );
     }
 
+    function syncRepositoryNewFilePageClass() {
+        document.documentElement.classList.toggle(
+            'ghcht-repository-new-file-page',
+            isRepositoryNewFilePage()
+        );
+    }
+
     function syncRepositoryReleasesTagsPageClass() {
         document.documentElement.classList.toggle(
             'ghcht-repository-releases-tags-page',
@@ -37268,6 +37343,20 @@ I18N["zh-TW"]["repository/agents"] = {
         document.addEventListener('click', scheduleDropdown, true);
         document.addEventListener('pointerdown', scheduleDropdown, true);
         document.addEventListener('focusin', scheduleDropdown, true);
+    }
+
+    function setupRepositoryNewFilePageInteractions() {
+        const schedule = () => {
+            if (!isRepositoryNewFilePage()) return;
+            scheduleRepositoryNewFileInteractionTrans();
+        };
+
+        document.addEventListener('pointerover', schedule, true);
+        document.addEventListener('mouseover', schedule, true);
+        document.addEventListener('pointerdown', schedule, true);
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('focusin', schedule, true);
+        document.addEventListener('keyup', schedule, true);
     }
 
     function setupRepositoryBranchesPageInteractions() {
@@ -37362,6 +37451,36 @@ I18N["zh-TW"]["repository/agents"] = {
                 safe(transRepositoryCodeDropdownSurfaces, '倉庫 Code 頁下拉浮層補翻')();
                 if (delay === 2400) {
                     State.repositoryCodeDropdownPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleRepositoryNewFilePageTrans() {
+        if (!isRepositoryNewFilePage()) return;
+        if (State.repositoryNewFilePagePending) return;
+        State.repositoryNewFilePagePending = true;
+
+        [0, 50, 150, 350, 700, 1200, 2000, 3500, 6000, 9000, 12000].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositoryNewFilePageDynamicText, '倉庫新建文件頁補翻')();
+                if (delay === 12000) {
+                    State.repositoryNewFilePagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleRepositoryNewFileInteractionTrans() {
+        if (!isRepositoryNewFilePage()) return;
+        if (State.repositoryNewFileInteractionPending) return;
+        State.repositoryNewFileInteractionPending = true;
+
+        [0, 16, 50, 120, 250, 500, 900, 1500, 2400].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositoryNewFilePageDynamicText, '倉庫新建文件頁互動補翻')();
+                if (delay === 2400) {
+                    State.repositoryNewFileInteractionPending = false;
                 }
             }, delay);
         });
@@ -38051,6 +38170,253 @@ I18N["zh-TW"]["repository/agents"] = {
                 safe(transRepositoryTransferPageDynamicText, '倉庫轉讓頁互動補翻')();
             }, delay);
         });
+    }
+
+    function getRepositoryNewFilePageFixedDict() {
+        return {
+            ...(I18N?.[CONFIG.LANG]?.['repository/new']?.static || {}),
+            "Name your file...": "檔名…",
+            "Name your file…": "檔名…",
+            "Files": "文件樹",
+            "Expand file tree": "展開文件樹",
+            "Collapse file tree": "摺疊文件樹",
+            "Add file": "新增文件",
+            "Cancel": "取消",
+            "Close": "關閉",
+            "Close menu": "關閉選單",
+            "in": "在",
+            "Cancel changes": "取消更改",
+            "Commit changes...": "提交更改…",
+            "Commit changes…": "提交更改…",
+            "Edit": "編輯",
+            "Preview": "預覽",
+            "Loading preview…": "載入預覽…",
+            "Loading preview...": "載入預覽…",
+            "There is no content to preview.": "沒有可預覽的內容。",
+            "There has been an error generating the preview.": "生成預覽時發生錯誤。",
+            "Unable to load this preview, sorry.": "抱歉，無法載入此預覽。",
+            "There are no changes to show.": "沒有要顯示的更改。",
+            "But you can preview the whole file.": "但您可以預覽整個文件。",
+            "Indent mode": "縮進模式",
+            "Spaces": "空格",
+            "Tabs": "Tab",
+            "Indent size": "縮進大小",
+            "Line wrap mode": "換行模式",
+            "No wrap": "不換行",
+            "Soft wrap": "軟換行",
+            "Enter file contents here": "在此輸入文件內容",
+            "Use Control + Shift + m to toggle the tab key moving focus. Alternatively, use esc then tab to move to the next interactive element on the page.": "使用 Control + Shift + m 切換 Tab 鍵移動焦點。或者使用 esc，然後按 Tab 移動到頁面上的下一個互動元素。",
+            "Use": "使用",
+            "to toggle the": "切換",
+            "key moving focus. Alternatively, use": "鍵移動焦點。或者使用",
+            "then": "然後按",
+            "to move to the next interactive element on the page.": "移動到頁面上的下一個互動元素。"
+        };
+    }
+
+    function transRepositoryNewFilePageDynamicText() {
+        if (!isRepositoryNewFilePage() || !document.body) return false;
+
+        const dict = getRepositoryNewFilePageFixedDict();
+        const roots = new Set();
+        const main = document.querySelector('main, [role="main"]');
+        if (main) roots.add(main);
+
+        document.querySelectorAll([
+            '#js-flash-container',
+            '.flash',
+            '.Toast',
+            '[role="alert"]',
+            '[aria-live]',
+            'tool-tip',
+            '[role="tooltip"]',
+            '[popover]',
+            'anchored-position',
+            '.Overlay',
+            '.Popover',
+            '.ActionList',
+            '[role="menu"]',
+            '[role="listbox"]',
+            '[role="dialog"]',
+            '[aria-modal="true"]',
+            'dialog',
+            'modal-dialog',
+            'aside',
+            '[data-testid*="file-tree"]',
+            '[data-testid*="FileTree"]',
+            '[aria-label="Files"]',
+            '[aria-label="File tree"]',
+            '[aria-label="Repository files"]',
+            'nav[aria-label="Files"]',
+            'nav[aria-label="File tree"]'
+        ].join(', ')).forEach(root => {
+            if (root.closest?.('header, [role="banner"], .AppHeader, .Header, qbsearch-input, query-builder, react-app[app-name="command-palette"], #command-palette-pjax-container')) return;
+            roots.add(root);
+        });
+
+        let translated = false;
+        roots.forEach(root => {
+            translated = transRepositoryNewFileRoot(root, dict) || translated;
+        });
+        translated = transRepositoryNewFileFields(dict) || translated;
+
+        return translated;
+    }
+
+    function transRepositoryNewFileRoot(root, dict) {
+        if (!root || !dict) return false;
+        const visited = new WeakSet();
+        let translated = false;
+
+        const visit = currentRoot => {
+            if (!currentRoot || visited.has(currentRoot)) return;
+            visited.add(currentRoot);
+            if (currentRoot.shadowRoot) visit(currentRoot.shadowRoot);
+
+            const walker = document.createTreeWalker(currentRoot, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                if (shouldSkipRepositoryNewFileNode(node)) continue;
+
+                const result = getRepositoryNewFileTranslation(node.data, dict);
+                if (!result || result === node.data) continue;
+                node.data = result;
+                translated = true;
+            }
+
+            currentRoot.querySelectorAll?.('*').forEach(element => {
+                if (shouldSkipRepositoryNewFileNode(element)) return;
+                ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text', 'data-visible-text', 'data-disable-with', 'aria-placeholder', 'data-placeholder'].forEach(attr => {
+                    const value = element.getAttribute?.(attr);
+                    const result = getRepositoryNewFileTranslation(value, dict);
+                    if (!result || result === value) return;
+                    element.setAttribute(attr, result);
+                    translated = true;
+                });
+
+                if (element.matches?.('input[type="button"], input[type="submit"], input[type="reset"]')) {
+                    const source = element.value || element.getAttribute('value');
+                    const result = getRepositoryNewFileTranslation(source, dict);
+                    if (result && result !== source) {
+                        element.value = result;
+                        element.setAttribute('value', result);
+                        translated = true;
+                    }
+                }
+
+                if (element.shadowRoot) visit(element.shadowRoot);
+            });
+        };
+
+        visit(root);
+        return translated;
+    }
+
+    function transRepositoryNewFileFields(dict) {
+        if (!isRepositoryNewFilePage() || !document.body) return false;
+        let translated = false;
+
+        document.querySelectorAll('input[placeholder], textarea[placeholder], input[aria-label], textarea[aria-label]').forEach(element => {
+            if (shouldSkipRepositoryNewFileField(element)) return;
+
+            ['placeholder', 'aria-label'].forEach(attr => {
+                const value = element.getAttribute?.(attr);
+                const result = getRepositoryNewFileTranslation(value, dict);
+                if (!result || result === value) return;
+                element.setAttribute(attr, result);
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function shouldSkipRepositoryNewFileField(element) {
+        if (!element) return true;
+        const ignoredSelector = [
+            'header',
+            '[role="banner"]',
+            '.AppHeader',
+            '.Header',
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '#command-palette-pjax-container',
+            '.js-command-palette',
+            '[data-target*="query-builder"]',
+            '[data-target*="qbsearch-input"]',
+            '[contenteditable="true"]',
+            '.cm-content',
+            '.cm-scroller',
+            '.cm-editor'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function shouldSkipRepositoryNewFileNode(node) {
+        const element = getNodeElement(node);
+        if (!element) return true;
+        const ignoredSelector = [
+            'input',
+            'textarea',
+            'select',
+            'option',
+            'script',
+            'style',
+            'template',
+            'noscript',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]',
+            '.cm-content',
+            '.cm-line',
+            '.cm-scroller',
+            '.cm-editor',
+            'header',
+            '[role="banner"]',
+            '.AppHeader',
+            '.Header',
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '#command-palette-pjax-container',
+            '.js-command-palette',
+            '[data-target*="query-builder"]',
+            '[data-target*="qbsearch-input"]'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function getRepositoryNewFileTranslation(text, dict) {
+        if (!text) return false;
+        const source = normalizeHeaderTooltipText(text);
+        const exact = dict[source];
+        if (exact) return text.replace(text.trim(), exact);
+
+        const patterns = [
+            [
+                /^Use\s+(.+?)\s+to toggle the\s+(.+?)\s+key moving focus\. Alternatively, use\s+(.+?)\s+then\s+(.+?)\s+to move to the next interactive element on the page\.$/,
+                (_, toggleKey, tabKey, escKey, nextKey) => `使用 ${toggleKey} 切換 ${tabKey} 鍵移動焦點。或者使用 ${escKey}，然後按 ${nextKey} 移動到頁面上的下一個互動元素。`
+            ]
+        ];
+
+        for (const [pattern, replacement] of patterns) {
+            const result = source.replace(pattern, replacement);
+            if (result !== source) return text.replace(text.trim(), result);
+        }
+
+        return false;
     }
 
     function getRepositoryCodePageFixedDict() {
