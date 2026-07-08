@@ -4,7 +4,7 @@
 // @description  基於 maboloshi/github-chinese 修改的繁體中文單檔版。原作者為樓教主與沙漠之子，由 Elias Lee 進行單檔合併、繁體字詞習慣優化與持續維護。
 // @copyright    2016-2021 樓教主, 2021-2024 沙漠之子, 2026-當前 Elias Lee (https://github.com/Elias-Lee-SC)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.13.11
+// @version      local.13.16
 // @author       Elias Lee (基於 沙漠之子 & 樓教主 的原創專案)
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -15070,9 +15070,14 @@ I18N["zh-TW"]["repository/releases"] = { // 倉庫 - 發行版本頁面
 
         // 發行版本 頁面 /<user-name>/<repo-name>/releases
             "Releases": "發行版本",
+            "Tags": "標籤",
             // 無發行版本時
             "There aren’t any releases here": "沒有任何發行版本",
+            "There aren't any releases here": "沒有任何發行版本",
+            "There aren’t any tags here": "沒有任何標籤",
+            "There aren't any tags here": "沒有任何標籤",
             "You can create a release to package software, along with release notes and links to binary files, for other people to use. Learn more about releases in": "您可以創建一個發行版本來打包軟體，以及發行說明和二進制文件連結，供其他人使用。瞭解更多關於發行版本的訊息，查看",
+            "You can create a release to package software, along with release notes and links to binary files, for other people to use. Learn more about releases in our docs.": "您可以創建一個發行版本來打包軟體，以及發行說明和二進制文件連結，供其他人使用。瞭解更多關於發行版本的訊息，查看文件。",
             "our docs": "文件",
             "Releases are powered by": "發行版本是指通過對倉庫中",
             "tagging specific points of history": "特定歷史點",
@@ -15086,7 +15091,7 @@ I18N["zh-TW"]["repository/releases"] = { // 倉庫 - 發行版本頁面
                 // 搜尋未找到
                 "No releases found": "無匹配結果",
             // 左側欄
-            "Pre-release": "預發行版本",
+            "Pre-release": "預發佈版本",
             "Latest": "最新發行版本",
             "Draft": "草案",
 
@@ -15164,6 +15169,7 @@ I18N["zh-TW"]["repository/releases"] = { // 倉庫 - 發行版本頁面
 
             "Release notes": "發行版本說明",
                 "Select a previous tag to create generated release notes": "選擇一個先前的標籤以生成發行說明",
+                "Select a previous tag to generate release notes": "選擇一個先前的標籤以生成發行說明",
 
             "Choose a tag": "選擇標籤",
                 "Find or create a new tag": "查找或創建新標籤",
@@ -15229,6 +15235,25 @@ I18N["zh-TW"]["repository/releases"] = { // 倉庫 - 發行版本頁面
                         "Filter saved replies": "篩選快捷回覆",
                         "Create a new saved reply": "創建新快捷回覆",
                 "Attach files by dragging & dropping, selecting or pasting them.": "通過拖拽、選擇或粘貼來附加文件。",
+                "Heading": "標題",
+                "Bold": "粗體",
+                "Italic": "斜體",
+                "Quote": "引用",
+                "Code": "程式碼",
+                "Link": "連結",
+                "Ordered list": "有序列表",
+                "Numbered list": "有序列表",
+                "Unordered list": "無序列表",
+                "Task list": "任務列表",
+                "Attach files": "附加文件",
+                "Mention": "提及",
+                "Reference": "引用",
+                "Saved replies": "快捷回覆",
+                "Undo": "撤銷",
+                "Write": "撰寫",
+                "Preview": "預覽",
+                "Markdown is supported": "支持 Markdown 語法",
+                "Paste, drop, or click to add files": "貼上、拖放或點擊新增文件",
 
             // 附加文件
             "Attach binaries by dropping them here or selecting them.": "拖拽文件到這來或選擇它們來附加文件。",
@@ -15255,6 +15280,10 @@ I18N["zh-TW"]["repository/releases"] = { // 倉庫 - 發行版本頁面
             "Set as a pre-release": "設置為預發佈版本",
                 "This release is labeled as non-production ready.": "此版本標記為非正式版本。",
                 "This release will be labeled as non-production ready": "此版本將被標記為非正式版本。",
+            "Release label": "發行版本標籤",
+            "None": "無",
+            "Label release as non-production ready": "將發行版本標記為非正式版本",
+            "Additional settings": "其他設置",
             "Create a discussion for this release": "為此版本創建討論",
                 "People will be able to leave comments and reactions on this release using Discussions.": "人們將能夠使用“討論”對此版本發表評論和反應。",
                         "Category:": "類別：",
@@ -30407,6 +30436,16 @@ I18N["zh-TW"]["repository/agents"] = {
                 text-align: center !important;
                 white-space: nowrap;
             }
+            html.ghcht-repository-releases-tags-page [data-ghcht-release-preview-empty="true"] {
+                font-size: 0 !important;
+            }
+            html.ghcht-repository-releases-tags-page [data-ghcht-release-preview-empty="true"]::before {
+                content: "沒有可預覽的內容。";
+                color: inherit !important;
+                font-size: 14px !important;
+                font-weight: 400 !important;
+                line-height: 1.5 !important;
+            }
             nav[aria-label*="Repository"] span[data-content="Code"],
             nav[aria-label*="repository"] span[data-content="Code"],
             nav[aria-label*="倉庫"] span[data-content="Code"],
@@ -30594,6 +30633,8 @@ I18N["zh-TW"]["repository/agents"] = {
         repositoryCodeDropdownPending: false,
         repositoryBranchesPagePending: false,
         repositoryBranchesInteractionPending: false,
+        repositoryReleasesTagsPagePending: false,
+        repositoryReleasesTagsInteractionPending: false,
         repositorySettingsGeneralPagePending: false,
         repositoryTransferPagePending: false,
         settingsTrendingLanguagePending: false,
@@ -30655,6 +30696,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupTopicsPageInteractions();
         setupRepositoryCodePageInteractions();
         setupRepositoryBranchesPageInteractions();
+        setupRepositoryReleasesTagsPageInteractions();
         setupRepositorySettingsGeneralPageInteractions();
         setupRepositoryTransferPageInteractions();
         setupDashboardShortcutMenuTranslations();
@@ -30703,6 +30745,7 @@ I18N["zh-TW"]["repository/agents"] = {
                 scheduleTopicsPageTrans();
                 scheduleRepositoryCodePageTrans();
                 scheduleRepositoryBranchesPageTrans();
+                scheduleRepositoryReleasesTagsPageTrans();
                 scheduleRepositorySettingsGeneralPageTrans();
                 scheduleRepositoryTransferPageTrans();
                 scheduleSettingsTrendingSpokenLanguageTrans();
@@ -30719,6 +30762,7 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleSearchPageTrans();
             scheduleRepositoryCodePageTrans();
             scheduleRepositoryBranchesPageTrans();
+            scheduleRepositoryReleasesTagsPageTrans();
             scheduleRepositorySettingsGeneralPageTrans();
             scheduleRepositoryTransferPageTrans();
         }
@@ -30781,6 +30825,7 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleSearchPageTrans();
             scheduleRepositoryCodePageTrans();
             scheduleRepositoryBranchesPageTrans();
+            scheduleRepositoryReleasesTagsPageTrans();
             scheduleRepositorySettingsGeneralPageTrans();
             scheduleRepositoryTransferPageTrans();
         }
@@ -30835,6 +30880,7 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleSearchPageTrans();
         scheduleRepositoryCodeDropdownTrans();
         scheduleRepositoryBranchesPageTrans();
+        scheduleRepositoryReleasesTagsPageTrans();
         scheduleRepositorySettingsGeneralPageTrans();
         scheduleRepositoryTransferPageTrans();
         scheduleTopicsPageTrans();
@@ -30861,6 +30907,7 @@ I18N["zh-TW"]["repository/agents"] = {
             State.pageConfig = buildPageConfig(newType);
         }
         syncRepositoryBranchesPageClass();
+        syncRepositoryReleasesTagsPageClass();
         console.log(`【Debug】${trigger}觸發, 頁面類型為 ${State.pageConfig?.currentPageType}`);
     }
 
@@ -37182,10 +37229,29 @@ I18N["zh-TW"]["repository/agents"] = {
         return /^\/[^\/]+\/[^\/]+\/branches(?:\/(?:yours|active|stale|all))?\/?$/.test(window.location.pathname);
     }
 
+    function isRepositoryReleasesTagsPage() {
+        return (
+            State.pageConfig?.currentPageType === 'repository/releases' ||
+            State.pageConfig?.currentPageType === 'repository/tags' ||
+            isRepositoryReleasesTagsPath()
+        );
+    }
+
+    function isRepositoryReleasesTagsPath() {
+        return /^\/[^\/]+\/[^\/]+\/(?:releases|tags)(?:\/.*)?$/.test(window.location.pathname);
+    }
+
     function syncRepositoryBranchesPageClass() {
         document.documentElement.classList.toggle(
             'ghcht-repository-branches-page',
             isRepositoryBranchesPath()
+        );
+    }
+
+    function syncRepositoryReleasesTagsPageClass() {
+        document.documentElement.classList.toggle(
+            'ghcht-repository-releases-tags-page',
+            isRepositoryReleasesTagsPath()
         );
     }
 
@@ -37208,6 +37274,20 @@ I18N["zh-TW"]["repository/agents"] = {
         const schedule = () => {
             if (!isRepositoryBranchesPage()) return;
             scheduleRepositoryBranchesInteractionTrans();
+        };
+
+        document.addEventListener('pointerover', schedule, true);
+        document.addEventListener('mouseover', schedule, true);
+        document.addEventListener('pointerdown', schedule, true);
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('focusin', schedule, true);
+        document.addEventListener('keyup', schedule, true);
+    }
+
+    function setupRepositoryReleasesTagsPageInteractions() {
+        const schedule = () => {
+            if (!isRepositoryReleasesTagsPage()) return;
+            scheduleRepositoryReleasesTagsInteractionTrans();
         };
 
         document.addEventListener('pointerover', schedule, true);
@@ -37312,6 +37392,36 @@ I18N["zh-TW"]["repository/agents"] = {
                 safe(transRepositoryBranchesPageDynamicText, '倉庫 Branches 頁互動補翻')();
                 if (delay === 2400) {
                     State.repositoryBranchesInteractionPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleRepositoryReleasesTagsPageTrans() {
+        if (!isRepositoryReleasesTagsPage()) return;
+        if (State.repositoryReleasesTagsPagePending) return;
+        State.repositoryReleasesTagsPagePending = true;
+
+        [0, 50, 150, 350, 700, 1200, 2000, 3500, 6000, 9000, 12000].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositoryReleasesTagsPageDynamicText, '倉庫 Releases/Tags 頁補翻')();
+                if (delay === 12000) {
+                    State.repositoryReleasesTagsPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleRepositoryReleasesTagsInteractionTrans() {
+        if (!isRepositoryReleasesTagsPage()) return;
+        if (State.repositoryReleasesTagsInteractionPending) return;
+        State.repositoryReleasesTagsInteractionPending = true;
+
+        [0, 16, 50, 120, 250, 500, 900, 1500, 2400].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositoryReleasesTagsPageDynamicText, '倉庫 Releases/Tags 頁互動補翻')();
+                if (delay === 2400) {
+                    State.repositoryReleasesTagsInteractionPending = false;
                 }
             }, delay);
         });
@@ -37513,6 +37623,294 @@ I18N["zh-TW"]["repository/agents"] = {
         };
 
         visit(root);
+        return translated;
+    }
+
+    function getRepositoryReleasesTagsPageFixedDict() {
+        return {
+            ...(I18N?.[CONFIG.LANG]?.['repository/releases']?.static || {}),
+            "Releases": "發行版本",
+            "Tags": "標籤",
+            "Find a release": "搜尋發行版本",
+            "Find a tag": "搜尋標籤",
+            "Create a new release": "創建發行版本",
+            "Create release": "創建發行版本",
+            "Create a new tag": "創建新標籤",
+            "There aren’t any releases here": "沒有任何發行版本",
+            "There aren't any releases here": "沒有任何發行版本",
+            "There aren’t any tags here": "沒有任何標籤",
+            "There aren't any tags here": "沒有任何標籤",
+            "You can create a release to package software, along with release notes and links to binary files, for other people to use. Learn more about releases in our docs.": "您可以創建一個發行版本來打包軟體，以及發行說明和二進制文件連結，供其他人使用。瞭解更多關於發行版本的訊息，查看文件。",
+            "our docs": "文件",
+            "Compare": "對比",
+            "Choose a tag to compare": "選擇標籤進行比較",
+            "View all tags": "查看全部標籤",
+            "Delete tag": "刪除標籤",
+            "Delete this tag?": "刪除此標籤？",
+            "Delete this tag": "刪除此標籤",
+            "New release": "新建發行版本",
+            "New Release": "新建發行版本",
+            "Release notes": "發行版本說明",
+            "Select a previous tag to generate release notes": "選擇一個先前的標籤以生成發行說明",
+            "Generate release notes": "生成發行版本說明",
+            "Release title": "發行版本標題",
+            "Describe this release": "描述此發行版本",
+            "Heading": "標題",
+            "Bold": "粗體",
+            "Italic": "斜體",
+            "Quote": "引用",
+            "Code": "程式碼",
+            "Link": "連結",
+            "Ordered list": "有序列表",
+            "Numbered list": "有序列表",
+            "Unordered list": "無序列表",
+            "Task list": "任務列表",
+            "Attach files": "附加文件",
+            "Mention": "提及",
+            "Reference": "引用",
+            "Saved replies": "快捷回覆",
+            "Slash commands": "斜線命令",
+            "Undo": "撤銷",
+            "Write": "撰寫",
+            "Preview": "預覽",
+            "Markdown is supported": "支持 Markdown 語法",
+            "Styling with Markdown is supported": "支持使用 Markdown 創建樣式",
+            "Paste, drop, or click to add files": "貼上、拖放或點擊新增文件",
+            "Release label": "發行版本標籤",
+            "None": "無",
+            "Pre-release": "預發佈版本",
+            "Label release as non-production ready": "將發行版本標記為非正式版本",
+            "Additional settings": "其他設置",
+            "Create a discussion for this release": "為此版本創建討論",
+            "Publish release": "發佈發行版本",
+            "Save draft": "保存草案",
+            "Cancel": "取消"
+        };
+    }
+
+    function transRepositoryReleasesTagsPageDynamicText() {
+        if (!isRepositoryReleasesTagsPage() || !document.body) return false;
+        syncRepositoryReleasesTagsPageClass();
+
+        const dict = getRepositoryReleasesTagsPageFixedDict();
+        const roots = new Set();
+        const main = document.querySelector('main, [role="main"]');
+        if (main) roots.add(main);
+
+        document.querySelectorAll([
+            'turbo-frame[id*="release"]',
+            'turbo-frame[id*="tag"]',
+            '[data-testid*="release"]',
+            '[data-testid*="tag"]',
+            '.UnderlineNav',
+            '.Box',
+            'tool-tip',
+            '[role="tooltip"]',
+            '[role="menu"]',
+            '[role="listbox"]',
+            '[role="dialog"]',
+            '[aria-modal="true"]',
+            'dialog',
+            'modal-dialog',
+            '[popover]',
+            'anchored-position',
+            '.Overlay',
+            '[class*="Overlay"]',
+            '.Popover',
+            '.Popover-message',
+            '[class*="Popover"]',
+            '.ActionList',
+            '[class*="ActionList"]',
+            '#js-flash-container',
+            '.flash',
+            '.flash-messages',
+            '.Toast',
+            '[class*="Toast"]',
+            '[role="alert"]',
+            '[aria-live]'
+        ].join(', ')).forEach(root => {
+            if (root.closest?.('header, [role="banner"], .AppHeader, .Header, qbsearch-input, query-builder, react-app[app-name="command-palette"]')) return;
+            roots.add(root);
+        });
+
+        let translated = false;
+        roots.forEach(root => {
+            translated = transRepositoryReleasesTagsRoot(root, dict) || translated;
+        });
+        translated = transRepositoryReleasesTagsPreviewEmptyState() || translated;
+        translated = transRepositoryReleasesTagsRelativeTimes() || translated;
+
+        return translated;
+    }
+
+    function transRepositoryReleasesTagsPreviewEmptyState() {
+        const main = document.querySelector('main, [role="main"]');
+        if (!main) return false;
+
+        let translated = false;
+        main.querySelectorAll('[data-ghcht-release-preview-empty="true"]').forEach(element => {
+            if (normalizeHeaderTooltipText(element.textContent) === 'Nothing to preview') return;
+            element.removeAttribute('data-ghcht-release-preview-empty');
+            translated = true;
+        });
+
+        const selector = [
+            '.js-preview-body',
+            '[data-target*="preview"]',
+            '[data-targets*="preview"]',
+            '[class*="Preview"]',
+            '[class*="preview"]',
+            '[id*="preview"]'
+        ].join(', ');
+
+        main.querySelectorAll(selector).forEach(root => {
+            if (root.closest?.('header, [role="banner"], .AppHeader, .Header, qbsearch-input, query-builder, react-app[app-name="command-palette"]')) return;
+
+            const elements = [root, ...(root.querySelectorAll?.('p, div, span, h1, h2, h3') || [])];
+            elements.forEach(element => {
+                const source = normalizeHeaderTooltipText(element.textContent);
+                if (source !== 'Nothing to preview') return;
+                if (element.childElementCount > 0) return;
+                element.setAttribute('data-ghcht-release-preview-empty', 'true');
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function transRepositoryReleasesTagsRoot(root, dict) {
+        if (!root || !dict) return false;
+        const visited = new WeakSet();
+        let translated = false;
+
+        const visit = currentRoot => {
+            if (!currentRoot || visited.has(currentRoot)) return;
+            visited.add(currentRoot);
+            if (currentRoot.shadowRoot) visit(currentRoot.shadowRoot);
+
+            const walker = document.createTreeWalker(currentRoot, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                if (shouldSkipRepositoryReleasesTagsNode(node)) continue;
+                const result = getRepositoryReleasesTagsTranslation(node.data, dict);
+                if (!result || result === node.data) continue;
+                node.data = result;
+                translated = true;
+            }
+
+            currentRoot.querySelectorAll?.('*').forEach(element => {
+                if (shouldSkipRepositoryReleasesTagsNode(element)) return;
+                ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text', 'data-visible-text', 'data-disable-with', 'placeholder', 'aria-placeholder', 'data-placeholder'].forEach(attr => {
+                    const value = element.getAttribute?.(attr);
+                    const result = getRepositoryReleasesTagsTranslation(value, dict);
+                    if (!result || result === value) return;
+                    element.setAttribute(attr, result);
+                    translated = true;
+                });
+
+                if (element.matches?.('input[type="button"], input[type="submit"], input[type="reset"]')) {
+                    const source = element.value || element.getAttribute('value');
+                    const result = getRepositoryReleasesTagsTranslation(source, dict);
+                    if (result && result !== source) {
+                        element.value = result;
+                        element.setAttribute('value', result);
+                        translated = true;
+                    }
+                }
+
+                if (element.shadowRoot) visit(element.shadowRoot);
+            });
+        };
+
+        visit(root);
+        return translated;
+    }
+
+    function shouldSkipRepositoryReleasesTagsNode(node) {
+        const element = getNodeElement(node);
+        if (!element) return true;
+        const ignoredSelector = [
+            'script',
+            'style',
+            'template',
+            'noscript',
+            'code',
+            'pre',
+            'kbd',
+            'textarea',
+            'select',
+            'option',
+            '[contenteditable="true"]',
+            'article.markdown-body',
+            '.markdown-body',
+            'header',
+            '[role="banner"]',
+            '.AppHeader',
+            '.Header',
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '.AppHeader-search',
+            '.AppHeader-searchButton',
+            '[data-target*="query-builder"]',
+            '[data-target*="qbsearch-input"]'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function getRepositoryReleasesTagsTranslation(text, dict) {
+        if (!text) return false;
+        const source = normalizeHeaderTooltipText(text);
+        if (!source) return false;
+
+        const exact = dict[source];
+        if (exact) return text.replace(text.trim(), exact);
+
+        const relativeTime = transRelativeTimeText(text);
+        if (relativeTime) return relativeTime;
+
+        const patterns = [
+            [/^([\d,]+)\s+releases?$/i, (_, count) => `${count} 個發行版本`],
+            [/^([\d,]+)\s+tags?$/i, (_, count) => `${count} 個標籤`],
+            [/^Compare (.+)$/, (_, tag) => `對比 ${tag}`],
+            [/^Delete tag (.+)$/, (_, tag) => `刪除標籤 ${tag}`],
+            [/^Create release from tag (.+)$/, (_, tag) => `從標籤 ${tag} 創建發行版本`]
+        ];
+
+        for (const [pattern, replacement] of patterns) {
+            const match = source.match(pattern);
+            if (!match) continue;
+            const result = typeof replacement === 'function'
+                ? replacement(...match)
+                : replacement;
+            return text.replace(text.trim(), result);
+        }
+
+        return false;
+    }
+
+    function transRepositoryReleasesTagsRelativeTimes() {
+        if (!isRepositoryReleasesTagsPage() || !document.body) return false;
+        let translated = false;
+        const main = document.querySelector('main, [role="main"]');
+        if (!main) return false;
+
+        main.querySelectorAll('relative-time, time-ago, time[datetime]').forEach(element => {
+            const before = normalizeHeaderTooltipText(element.textContent);
+            transTimeElement(element);
+            bindRelativeTimeElementObserver(element);
+            if (element.shadowRoot) {
+                transTimeElement(element.shadowRoot);
+            }
+            translated = normalizeHeaderTooltipText(element.textContent) !== before || translated;
+        });
+
         return translated;
     }
 
