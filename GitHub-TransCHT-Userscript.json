@@ -4,7 +4,7 @@
 // @description  基於 maboloshi/github-chinese 修改的繁體中文單檔版。原作者為樓教主與沙漠之子，由 Elias Lee 進行單檔合併、繁體字詞習慣優化與持續維護。
 // @copyright    2016-2021 樓教主, 2021-2024 沙漠之子, 2026-當前 Elias Lee (https://github.com/Elias-Lee-SC)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.13.20
+// @version      local.13.30
 // @author       Elias Lee (基於 沙漠之子 & 樓教主 的原創專案)
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -9119,12 +9119,14 @@ I18N["zh-TW"]["repository"] = { // 倉庫頁面 /<user-name>/<repo-name>/
                             "Update codespace": "升級程式碼空間",
                         "Stop codespace": "停止程式碼空間",
                     "Show more actions for codespace": "顯示程式碼空間的更多操作",
+                    "More actions for codespace": "程式碼空間的更多操作",
                         "Open in Browser": "在瀏覽器中打開",
                         "Open in Visual Studio Code": "在 Visual Studio Code 中打開",
                         "Open in JetBrains Gateway": "在 JetBrains Gateway 中打開",
                         "Open in JupyterLab": "在 JupyterLab 中打開",
                         "Rename": "重命名",
                             "Rename codespace": "重命名程式碼空間",
+                            "Display name": "顯示名稱",
                             "Name": "名稱",
                         "Auto-delete codespace": "自動刪除程式碼空間",
                         "Export changes to a branch": "將更改導出到分支",
@@ -9456,6 +9458,18 @@ I18N["zh-TW"]["repository"] = { // 倉庫頁面 /<user-name>/<repo-name>/
         [/Create codespace on (.+)/, "在 $1 上創建程式碼空間"],
         [/Codespace \"(.+)\" stopped./, "程式碼空間 “$1” 已停止。"],
         [/Codespace \"(.+)\" deleted./, "程式碼空間 “$1” 已刪除。"],
+        [/^(\d+)s ago$/, "$1 秒前"],
+        [/^(\d+)m ago$/, "$1 分鐘前"],
+        [/^(\d+)h ago$/, "$1 小時前"],
+        [/^(\d+)d ago$/, "$1 天前"],
+        [/^(\d+)w ago$/, "$1 週前"],
+        [/^(\d+)mo ago$/, "$1 個月前"],
+        [/^(\d+)y ago$/, "$1 年前"],
+        [/^(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?) (\d{1,2}), (\d{4}), (\d{1,2}:\d{2})(?:\s+(GMT[+-]\d{1,2}))?$/, function (all, month, day, year, time, timezone) {
+            var monthNumber = {Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12}[month.slice(0, 3)];
+            var result = year + " 年 " + monthNumber + " 月 " + Number(day) + " 日 " + time;
+            return timezone ? result + " " + timezone : result;
+        }],
         [/Are you sure you want to delete (.+)\?/, "您確定要刪除 $1 嗎？"],
         [/Sponsor ([^ ]+)?/, "贊助 $1"], // 贊助按鈕 對話框 標題
         [/\+ ([\d,]+) releases?/, "+ $1 個發行版本"], // 倉庫首頁右側欄 發行版本
@@ -19575,7 +19589,7 @@ I18N["zh-TW"]["repository/settings/codespaces"] = { // 倉庫設置 - 程式碼�
             "Template history": "範本歷史",
                 "You can specify the number of prebuild template versions retained to speed up codespaces from an older commit to manage storage costs. The maximum value is 5 versions.": "您可以指定保留的預構建範本版本的數量，以加快舊提交的程式碼空間，以管理存儲成本。最大值為 5 個版本。",
                 "Learn about template history": "瞭解範本歷史",
-            "versions": "個版本",
+            "versions": "版本",
 
             "Failure notifications": "失敗通知",
             "You can specify users or teams to be notified via e-mail when prebuilds for this particular configuration fail.": "您可以指定用戶或團隊，當這個特定配置的預構建失敗時，通過電子郵件通知他們。",
@@ -20379,8 +20393,10 @@ I18N["zh-TW"]["repository/codespaces"] = { // 倉庫 - 程式碼空間介面 /<u
                     "Change codespace machine type": "修改程式碼空間機器類型",
                         "Machine type": "機器類型",
                             "2-core": "雙核",
+                            "2-Core": "雙核",
                             "8GB RAM • 32GB": "8GB 記憶體 • 32GB 硬碟",
                             "4-core": "四核",
+                            "4-Core": "四核",
                             "16GB RAM • 32GB": "16GB 記憶體 • 32GB 硬碟",
                         "Update codespace": "更新程式碼空間",
                 "Stop codespace": "停止程式碼空間",
@@ -27967,7 +27983,9 @@ I18N["zh-TW"]["codespaces"] = { // 程式碼空間頁面
 
             "Created from": "創建自",
             "2-core • 8GB RAM • 32GB": "雙核 • 8GB 記憶體 • 32GB 硬碟",
+            "2-Core • 8GB RAM • 32GB": "雙核 • 8GB 記憶體 • 32GB 硬碟",
             "4-core • 16GB RAM • 32GB": "四核 • 16GB 記憶體 • 32GB 硬碟",
+            "4-Core • 16GB RAM • 32GB": "四核 • 16GB 記憶體 • 32GB 硬碟",
 
             // 警告
                 "You're at 100% of your included usage for this billing period. For more information, view your": "您已使用了本計費週期的 100% 額度。有關更多訊息，請查看您的",
@@ -28025,8 +28043,10 @@ I18N["zh-TW"]["codespaces"] = { // 程式碼空間頁面
                 "Resources for your codespace": "程式碼空間的資源",
                 "None": "無",
                 "2-core": "雙核",
+                "2-Core": "雙核",
                 "8GB RAM • 32GB": "8GB 記憶體 • 32GB 硬碟",
                 "4-core": "四核",
+                "4-Core": "四核",
                 "16GB RAM • 32GB": "16GB 記憶體 • 32GB 硬碟",
             "Dev container configuration": "開發容器配置",
                 "Your codespace will use this configuration": "您的程式碼空間將使用此配置",
@@ -30586,6 +30606,39 @@ I18N["zh-TW"]["repository/agents"] = {
                 font-weight: inherit !important;
                 line-height: inherit !important;
             }
+            [data-ghcht-prebuild-template-versions-unit="true"] {
+                display: inline-flex !important;
+                align-items: center !important;
+                width: auto !important;
+                min-width: max-content !important;
+                white-space: nowrap !important;
+                word-break: keep-all !important;
+                writing-mode: horizontal-tb !important;
+            }
+            [data-ghcht-prebuild-branch-picker-title="true"] {
+                font-size: 0 !important;
+            }
+            html.ghcht-repository-settings-codespaces-prebuild-page details#codespaces-branch-selector p.SelectMenu-title {
+                font-size: 0 !important;
+            }
+            [data-ghcht-prebuild-branch-picker-title="true"]::before {
+                content: "選擇分支";
+                color: inherit !important;
+                font: inherit !important;
+                font-size: var(--text-body-size-large, 16px) !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+                white-space: nowrap !important;
+            }
+            html.ghcht-repository-settings-codespaces-prebuild-page details#codespaces-branch-selector p.SelectMenu-title::before {
+                content: "選擇分支";
+                color: inherit !important;
+                font: inherit !important;
+                font-size: var(--text-body-size-large, 16px) !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+                white-space: nowrap !important;
+            }
             /* 暗色主題適配 - 使用 prefers-color-scheme */
             @media (prefers-color-scheme: dark) {
                 :root {
@@ -30651,6 +30704,8 @@ I18N["zh-TW"]["repository/agents"] = {
         repositoryCodeDropdownPending: false,
         repositoryNewFilePagePending: false,
         repositoryNewFileInteractionPending: false,
+        repositorySettingsCodespacesPrebuildPagePending: false,
+        repositorySettingsCodespacesPrebuildInteractionPending: false,
         repositoryBranchesPagePending: false,
         repositoryBranchesInteractionPending: false,
         repositoryReleasesTagsPagePending: false,
@@ -30709,6 +30764,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupProjectsContextProtection();
         setupDiscussionsContextProtection();
         setupCodespacesContextProtection();
+        setupCodespacesNewPageInteractions();
         setupExplorePageInteractions();
         setupMarketplacePageInteractions();
         setupMcpRegistryPageInteractions();
@@ -30716,6 +30772,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupTopicsPageInteractions();
         setupRepositoryCodePageInteractions();
         setupRepositoryNewFilePageInteractions();
+        setupRepositorySettingsCodespacesPrebuildPageInteractions();
         setupRepositoryBranchesPageInteractions();
         setupRepositoryReleasesTagsPageInteractions();
         setupRepositorySettingsGeneralPageInteractions();
@@ -30763,9 +30820,11 @@ I18N["zh-TW"]["repository/agents"] = {
                 scheduleInitialProjectsContextTranslation();
                 scheduleInitialDiscussionsContextTranslation();
                 scheduleInitialCodespacesContextTranslation();
+                scheduleCodespacesNewPageTrans();
                 scheduleTopicsPageTrans();
                 scheduleRepositoryCodePageTrans();
                 scheduleRepositoryNewFilePageTrans();
+                scheduleRepositorySettingsCodespacesPrebuildPageTrans();
                 scheduleRepositoryBranchesPageTrans();
                 scheduleRepositoryReleasesTagsPageTrans();
                 scheduleRepositorySettingsGeneralPageTrans();
@@ -30782,8 +30841,10 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleMcpRegistryFastTrans();
             scheduleMcpRegistryPageTrans();
             scheduleSearchPageTrans();
+            scheduleCodespacesNewPageTrans();
             scheduleRepositoryCodePageTrans();
             scheduleRepositoryNewFilePageTrans();
+            scheduleRepositorySettingsCodespacesPrebuildPageTrans();
             scheduleRepositoryBranchesPageTrans();
             scheduleRepositoryReleasesTagsPageTrans();
             scheduleRepositorySettingsGeneralPageTrans();
@@ -30846,8 +30907,10 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleMcpRegistryFastTrans();
             scheduleMcpRegistryPageTrans();
             scheduleSearchPageTrans();
+            scheduleCodespacesNewPageTrans();
             scheduleRepositoryCodePageTrans();
             scheduleRepositoryNewFilePageTrans();
+            scheduleRepositorySettingsCodespacesPrebuildPageTrans();
             scheduleRepositoryBranchesPageTrans();
             scheduleRepositoryReleasesTagsPageTrans();
             scheduleRepositorySettingsGeneralPageTrans();
@@ -30934,8 +30997,10 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleMcpRegistryFastTrans();
         scheduleMcpRegistryPageTrans();
         scheduleSearchPageTrans();
+        scheduleCodespacesNewPageTrans();
         scheduleRepositoryCodePageTrans();
         scheduleRepositoryNewFilePageTrans();
+        scheduleRepositorySettingsCodespacesPrebuildPageTrans();
         scheduleRepositoryCodeDropdownTrans();
         scheduleRepositoryBranchesPageTrans();
         scheduleRepositoryReleasesTagsPageTrans();
@@ -30967,6 +31032,7 @@ I18N["zh-TW"]["repository/agents"] = {
         syncRepositoryNewFilePageClass();
         syncRepositoryBranchesPageClass();
         syncRepositoryReleasesTagsPageClass();
+        syncRepositorySettingsCodespacesPrebuildPageClass();
         console.log(`【Debug】${trigger}觸發, 頁面類型為 ${State.pageConfig?.currentPageType}`);
     }
 
@@ -31207,8 +31273,10 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleMcpRegistryFastTrans();
         scheduleMcpRegistryPageTrans();
         scheduleSearchPageTrans();
+        scheduleCodespacesNewPageTrans();
         scheduleRepositoryCodePageTrans();
         scheduleRepositoryNewFilePageTrans();
+        scheduleRepositorySettingsCodespacesPrebuildPageTrans();
         scheduleRepositorySettingsGeneralPageTrans();
         scheduleRepositoryBranchesInteractionTrans();
         scheduleRepositoryTransferPageTrans();
@@ -33037,6 +33105,738 @@ I18N["zh-TW"]["repository/agents"] = {
                 }
             }, delay);
         });
+    }
+
+    function isRepositorySettingsCodespacesPrebuildPage() {
+        return /^\/[^\/]+\/[^\/]+\/settings\/codespaces\/prebuild_configurations(?:\/(?:new|[^\/]+\/edit))?\/?$/.test(window.location.pathname);
+    }
+
+    function setupRepositorySettingsCodespacesPrebuildPageInteractions() {
+        const schedule = () => {
+            if (!isRepositorySettingsCodespacesPrebuildPage()) return;
+            scheduleRepositorySettingsCodespacesPrebuildInteractionTrans();
+        };
+
+        document.addEventListener('pointerdown', schedule, true);
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('focusin', schedule, true);
+        document.addEventListener('keyup', schedule, true);
+    }
+
+    function scheduleRepositorySettingsCodespacesPrebuildPageTrans() {
+        if (!isRepositorySettingsCodespacesPrebuildPage()) return;
+        if (State.repositorySettingsCodespacesPrebuildPagePending) return;
+        State.repositorySettingsCodespacesPrebuildPagePending = true;
+
+        [0, 120, 400, 1000, 2500].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositorySettingsCodespacesPrebuildPageDynamicText, '倉庫程式碼空間預構建設置頁補翻')();
+                if (delay === 2500) {
+                    State.repositorySettingsCodespacesPrebuildPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleRepositorySettingsCodespacesPrebuildInteractionTrans() {
+        if (!isRepositorySettingsCodespacesPrebuildPage()) return;
+        if (State.repositorySettingsCodespacesPrebuildInteractionPending) return;
+        State.repositorySettingsCodespacesPrebuildInteractionPending = true;
+
+        [0, 50, 150, 350].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositorySettingsCodespacesPrebuildPageDynamicText, '倉庫程式碼空間預構建設置頁互動補翻')();
+                if (delay === 350) {
+                    State.repositorySettingsCodespacesPrebuildInteractionPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function getRepositorySettingsCodespacesPrebuildFixedDict() {
+        return {
+            ...(I18N?.[CONFIG.LANG]?.["repository/settings/codespaces"]?.static || {}),
+            "Select branch": "選擇分支",
+            "Switch branches": "切換分支",
+            "Find a branch": "查找分支",
+            "Find a branch...": "查找分支…",
+            "Find a branch…": "查找分支…",
+            "Filter branches": "查找分支",
+            "Search branches": "查找分支",
+            "Search branches...": "查找分支…",
+            "Search branches…": "查找分支…",
+            "View all branches": "查看全部分支",
+            "No branches found": "找不到分支",
+            "Configuration File": "設置文件",
+            "Configuration File:": "設置文件：",
+            "Default Codespaces Configuration": "預設程式碼空間設置",
+            "Default": "預設",
+            "Save": "保存",
+            "Create": "創建",
+            "Cancel": "取消",
+            "versions": "版本",
+            "個版本": "版本"
+        };
+    }
+
+    function transRepositorySettingsCodespacesPrebuildPageDynamicText() {
+        if (!isRepositorySettingsCodespacesPrebuildPage() || !document.body) return false;
+
+        const dict = getRepositorySettingsCodespacesPrebuildFixedDict();
+        const roots = new Set();
+        const main = document.querySelector('main, [role="main"]');
+        if (main) roots.add(main);
+
+        document.querySelectorAll([
+            'tool-tip',
+            '[role="tooltip"]',
+            '[role="menu"]',
+            '[role="listbox"]',
+            '[role="dialog"]',
+            '[aria-modal="true"]',
+            'dialog',
+            'modal-dialog',
+            'details-menu',
+            'details-dialog',
+            '[popover]',
+            'anchored-position',
+            'body > div',
+            '.Overlay',
+            '[class*="Overlay"]',
+            '.Popover',
+            '.Popover-message',
+            '[class*="Popover"]',
+            '.ActionList',
+            '[class*="ActionList"]',
+            '.select-menu-modal',
+            '.select-menu-header',
+            '.select-menu-title',
+            '[class*="SelectMenu"]',
+            '[class*="select-menu"]',
+            '[class*="SelectPanel"]',
+            '[class*="select-panel"]',
+            '[class*="Dialog"]',
+            '[class*="dialog"]',
+            '[data-testid*="branch"]',
+            '[data-testid*="Branch"]',
+            '[data-target*="branch"]',
+            '[data-testid*="region"]',
+            '[data-testid*="Region"]',
+            '[data-target*="region"]'
+        ].join(', ')).forEach(root => {
+            if (!isRepositorySettingsCodespacesPrebuildSurface(root, dict)) return;
+            roots.add(root);
+        });
+
+        let translated = false;
+        roots.forEach(root => {
+            translated = transRepositorySettingsCodespacesPrebuildRoot(root, dict) || translated;
+        });
+        translated = transRepositorySettingsCodespacesPrebuildFields(dict) || translated;
+        translated = transRepositorySettingsCodespacesPrebuildBranchPickerTitle(dict) || translated;
+        translated = markRepositorySettingsCodespacesPrebuildVersionUnits() || translated;
+
+        return translated;
+    }
+
+    function isRepositorySettingsCodespacesPrebuildSurface(surface, dict) {
+        if (!surface || surface.nodeType !== Node.ELEMENT_NODE) return false;
+        if (surface.closest?.('header, [role="banner"], .AppHeader, .Header, qbsearch-input, query-builder, react-app[app-name="command-palette"], .AppHeader-search, .AppHeader-searchButton')) return false;
+
+        const text = normalizeHeaderTooltipText(surface.textContent);
+        if (!text || text.length > 1800) return false;
+
+        const knownSources = [
+            "New prebuild configuration",
+            "Prebuild configuration",
+            "Configuration",
+            "Select branch",
+            "Switch branches",
+            "Find a branch",
+            "Filter branches",
+            "Configuration File",
+            "Default Codespaces Configuration",
+            "Prebuild triggers",
+            "Every push",
+            "Configuration change",
+            "Scheduled",
+            "Weekdays",
+            "Every day",
+            "Region availability",
+            "Template history",
+            "versions",
+            "Failure notifications",
+            "Advanced options"
+        ];
+
+        return knownSources.some(source => {
+            const translated = dict[source];
+            return text.includes(source) || (translated && text.includes(translated));
+        });
+    }
+
+    function transRepositorySettingsCodespacesPrebuildRoot(root, dict) {
+        if (!root || !dict) return false;
+        const visited = new WeakSet();
+        let translated = false;
+
+        const visit = currentRoot => {
+            if (!currentRoot || visited.has(currentRoot)) return;
+            visited.add(currentRoot);
+            if (currentRoot.shadowRoot) visit(currentRoot.shadowRoot);
+
+            const walker = document.createTreeWalker(currentRoot, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                if (shouldSkipRepositorySettingsCodespacesPrebuildNode(node)) continue;
+                const result = getRepositorySettingsCodespacesPrebuildTranslation(node.data, dict);
+                if (!result || result === node.data) continue;
+                node.data = result;
+                translated = true;
+            }
+
+            currentRoot.querySelectorAll?.('*').forEach(element => {
+                if (shouldSkipRepositorySettingsCodespacesPrebuildNode(element)) return;
+                ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text', 'data-visible-text', 'data-disable-with', 'placeholder', 'aria-placeholder', 'data-placeholder'].forEach(attr => {
+                    const value = element.getAttribute?.(attr);
+                    const result = getRepositorySettingsCodespacesPrebuildTranslation(value, dict);
+                    if (!result || result === value) return;
+                    element.setAttribute(attr, result);
+                    translated = true;
+                });
+
+                if (element.matches?.('input[type="button"], input[type="submit"], input[type="reset"]')) {
+                    const source = element.value || element.getAttribute('value');
+                    const result = getRepositorySettingsCodespacesPrebuildTranslation(source, dict);
+                    if (result && result !== source) {
+                        element.value = result;
+                        element.setAttribute('value', result);
+                        translated = true;
+                    }
+                }
+
+                if (element.shadowRoot) visit(element.shadowRoot);
+            });
+        };
+
+        visit(root);
+        return translated;
+    }
+
+    function transRepositorySettingsCodespacesPrebuildFields(dict) {
+        if (!isRepositorySettingsCodespacesPrebuildPage() || !document.body) return false;
+        let translated = false;
+
+        document.querySelectorAll('input[placeholder], textarea[placeholder], input[aria-label], textarea[aria-label]').forEach(element => {
+            if (shouldSkipRepositorySettingsCodespacesPrebuildField(element)) return;
+            ['placeholder', 'aria-label'].forEach(attr => {
+                const value = element.getAttribute?.(attr);
+                const result = getRepositorySettingsCodespacesPrebuildTranslation(value, dict);
+                if (!result || result === value) return;
+                element.setAttribute(attr, result);
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function transRepositorySettingsCodespacesPrebuildBranchPickerTitle(dict) {
+        if (!isRepositorySettingsCodespacesPrebuildPage() || !document.body) return false;
+        let translated = false;
+
+        document.querySelectorAll([
+            'h1',
+            'h2',
+            'h3',
+            'h4',
+            '[role="heading"]',
+            '[role="tab"]',
+            '.select-menu-title',
+            '.SelectMenu-title',
+            '[class*="SelectMenu"] [class*="title"]',
+            '[class*="select-menu"] [class*="title"]',
+            '[class*="SelectPanel"] [class*="title"]',
+            '[class*="Overlay"] h1',
+            '[class*="Overlay"] h2',
+            '[class*="Overlay"] h3',
+            '[class*="Overlay"] h4',
+            '[class*="Dialog"] h1',
+            '[class*="Dialog"] h2',
+            '[class*="Dialog"] h3',
+            '[class*="Dialog"] h4',
+            'details-menu h1',
+            'details-menu h2',
+            'details-menu h3',
+            'details-menu h4',
+            'details-dialog h1',
+            'details-dialog h2',
+            'details-dialog h3',
+            'details-dialog h4'
+        ].join(', ')).forEach(element => {
+            if (!element || shouldSkipRepositorySettingsCodespacesPrebuildNode(element)) return;
+            if (normalizeHeaderTooltipText(element.textContent) !== 'Select branch') return;
+
+            translated = markRepositorySettingsCodespacesPrebuildBranchTitleElement(element, dict) || translated;
+        });
+
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+            if (normalizeHeaderTooltipText(node.data) !== 'Select branch') continue;
+            if (shouldSkipRepositorySettingsCodespacesPrebuildNode(node)) continue;
+            const element = getNodeElement(node);
+            if (!element) continue;
+            translated = markRepositorySettingsCodespacesPrebuildBranchTitleElement(element, dict) || translated;
+        }
+
+        return translated;
+    }
+
+    function markRepositorySettingsCodespacesPrebuildBranchTitleElement(element, dict) {
+        if (!element) return false;
+        let translated = false;
+
+        if (element.getAttribute?.('data-ghcht-prebuild-branch-picker-title') !== 'true') {
+            element.setAttribute('data-ghcht-prebuild-branch-picker-title', 'true');
+            translated = true;
+        }
+
+        Array.from(element.childNodes || []).forEach(node => {
+            if (node.nodeType !== Node.TEXT_NODE) return;
+            const result = getRepositorySettingsCodespacesPrebuildTranslation(node.data, dict);
+            if (!result || result === node.data) return;
+            node.data = result;
+            translated = true;
+        });
+
+        return translated;
+    }
+
+    function markRepositorySettingsCodespacesPrebuildVersionUnits() {
+        if (!isRepositorySettingsCodespacesPrebuildPage() || !document.body) return false;
+        const root = document.querySelector('main, [role="main"]') || document.body;
+        let updated = false;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+
+        while ((node = walker.nextNode())) {
+            if (shouldSkipRepositorySettingsCodespacesPrebuildNode(node)) continue;
+            const source = normalizeHeaderTooltipText(node.data);
+            if (!["versions", "個版本", "版本"].includes(source)) continue;
+            const element = getNodeElement(node);
+            if (!element) continue;
+            if (source !== "版本") {
+                node.data = node.data.replace(node.data.trim(), "版本");
+                updated = true;
+            }
+            if (element.getAttribute?.('data-ghcht-prebuild-template-versions-unit') !== 'true') {
+                element.setAttribute('data-ghcht-prebuild-template-versions-unit', 'true');
+                updated = true;
+            }
+        }
+
+        return updated;
+    }
+
+    function shouldSkipRepositorySettingsCodespacesPrebuildField(element) {
+        if (!element) return true;
+        const ignoredSelector = [
+            'header',
+            '[role="banner"]',
+            '.AppHeader',
+            '.Header',
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '.AppHeader-search',
+            '.AppHeader-searchButton',
+            '[data-target*="query-builder"]',
+            '[data-target*="qbsearch-input"]',
+            '[contenteditable="true"]'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function shouldSkipRepositorySettingsCodespacesPrebuildNode(node) {
+        const element = getNodeElement(node);
+        if (!element) return true;
+        if (element.closest?.('details#codespaces-branch-selector p.SelectMenu-title')) return false;
+        const ignoredSelector = [
+            'input',
+            'textarea',
+            'select',
+            'option',
+            'script',
+            'style',
+            'template',
+            'noscript',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]',
+            'header',
+            '[role="banner"]',
+            '.AppHeader',
+            '.Header',
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '.AppHeader-search',
+            '.AppHeader-searchButton',
+            '[data-target*="query-builder"]',
+            '[data-target*="qbsearch-input"]'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function getRepositorySettingsCodespacesPrebuildTranslation(text, dict) {
+        if (!text) return false;
+        const source = normalizeHeaderTooltipText(text);
+        if (!source) return false;
+
+        const exact = dict[source];
+        if (exact) return text.replace(text.trim(), exact);
+
+        return false;
+    }
+
+    function isCodespacesNewPage() {
+        return /^\/codespaces\/new(?:\/|$)/.test(window.location.pathname);
+    }
+
+    function setupCodespacesNewPageInteractions() {
+        const schedule = () => {
+            if (!isCodespacesNewPage()) return;
+            scheduleCodespacesNewPageInteractionTrans();
+        };
+
+        document.addEventListener('pointerover', schedule, true);
+        document.addEventListener('mouseover', schedule, true);
+        document.addEventListener('pointerdown', schedule, true);
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('focusin', schedule, true);
+        document.addEventListener('keyup', schedule, true);
+    }
+
+    function scheduleCodespacesNewPageTrans() {
+        if (!isCodespacesNewPage()) return;
+        if (State.codespacesNewPagePending) return;
+        State.codespacesNewPagePending = true;
+
+        [0, 50, 150, 350, 700, 1200, 2000, 3500, 6000, 9000, 12000].forEach(delay => {
+            setTimeout(() => {
+                safe(transCodespacesNewPageDynamicText, '新建程式碼空間頁補翻')();
+                if (delay === 12000) {
+                    State.codespacesNewPagePending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function scheduleCodespacesNewPageInteractionTrans() {
+        if (!isCodespacesNewPage()) return;
+        if (State.codespacesNewInteractionPending) return;
+        State.codespacesNewInteractionPending = true;
+
+        [0, 16, 50, 120, 250, 500, 900, 1500, 2400].forEach(delay => {
+            setTimeout(() => {
+                safe(transCodespacesNewPageDynamicText, '新建程式碼空間頁互動補翻')();
+                if (delay === 2400) {
+                    State.codespacesNewInteractionPending = false;
+                }
+            }, delay);
+        });
+    }
+
+    function getCodespacesNewPageFixedDict() {
+        return {
+            ...(I18N?.[CONFIG.LANG]?.codespaces?.static || {}),
+            "Switch branches": "切換分支",
+            "Switch Branches": "切換分支",
+            "Find a branch...": "查找分支…",
+            "Find a branch…": "查找分支…",
+            "Search branches...": "查找分支…",
+            "Search branches…": "查找分支…",
+            "View all branches": "查看全部分支",
+            "Default branch": "預設分支",
+            "Default Branch": "預設分支",
+            "default": "預設",
+            "Default": "預設",
+            "Machine type": "機器類型",
+            "2-core": "雙核",
+            "2-Core": "雙核",
+            "4-core": "四核",
+            "4-Core": "四核",
+            "2-core • 8GB RAM • 32GB": "雙核 • 8GB 記憶體 • 32GB 硬碟",
+            "2-Core • 8GB RAM • 32GB": "雙核 • 8GB 記憶體 • 32GB 硬碟",
+            "4-core • 16GB RAM • 32GB": "四核 • 16GB 記憶體 • 32GB 硬碟",
+            "4-Core • 16GB RAM • 32GB": "四核 • 16GB 記憶體 • 32GB 硬碟"
+        };
+    }
+
+    function transCodespacesNewPageDynamicText() {
+        if (!isCodespacesNewPage() || !document.body) return false;
+
+        const dict = getCodespacesNewPageFixedDict();
+        const roots = new Set();
+        const main = document.querySelector('main, [role="main"]');
+        if (main) roots.add(main);
+
+        document.querySelectorAll([
+            'tool-tip',
+            '[role="tooltip"]',
+            '[role="menu"]',
+            '[role="listbox"]',
+            '[role="dialog"]',
+            '[aria-modal="true"]',
+            'dialog',
+            'modal-dialog',
+            '[popover]',
+            'anchored-position',
+            'body > div',
+            '.Overlay',
+            '[class*="Overlay"]',
+            '.Popover',
+            '.Popover-message',
+            '[class*="Popover"]',
+            '.ActionList',
+            '[class*="ActionList"]',
+            '[class*="SelectPanel"]',
+            '[class*="select-panel"]',
+            '[class*="Dialog"]',
+            '[class*="dialog"]',
+            '[data-testid*="branch"]',
+            '[data-testid*="Branch"]',
+            '[data-testid*="machine"]',
+            '[data-testid*="Machine"]',
+            '[data-testid*="codespace"]',
+            '[data-testid*="Codespace"]',
+            '[data-target*="branch"]',
+            '[data-target*="machine"]',
+            '[data-target*="codespace"]'
+        ].join(', ')).forEach(root => {
+            if (!isCodespacesNewPageSurface(root, dict)) return;
+            roots.add(root);
+        });
+
+        let translated = false;
+        roots.forEach(root => {
+            translated = transCodespacesNewPageRoot(root, dict) || translated;
+        });
+        translated = transCodespacesNewPageFields(dict) || translated;
+
+        return translated;
+    }
+
+    function isCodespacesNewPageSurface(surface, dict) {
+        if (!surface || surface.nodeType !== Node.ELEMENT_NODE) return false;
+        if (surface.closest?.('header, [role="banner"], .AppHeader, .Header, qbsearch-input, query-builder, react-app[app-name="command-palette"], .AppHeader-search, .AppHeader-searchButton')) return false;
+
+        const text = normalizeHeaderTooltipText(surface.textContent);
+        if (!text || text.length > 1800) return false;
+
+        const knownSources = [
+            "Create a new codespace",
+            "Create codespace for",
+            "Repository",
+            "Branch",
+            "Switch branches",
+            "Find a branch",
+            "Search branches",
+            "View all branches",
+            "Default branch",
+            "Machine type",
+            "Resources for your codespace",
+            "2-core",
+            "2-Core",
+            "4-core",
+            "4-Core",
+            "8GB RAM",
+            "16GB RAM",
+            "Dev container configuration",
+            "Create codespace"
+        ];
+
+        const hasKnownText = knownSources.some(source => {
+            const translated = dict[source];
+            return text.includes(source) || (translated && text.includes(translated));
+        });
+        if (!hasKnownText) return false;
+
+        const rect = surface.getBoundingClientRect?.();
+        if (rect && rect.width > 0 && rect.height > 0) {
+            if (rect.width > 1200 || rect.height > 1000) return false;
+        }
+
+        return true;
+    }
+
+    function transCodespacesNewPageRoot(root, dict) {
+        if (!root || !dict) return false;
+        const visited = new WeakSet();
+        let translated = false;
+
+        const visit = currentRoot => {
+            if (!currentRoot || visited.has(currentRoot)) return;
+            visited.add(currentRoot);
+            if (currentRoot.shadowRoot) visit(currentRoot.shadowRoot);
+
+            const walker = document.createTreeWalker(currentRoot, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                if (shouldSkipCodespacesNewPageNode(node)) continue;
+                const result = getCodespacesNewPageTranslation(node.data, dict);
+                if (!result || result === node.data) continue;
+                node.data = result;
+                translated = true;
+            }
+
+            currentRoot.querySelectorAll?.('*').forEach(element => {
+                if (shouldSkipCodespacesNewPageNode(element)) return;
+                ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text', 'data-visible-text', 'data-disable-with', 'placeholder', 'aria-placeholder', 'data-placeholder'].forEach(attr => {
+                    const value = element.getAttribute?.(attr);
+                    const result = getCodespacesNewPageTranslation(value, dict);
+                    if (!result || result === value) return;
+                    element.setAttribute(attr, result);
+                    translated = true;
+                });
+
+                if (element.matches?.('input[type="button"], input[type="submit"], input[type="reset"]')) {
+                    const source = element.value || element.getAttribute('value');
+                    const result = getCodespacesNewPageTranslation(source, dict);
+                    if (result && result !== source) {
+                        element.value = result;
+                        element.setAttribute('value', result);
+                        translated = true;
+                    }
+                }
+
+                if (element.shadowRoot) visit(element.shadowRoot);
+            });
+        };
+
+        visit(root);
+        return translated;
+    }
+
+    function transCodespacesNewPageFields(dict) {
+        if (!isCodespacesNewPage() || !document.body) return false;
+        let translated = false;
+
+        document.querySelectorAll('input[placeholder], textarea[placeholder], input[aria-label], textarea[aria-label]').forEach(element => {
+            if (shouldSkipCodespacesNewPageField(element)) return;
+            ['placeholder', 'aria-label'].forEach(attr => {
+                const value = element.getAttribute?.(attr);
+                const result = getCodespacesNewPageTranslation(value, dict);
+                if (!result || result === value) return;
+                element.setAttribute(attr, result);
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function shouldSkipCodespacesNewPageField(element) {
+        if (!element) return true;
+        const ignoredSelector = [
+            'header',
+            '[role="banner"]',
+            '.AppHeader',
+            '.Header',
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '.AppHeader-search',
+            '.AppHeader-searchButton',
+            '[data-target*="query-builder"]',
+            '[data-target*="qbsearch-input"]',
+            '[contenteditable="true"]'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function shouldSkipCodespacesNewPageNode(node) {
+        const element = getNodeElement(node);
+        if (!element) return true;
+        const ignoredSelector = [
+            'input',
+            'textarea',
+            'select',
+            'option',
+            'script',
+            'style',
+            'template',
+            'noscript',
+            'code',
+            'pre',
+            'kbd',
+            '[contenteditable="true"]',
+            'header',
+            '[role="banner"]',
+            '.AppHeader',
+            '.Header',
+            'qbsearch-input',
+            'query-builder',
+            'react-app[app-name="command-palette"]',
+            '.AppHeader-search',
+            '.AppHeader-searchButton',
+            '[data-target*="query-builder"]',
+            '[data-target*="qbsearch-input"]'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function getCodespacesNewPageTranslation(text, dict) {
+        if (!text) return false;
+        const source = normalizeHeaderTooltipText(text);
+        if (!source) return false;
+
+        const exact = dict[source];
+        if (exact) return text.replace(text.trim(), exact);
+
+        const patterns = [
+            [/^(\d+)-[Cc]ore$/, (_, count) => `${count} 核`],
+            [/^(\d+)-[Cc]ore\s+•\s+(.+)$/, (_, count, resources) => `${count} 核 • ${translateCodespacesMachineResources(resources)}`]
+        ];
+
+        for (const [pattern, replacement] of patterns) {
+            const match = source.match(pattern);
+            if (!match) continue;
+            const result = typeof replacement === 'function'
+                ? replacement(...match)
+                : replacement;
+            return text.replace(text.trim(), result);
+        }
+
+        return false;
+    }
+
+    function translateCodespacesMachineResources(text) {
+        return String(text || '')
+            .replace(/\bRAM\b/g, '記憶體')
+            .replace(/\bStorage\b/g, '硬碟');
     }
 
     function isAwesomeTopicPage() {
@@ -37330,6 +38130,13 @@ I18N["zh-TW"]["repository/agents"] = {
         );
     }
 
+    function syncRepositorySettingsCodespacesPrebuildPageClass() {
+        document.documentElement.classList.toggle(
+            'ghcht-repository-settings-codespaces-prebuild-page',
+            isRepositorySettingsCodespacesPrebuildPage()
+        );
+    }
+
     function isRepositoryTopNavigationTranslationPage() {
         return isRepositorySettingsGeneralPage() || isRepositoryTransferPage();
     }
@@ -37340,9 +38147,12 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleRepositoryCodeDropdownTrans();
         };
 
+        document.addEventListener('pointerover', scheduleDropdown, true);
+        document.addEventListener('mouseover', scheduleDropdown, true);
         document.addEventListener('click', scheduleDropdown, true);
         document.addEventListener('pointerdown', scheduleDropdown, true);
         document.addEventListener('focusin', scheduleDropdown, true);
+        document.addEventListener('keyup', scheduleDropdown, true);
     }
 
     function setupRepositoryNewFilePageInteractions() {
@@ -38497,6 +39307,26 @@ I18N["zh-TW"]["repository/agents"] = {
             "Your workspaces in the cloud": "您在雲端的工作區",
             "No codespaces": "尚無程式碼空間",
             "You don't have any codespaces with this repository checked out": "您沒有任何簽出此倉庫的程式碼空間",
+            "On current branch": "在當前分支",
+            "On other branches": "在其他分支",
+            "Active": "激活",
+            "Show more actions for codespace": "顯示程式碼空間的更多操作",
+            "More actions for codespace": "程式碼空間的更多操作",
+            "Open in Browser": "在瀏覽器中打開",
+            "Open in Visual Studio Code": "在 Visual Studio Code 中打開",
+            "Open in JetBrains Gateway": "在 JetBrains Gateway 中打開",
+            "Open in JupyterLab": "在 JupyterLab 中打開",
+            "Rename": "重命名",
+            "Rename codespace": "重命名程式碼空間",
+            "Display name": "顯示名稱",
+            "Display Name": "顯示名稱",
+            "Export changes to a branch": "將更改導出到分支",
+            "Change machine type": "修改機器類型",
+            "Change codespace machine type": "修改程式碼空間機器類型",
+            "Stop codespace": "停止程式碼空間",
+            "Auto-delete codespace": "自動刪除程式碼空間",
+            "Delete": "刪除",
+            "Preview": "預覽",
             "Learn more about codespaces...": "深入了解程式碼空間…",
             "Learn more about codespaces…": "深入了解程式碼空間…",
             "New with options...": "使用選項新建…",
@@ -38667,7 +39497,23 @@ I18N["zh-TW"]["repository/agents"] = {
             "Set up prebuilds",
             "Manage codespaces",
             "Share a deep link",
-            "What are codespaces?"
+            "What are codespaces?",
+            "On current branch",
+            "Active",
+            "More actions for",
+            "Show more actions for codespace",
+            "Rename codespace",
+            "Display name",
+            "Export changes to a branch",
+            "Change machine type",
+            "Change codespace machine type",
+            "Stop codespace",
+            "Auto-delete codespace",
+            "Are you sure you want to delete",
+            "Open in Browser",
+            "Open in Visual Studio Code",
+            "Open in JupyterLab",
+            "Delete"
         ].some(source => text.includes(source) || text.includes(dict[source]));
         if (!hasKnownText) return false;
 
@@ -38712,6 +39558,55 @@ I18N["zh-TW"]["repository/agents"] = {
                 element.setAttribute(attr, result);
                 translated = true;
             });
+        });
+
+        translated = transRepositoryCodeDropdownTimeElements(root, dict) || translated;
+
+        return translated;
+    }
+
+    function transRepositoryCodeDropdownTimeElements(root, dict) {
+        if (!root) return false;
+        const visited = new WeakSet();
+        let translated = false;
+
+        const translateTimeElement = element => {
+            if (!element || visited.has(element) || shouldSkipRepositoryCodeDropdownNode(element)) return;
+            visited.add(element);
+
+            const beforeText = normalizeHeaderTooltipText(element.textContent);
+            transTimeElement(element);
+            bindRelativeTimeElementObserver(element);
+
+            if (element.shadowRoot) {
+                transTimeElement(element.shadowRoot);
+            }
+
+            if (normalizeHeaderTooltipText(element.textContent) !== beforeText) {
+                translated = true;
+            }
+
+            translated = transRepositoryCodeDropdownTimeAttributes(element, dict) || translated;
+        };
+
+        root.querySelectorAll?.('relative-time, time-ago, time[datetime]').forEach(translateTimeElement);
+        if (root.matches?.('relative-time, time-ago, time[datetime]')) {
+            translateTimeElement(root);
+        }
+
+        return translated;
+    }
+
+    function transRepositoryCodeDropdownTimeAttributes(element, dict) {
+        if (!element) return false;
+        let translated = false;
+
+        ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text', 'data-visible-text'].forEach(attr => {
+            const value = element.getAttribute?.(attr);
+            const result = getRepositoryCodeTranslation(value, dict);
+            if (!result || result === value) return;
+            element.setAttribute(attr, result);
+            translated = true;
         });
 
         return translated;
@@ -38986,6 +39881,67 @@ I18N["zh-TW"]["repository/agents"] = {
             [
                 /^Codespace usage for this repository is paid for by (.+)\.$/,
                 (_, owner) => `此倉庫的程式碼空間使用費由 ${owner} 支付。`
+            ],
+            [
+                /^(\d+)s ago$/,
+                (_, amount) => `${amount} 秒前`
+            ],
+            [
+                /^(\d+)m ago$/,
+                (_, amount) => `${amount} 分鐘前`
+            ],
+            [
+                /^(\d+)h ago$/,
+                (_, amount) => `${amount} 小時前`
+            ],
+            [
+                /^(\d+)d ago$/,
+                (_, amount) => `${amount} 天前`
+            ],
+            [
+                /^(\d+)w ago$/,
+                (_, amount) => `${amount} 週前`
+            ],
+            [
+                /^(\d+)mo ago$/,
+                (_, amount) => `${amount} 個月前`
+            ],
+            [
+                /^(\d+)y ago$/,
+                (_, amount) => `${amount} 年前`
+            ],
+            [
+                /^(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?) (\d{1,2}), (\d{4}), (\d{1,2}:\d{2})(?:\s+(GMT[+-]\d{1,2}))?$/,
+                (_, month, day, year, time, timezone) => {
+                    const monthNumber = {
+                        Jan: 1,
+                        Feb: 2,
+                        Mar: 3,
+                        Apr: 4,
+                        May: 5,
+                        Jun: 6,
+                        Jul: 7,
+                        Aug: 8,
+                        Sep: 9,
+                        Oct: 10,
+                        Nov: 11,
+                        Dec: 12
+                    }[month.slice(0, 3)];
+                    const result = `${year} 年 ${monthNumber} 月 ${Number(day)} 日 ${time}`;
+                    return timezone ? `${result} ${timezone}` : result;
+                }
+            ],
+            [
+                /^More actions for (.+)$/,
+                (_, name) => `${name} 的更多操作`
+            ],
+            [
+                /^Show more actions for (.+)$/,
+                (_, name) => `顯示 ${name} 的更多操作`
+            ],
+            [
+                /^Are you sure you want to delete (.+)\?$/,
+                (_, name) => `您確定要刪除 ${name} 嗎？`
             ]
         ];
 
