@@ -4,7 +4,7 @@
 // @description  基於 maboloshi/github-chinese 修改的繁體中文單檔版。原作者為樓教主與沙漠之子，由 Elias Lee 進行單檔合併、繁體字詞習慣優化與持續維護。
 // @copyright    2016-2021 樓教主, 2021-2024 沙漠之子, 2026-當前 Elias Lee (https://github.com/Elias-Lee-SC)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.13.30
+// @version      local.13.32
 // @author       Elias Lee (基於 沙漠之子 & 樓教主 的原創專案)
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -20352,6 +20352,7 @@ I18N["zh-TW"]["repository/codespaces"] = { // 倉庫 - 程式碼空間介面 /<u
         ...I18N["zh-TW"]["repository-public"]["static"],
 
         // 倉庫 - 程式碼空間介面 /<user-name>/<repo-name>/codespaces
+            "Your codespaces": "您的程式碼空間",
             "Codespace usage for this repository is paid for by": "該倉庫的程式碼空間使用費由以下人員支付",
             "Getting started with GitHub Codespaces": "GitHub 程式碼空間入門",
                 "Learn core concepts": "學習核心概念",
@@ -20377,6 +20378,7 @@ I18N["zh-TW"]["repository/codespaces"] = { // 倉庫 - 程式碼空間介面 /<u
             // [/(\d+) codespaces?/, "$1 個程式碼空間"],
             "Retrieving…": "正在檢索…",
             "Active": "活躍",
+            "No changes": "沒有更改",
             "Show more actions for codespace": "顯示程式碼空間的更多操作",
                 "Rename": "重命名",
                     "Rename codespace": "重命名程式碼空間",
@@ -20427,7 +20429,7 @@ I18N["zh-TW"]["repository/custom-properties"] = { // 倉庫 - 自定義屬性 ht
     "regexp": [],
 };
 
-I18N["zh-TW"]["repository/codespaces"] = { // 倉庫 - 內容舉報 /<user-name>/<repo-name>/reported_content
+I18N["zh-TW"]["repository/reported_content"] = { // 倉庫 - 內容舉報 /<user-name>/<repo-name>/reported_content
     "static": { // 靜態翻譯
         ...I18N["zh-TW"]["repository-public"]["static"],
 
@@ -30706,6 +30708,8 @@ I18N["zh-TW"]["repository/agents"] = {
         repositoryNewFileInteractionPending: false,
         repositorySettingsCodespacesPrebuildPagePending: false,
         repositorySettingsCodespacesPrebuildInteractionPending: false,
+        repositoryCodespacesPagePending: false,
+        repositoryCodespacesInteractionPending: false,
         repositoryBranchesPagePending: false,
         repositoryBranchesInteractionPending: false,
         repositoryReleasesTagsPagePending: false,
@@ -30772,6 +30776,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupTopicsPageInteractions();
         setupRepositoryCodePageInteractions();
         setupRepositoryNewFilePageInteractions();
+        setupRepositoryCodespacesPageInteractions();
         setupRepositorySettingsCodespacesPrebuildPageInteractions();
         setupRepositoryBranchesPageInteractions();
         setupRepositoryReleasesTagsPageInteractions();
@@ -30824,6 +30829,7 @@ I18N["zh-TW"]["repository/agents"] = {
                 scheduleTopicsPageTrans();
                 scheduleRepositoryCodePageTrans();
                 scheduleRepositoryNewFilePageTrans();
+                scheduleRepositoryCodespacesPageTrans();
                 scheduleRepositorySettingsCodespacesPrebuildPageTrans();
                 scheduleRepositoryBranchesPageTrans();
                 scheduleRepositoryReleasesTagsPageTrans();
@@ -30844,6 +30850,7 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleCodespacesNewPageTrans();
             scheduleRepositoryCodePageTrans();
             scheduleRepositoryNewFilePageTrans();
+            scheduleRepositoryCodespacesPageTrans();
             scheduleRepositorySettingsCodespacesPrebuildPageTrans();
             scheduleRepositoryBranchesPageTrans();
             scheduleRepositoryReleasesTagsPageTrans();
@@ -30910,6 +30917,7 @@ I18N["zh-TW"]["repository/agents"] = {
             scheduleCodespacesNewPageTrans();
             scheduleRepositoryCodePageTrans();
             scheduleRepositoryNewFilePageTrans();
+            scheduleRepositoryCodespacesPageTrans();
             scheduleRepositorySettingsCodespacesPrebuildPageTrans();
             scheduleRepositoryBranchesPageTrans();
             scheduleRepositoryReleasesTagsPageTrans();
@@ -31000,6 +31008,7 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleCodespacesNewPageTrans();
         scheduleRepositoryCodePageTrans();
         scheduleRepositoryNewFilePageTrans();
+        scheduleRepositoryCodespacesPageTrans();
         scheduleRepositorySettingsCodespacesPrebuildPageTrans();
         scheduleRepositoryCodeDropdownTrans();
         scheduleRepositoryBranchesPageTrans();
@@ -31276,6 +31285,7 @@ I18N["zh-TW"]["repository/agents"] = {
         scheduleCodespacesNewPageTrans();
         scheduleRepositoryCodePageTrans();
         scheduleRepositoryNewFilePageTrans();
+        scheduleRepositoryCodespacesPageTrans();
         scheduleRepositorySettingsCodespacesPrebuildPageTrans();
         scheduleRepositorySettingsGeneralPageTrans();
         scheduleRepositoryBranchesInteractionTrans();
@@ -33109,6 +33119,185 @@ I18N["zh-TW"]["repository/agents"] = {
 
     function isRepositorySettingsCodespacesPrebuildPage() {
         return /^\/[^\/]+\/[^\/]+\/settings\/codespaces\/prebuild_configurations(?:\/(?:new|[^\/]+\/edit))?\/?$/.test(window.location.pathname);
+    }
+
+    function isRepositoryCodespacesPage() {
+        return /^\/[^\/]+\/[^\/]+\/codespaces\/?$/.test(window.location.pathname);
+    }
+
+    function setupRepositoryCodespacesPageInteractions() {
+        const schedule = () => {
+            if (!isRepositoryCodespacesPage()) return;
+            scheduleRepositoryCodespacesInteractionTrans();
+        };
+
+        document.addEventListener('pointerdown', schedule, true);
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('focusin', schedule, true);
+        document.addEventListener('keyup', schedule, true);
+    }
+
+    function scheduleRepositoryCodespacesPageTrans() {
+        if (!isRepositoryCodespacesPage() || State.repositoryCodespacesPagePending) return;
+        State.repositoryCodespacesPagePending = true;
+
+        [0, 120, 400, 1000, 2500].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositoryCodespacesPageDynamicText, '倉庫程式碼空間頁補翻')();
+                if (delay === 2500) State.repositoryCodespacesPagePending = false;
+            }, delay);
+        });
+    }
+
+    function scheduleRepositoryCodespacesInteractionTrans() {
+        if (!isRepositoryCodespacesPage() || State.repositoryCodespacesInteractionPending) return;
+        State.repositoryCodespacesInteractionPending = true;
+
+        [0, 50, 150, 350].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositoryCodespacesPageDynamicText, '倉庫程式碼空間頁互動補翻')();
+                if (delay === 350) State.repositoryCodespacesInteractionPending = false;
+            }, delay);
+        });
+    }
+
+    function getRepositoryCodespacesFixedDict() {
+        return {
+            ...(I18N?.[CONFIG.LANG]?.['repository/codespaces']?.static || {}),
+            "Your codespaces": "您的程式碼空間",
+            "Go to docs": "轉到文件",
+            "Configure and create codespace": "配置並創建程式碼空間",
+            "Show advanced options before launching codespace": "啟動程式碼空間前顯示高級選項",
+            "Show more actions for codespace": "顯示程式碼空間的更多操作",
+            "Cancel": "取消",
+            "Rename": "重命名",
+            "Export changes to a branch": "將更改導出到分支",
+            "Change machine type": "修改機器類型",
+            "Auto-delete codespace": "自動刪除程式碼空間",
+            "Open in Browser": "在瀏覽器中打開",
+            "Open in Visual Studio Code": "在 Visual Studio Code 中打開",
+            "Open in JupyterLab": "在 JupyterLab 中打開",
+            "Delete": "刪除",
+            "No changes": "沒有更改"
+        };
+    }
+
+    function transRepositoryCodespacesPageDynamicText() {
+        if (!isRepositoryCodespacesPage() || !document.body) return false;
+        const dict = getRepositoryCodespacesFixedDict();
+        const roots = new Set();
+        const main = document.querySelector('main, [role="main"]');
+        if (main) roots.add(main);
+
+        document.querySelectorAll([
+            'tool-tip',
+            '[role="tooltip"]',
+            '[role="alert"]',
+            '.flash',
+            '.js-flash-alert',
+            '[data-testid*="flash"]',
+            '[data-testid*="alert"]',
+            '[role="menu"]',
+            '[role="listbox"]',
+            '[role="dialog"]',
+            '[aria-modal="true"]',
+            'dialog',
+            'modal-dialog',
+            '[popover]',
+            'anchored-position',
+            '.Overlay',
+            '.Popover',
+            '.ActionList',
+            '[class*="Overlay"]',
+            '[class*="Popover"]',
+            '[class*="ActionList"]'
+        ].join(', ')).forEach(root => {
+            if (root.closest?.('header, [role="banner"], .AppHeader, .Header, qbsearch-input, query-builder, react-app[app-name="command-palette"]')) return;
+            roots.add(root);
+        });
+
+        let translated = false;
+        roots.forEach(root => {
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                if (shouldSkipRepositoryCodespacesNode(node)) continue;
+                const result = getRepositoryCodespacesTranslation(node.data, dict);
+                if (!result || result === node.data) continue;
+                node.data = result;
+                translated = true;
+            }
+
+            root.querySelectorAll?.('[aria-label], [title], [data-tooltip], [data-tooltip-text], [data-visible-text]').forEach(element => {
+                if (shouldSkipRepositoryCodespacesNode(element)) return;
+                ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text', 'data-visible-text'].forEach(attr => {
+                    const value = element.getAttribute?.(attr);
+                    const result = getRepositoryCodespacesTranslation(value, dict);
+                    if (!result || result === value) return;
+                    element.setAttribute(attr, result);
+                    translated = true;
+                });
+            });
+        });
+
+        return translated;
+    }
+
+    function shouldSkipRepositoryCodespacesNode(node) {
+        const element = getNodeElement(node);
+        if (!element) return true;
+        const ignoredSelector = [
+            'input', 'textarea', 'select', 'option', 'script', 'style', 'template',
+            'noscript', 'code', 'pre', 'kbd', '[contenteditable="true"]',
+            'header', '[role="banner"]', '.AppHeader', '.Header', 'qbsearch-input',
+            'query-builder', 'react-app[app-name="command-palette"]'
+        ].join(', ');
+
+        try {
+            return !!element.closest?.(ignoredSelector);
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function getRepositoryCodespacesTranslation(text, dict) {
+        if (!text) return false;
+        const source = normalizeHeaderTooltipText(text);
+        if (!source) return false;
+        if (dict[source]) return text.replace(text.trim(), dict[source]);
+
+        const patterns = [
+            [/^Create codespace on (.+)$/, (_, branch) => `在 ${branch} 上創建程式碼空間`],
+            [/^Codespace usage for this repository is paid for by (.+?)\.?$/, (_, owner) => `此倉庫的程式碼空間使用費由 ${owner} 支付。`],
+            [/^([\d,]+) codespaces?$/, (_, count) => `${count} 個程式碼空間`],
+            [/^Last used (.+)$/, (_, time) => `上次使用於 ${time}`],
+            [/^Your codespace ["“](.+?)["”] will no longer be auto-deleted\.?$/, (_, name) => `您的程式碼空間「${name}」將不再自動刪除。`],
+            [/^Your codespace ["“](.+?)["”] will be deleted after it has been shut(?:down| down) for (.+?)\.?$/, (_, name, duration) => `您的程式碼空間「${name}」將在關閉 ${normalizeRepositoryCodespacesDuration(duration)}後刪除。`]
+        ];
+
+        for (const [pattern, replacement] of patterns) {
+            const match = source.match(pattern);
+            if (!match) continue;
+            return text.replace(text.trim(), replacement(...match));
+        }
+        return false;
+    }
+
+    function normalizeRepositoryCodespacesDuration(duration) {
+        const source = normalizeHeaderTooltipText(duration).replace(/(?:以前|之前|前)$/, '').trim();
+        const match = source.match(/^(\d+)\s+(second|minute|hour|day|week|month|year)s?$/i);
+        if (!match) return source;
+
+        const units = {
+            second: '秒',
+            minute: '分鐘',
+            hour: '小時',
+            day: '天',
+            week: '週',
+            month: '個月',
+            year: '年'
+        };
+        return `${match[1]} ${units[match[2].toLowerCase()]}`;
     }
 
     function setupRepositorySettingsCodespacesPrebuildPageInteractions() {
