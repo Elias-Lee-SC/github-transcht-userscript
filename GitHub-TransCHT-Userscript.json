@@ -4,7 +4,7 @@
 // @description  基於 maboloshi/github-chinese 修改的繁體中文單檔版。原作者為樓教主與沙漠之子，由 Elias Lee 進行單檔合併、繁體字詞習慣優化與持續維護。
 // @copyright    2016-2021 樓教主, 2021-2024 沙漠之子, 2026-當前 Elias Lee (https://github.com/Elias-Lee-SC)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.13.32
+// @version      local.13.46
 // @author       Elias Lee (基於 沙漠之子 & 樓教主 的原創專案)
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -30220,6 +30220,8 @@ I18N["zh-TW"]["repository/agents"] = {
             "Chat with Copilot": "與 Copilot 聊天",
             "Create new...": "新建…",
             "Create new…": "新建…",
+            "Switch repository": "切換倉庫",
+            "Search for repositories": "搜尋倉庫",
             "All issues": "所有議題",
             "All pull requests": "所有合併請求",
             "All repositories": "所有倉庫",
@@ -30706,6 +30708,13 @@ I18N["zh-TW"]["repository/agents"] = {
         repositoryCodeDropdownPending: false,
         repositoryNewFilePagePending: false,
         repositoryNewFileInteractionPending: false,
+        repositoryDevcontainerConfigPagePending: false,
+        repositoryDevcontainerConfigInteractionPending: false,
+        repositoryDevcontainerConfigTooltipPending: false,
+        repositoryDevcontainerHeaderTooltipPending: false,
+        repositoryDevcontainerHeaderMenuPending: false,
+        repositoryDevcontainerConfigPanelPending: false,
+        repositoryDevcontainerConfigURL: '',
         repositorySettingsCodespacesPrebuildPagePending: false,
         repositorySettingsCodespacesPrebuildInteractionPending: false,
         repositoryCodespacesPagePending: false,
@@ -30776,6 +30785,7 @@ I18N["zh-TW"]["repository/agents"] = {
         setupTopicsPageInteractions();
         setupRepositoryCodePageInteractions();
         setupRepositoryNewFilePageInteractions();
+        setupRepositoryDevcontainerConfigPageInteractions();
         setupRepositoryCodespacesPageInteractions();
         setupRepositorySettingsCodespacesPrebuildPageInteractions();
         setupRepositoryBranchesPageInteractions();
@@ -30806,6 +30816,10 @@ I18N["zh-TW"]["repository/agents"] = {
     function setupInitTrans() {
         function doInitTrans() {
             updatePageConfig('首次載入');
+            if (isRepositoryDevcontainerConfigPage()) {
+                scheduleRepositoryDevcontainerConfigPageTrans();
+                return;
+            }
             if (State.pageConfig) {
                 safe(traverseNode, '首次遍歷')(document.body);
                 scheduleNotificationsPageTrans();
@@ -30901,6 +30915,11 @@ I18N["zh-TW"]["repository/agents"] = {
         State.currentURL = currentURL;
         updatePageConfig("URL變化 (onurlchange)");
 
+        if (isRepositoryDevcontainerConfigPage()) {
+            scheduleRepositoryDevcontainerConfigPageTrans();
+            return;
+        }
+
         // 重新設置觀察器
         if (State.mutationObserver) {
             State.mutationObserver.disconnect();
@@ -30974,6 +30993,11 @@ I18N["zh-TW"]["repository/agents"] = {
         updatePageConfig(trigger);
         if (!State.pageConfig || !document.body) return;
 
+        if (isRepositoryDevcontainerConfigPage()) {
+            scheduleRepositoryDevcontainerConfigPageTrans();
+            return;
+        }
+
         safe(traverseNode, `${trigger} 遍歷`)(document.body);
         transTitle(); // 翻譯頁面標題
         transBySelector(); // 通過選擇器翻譯特定元素
@@ -31042,6 +31066,7 @@ I18N["zh-TW"]["repository/agents"] = {
         syncRepositoryBranchesPageClass();
         syncRepositoryReleasesTagsPageClass();
         syncRepositorySettingsCodespacesPrebuildPageClass();
+        syncHeaderTooltipObserverForPage();
         console.log(`【Debug】${trigger}觸發, 頁面類型為 ${State.pageConfig?.currentPageType}`);
     }
 
@@ -31206,6 +31231,11 @@ I18N["zh-TW"]["repository/agents"] = {
      * @param {Array} mutations - 變化記錄數組
      */
     function processMutations(mutations) {
+        if (isRepositoryDevcontainerConfigPage()) {
+            scheduleRepositoryDevcontainerConfigInteractionTrans();
+            return;
+        }
+
         const nodesToProcess = new Set();
 
         // 收集需要處理的節點
@@ -38275,6 +38305,41 @@ I18N["zh-TW"]["repository/agents"] = {
         );
     }
 
+    function isRepositoryDevcontainerConfigPage() {
+        const pathname = window.location.pathname;
+        if (!/^\/[^\/]+\/[^\/]+\/(?:new|edit)\/[^\/]+(?:\/.*)?$/.test(pathname)) return false;
+        if (State.repositoryDevcontainerConfigURL === window.location.href) return true;
+
+        let decodedURL = window.location.href;
+        try {
+            decodedURL = decodeURIComponent(decodedURL);
+        } catch (e) {
+            // Keep the original URL when malformed escape sequences are present.
+        }
+        if (/(?:^|[/?=&])\.devcontainer(?:\/|$)|devcontainer\.json/i.test(decodedURL)) {
+            State.repositoryDevcontainerConfigURL = window.location.href;
+            return true;
+        }
+
+        if (!document.body) return false;
+        const hasDevcontainerInput = Array.from(document.querySelectorAll('main input, [role="main"] input')).some(input => {
+            return [input.value, input.getAttribute('value'), input.getAttribute('aria-label'), input.getAttribute('title')]
+                .some(value => /(?:^|\/)devcontainer\.json$/i.test((value || '').trim()));
+        });
+        const hasDevcontainerBreadcrumb = !!document.querySelector([
+            'main a[href*=".devcontainer"]',
+            '[role="main"] a[href*=".devcontainer"]',
+            'main a[href*="devcontainer.json"]',
+            '[role="main"] a[href*="devcontainer.json"]'
+        ].join(', '));
+
+        if (hasDevcontainerInput || hasDevcontainerBreadcrumb) {
+            State.repositoryDevcontainerConfigURL = window.location.href;
+            return true;
+        }
+        return false;
+    }
+
     function isRepositoryBranchesPage() {
         return (
             State.pageConfig?.currentPageType === 'repository/branches' ||
@@ -38346,7 +38411,7 @@ I18N["zh-TW"]["repository/agents"] = {
 
     function setupRepositoryNewFilePageInteractions() {
         const schedule = () => {
-            if (!isRepositoryNewFilePage()) return;
+            if (!isRepositoryNewFilePage() || isRepositoryDevcontainerConfigPage()) return;
             scheduleRepositoryNewFileInteractionTrans();
         };
 
@@ -38356,6 +38421,175 @@ I18N["zh-TW"]["repository/agents"] = {
         document.addEventListener('click', schedule, true);
         document.addEventListener('focusin', schedule, true);
         document.addEventListener('keyup', schedule, true);
+    }
+
+    function setupRepositoryDevcontainerConfigPageInteractions() {
+        const isRelevantTarget = target => {
+            const element = getNodeElement(target);
+            if (!element || element.closest?.('.cm-editor, .cm-content, textarea, input')) return false;
+            return !!element.closest?.('button, select, summary, [role="button"], [role="menuitem"], [role="option"], [role="tab"]');
+        };
+        const translateBeforeOpen = event => {
+            if (!isRepositoryDevcontainerConfigPage()) return;
+            if (!isRelevantTarget(event.target)) return;
+            safe(transRepositoryDevcontainerConfigPageDynamicText, '開發容器配置頁開啟控制項前補翻')();
+            scheduleRepositoryDevcontainerConfigInteractionTrans();
+        };
+        const schedule = event => {
+            if (!isRepositoryDevcontainerConfigPage()) return;
+            if (!isRelevantTarget(event.target)) return;
+            scheduleRepositoryDevcontainerConfigInteractionTrans();
+        };
+        const scheduleFileTreeTooltip = event => {
+            if (!isRepositoryDevcontainerConfigPage()) return;
+            const element = getNodeElement(event.target);
+            const dict = getRepositoryDevcontainerConfigFixedDict();
+            const trigger = element?.closest?.('button, [role="button"], summary');
+            const triggerSource = normalizeHeaderTooltipText([
+                trigger?.getAttribute?.('aria-label'),
+                trigger?.getAttribute?.('title'),
+                trigger?.getAttribute?.('data-tooltip'),
+                trigger?.getAttribute?.('data-tooltip-text'),
+                trigger?.getAttribute?.('data-content')
+            ].filter(Boolean).join(' '));
+            const isDismissBanner = triggerSource.includes('Dismiss banner') || triggerSource.includes(dict['Dismiss banner']);
+            const isFileTreeControl = !!element?.closest?.('aside, [data-testid*="file-tree"], [data-testid*="FileTree"], [aria-label="Files"], [aria-label="File tree"]');
+            if (!isDismissBanner && !isFileTreeControl) return;
+            transRepositoryDevcontainerConfigTooltipTrigger(element, dict);
+            if (State.repositoryDevcontainerConfigTooltipPending) return;
+            State.repositoryDevcontainerConfigTooltipPending = true;
+            [0, 50, 150].forEach(delay => {
+                setTimeout(() => {
+                    safe(transRepositoryDevcontainerConfigTooltips, '開發容器配置頁文件樹提示補翻')();
+                    if (delay === 150) State.repositoryDevcontainerConfigTooltipPending = false;
+                }, delay);
+            });
+        };
+        const scheduleHeaderSearch = event => {
+            if (!isRepositoryDevcontainerConfigPage()) return;
+            const element = getNodeElement(event.target);
+            if (!element?.closest?.([
+                'qbsearch-input',
+                'query-builder',
+                '.AppHeader-search',
+                '.AppHeader-searchButton',
+                '[data-target*="query-builder"]',
+                '[data-target*="qbsearch-input"]',
+                '[data-testid*="search"]'
+            ].join(', '))) return;
+            [0, 50, 150, 350, 800].forEach(delay => {
+                setTimeout(() => {
+                    if (!isRepositoryDevcontainerConfigPage()) return;
+                    safe(transSearchOverlay, '開發容器配置頁主搜尋浮層補翻')();
+                    safe(bindRepositoryDevcontainerSearchOverlayObservers, '開發容器配置頁主搜尋浮層觀察')();
+                }, delay);
+            });
+        };
+        const isHeaderTarget = target => {
+            const element = getNodeElement(target);
+            return !!element?.closest?.('header, [role="banner"], .AppHeader, .Header');
+        };
+        const isHeaderTooltipTarget = target => {
+            const element = getNodeElement(target);
+            return !!element?.closest?.([
+                'header',
+                '[role="banner"]',
+                '.AppHeader',
+                '.Header',
+                '[role="dialog"]',
+                '[aria-modal="true"]',
+                'modal-dialog',
+                '[role="menu"]',
+                '.Overlay',
+                '.Popover-message'
+            ].join(', '));
+        };
+        const scheduleHeaderTooltip = event => {
+            if (!isRepositoryDevcontainerConfigPage() || !isHeaderTooltipTarget(event.target)) return;
+            transRepositoryDevcontainerHeaderTooltipTrigger(event.target);
+            if (State.repositoryDevcontainerHeaderTooltipPending) return;
+            State.repositoryDevcontainerHeaderTooltipPending = true;
+            [0, 50, 150, 350, 700, 1200].forEach(delay => {
+                setTimeout(() => {
+                    if (isRepositoryDevcontainerConfigPage()) {
+                        safe(transRepositoryDevcontainerHeaderTooltips, '開發容器配置頁頁首提示補翻')();
+                    }
+                    if (delay === 1200) State.repositoryDevcontainerHeaderTooltipPending = false;
+                }, delay);
+            });
+        };
+        const scheduleHeaderMenu = event => {
+            if (!isRepositoryDevcontainerConfigPage() || !isHeaderTarget(event.target)) return;
+            if (State.repositoryDevcontainerHeaderMenuPending) return;
+            State.repositoryDevcontainerHeaderMenuPending = true;
+            [0, 50, 150, 350, 800].forEach(delay => {
+                setTimeout(() => {
+                    if (isRepositoryDevcontainerConfigPage()) {
+                        safe(transHeaderMenus, '開發容器配置頁頁首選單補翻')();
+                        safe(transHeaderTooltips, '開發容器配置頁頁首選單提示補翻')();
+                    }
+                    if (delay === 800) State.repositoryDevcontainerHeaderMenuPending = false;
+                }, delay);
+            });
+        };
+
+        document.addEventListener('pointerdown', translateBeforeOpen, true);
+        document.addEventListener('click', schedule, true);
+        document.addEventListener('focusin', schedule, true);
+        document.addEventListener('pointerover', scheduleFileTreeTooltip, true);
+        document.addEventListener('pointerdown', scheduleHeaderSearch, true);
+        document.addEventListener('click', scheduleHeaderSearch, true);
+        document.addEventListener('focusin', scheduleHeaderSearch, true);
+        document.addEventListener('pointerover', scheduleHeaderTooltip, true);
+        document.addEventListener('focusin', scheduleHeaderTooltip, true);
+        document.addEventListener('pointerdown', scheduleHeaderMenu, true);
+        document.addEventListener('click', scheduleHeaderMenu, true);
+    }
+
+    function transRepositoryDevcontainerHeaderTooltipTrigger(target) {
+        const element = getNodeElement(target);
+        const trigger = element?.closest?.('button, summary, [role="button"], a') || element;
+        if (!trigger) return false;
+
+        const dict = CONFIG.HEADER_TOOLTIP_TRANSLATIONS;
+        transHeaderTooltipAttrs(trigger, dict);
+        trigger.querySelectorAll?.('*').forEach(child => transHeaderTooltipAttrs(child, dict));
+
+        let translated = false;
+        (trigger.getAttribute?.('aria-describedby') || '').split(/\s+/).filter(Boolean).forEach(id => {
+            const tooltip = document.getElementById(id);
+            if (tooltip) translated = transRepositoryDevcontainerHeaderTooltipSurface(tooltip, dict) || translated;
+        });
+        return translated;
+    }
+
+    function transRepositoryDevcontainerHeaderTooltips() {
+        const dict = CONFIG.HEADER_TOOLTIP_TRANSLATIONS;
+        let translated = false;
+        document.querySelectorAll([
+            'tool-tip',
+            '[role="tooltip"]',
+            '[data-testid*="tooltip"]',
+            '[class*="Tooltip"]',
+            '[class*="tooltip"]'
+        ].join(', ')).forEach(tooltip => {
+            translated = transRepositoryDevcontainerHeaderTooltipSurface(tooltip, dict) || translated;
+        });
+        return translated;
+    }
+
+    function transRepositoryDevcontainerHeaderTooltipSurface(surface, dict) {
+        if (!surface) return false;
+        const before = normalizeHeaderTooltipText(surface.textContent);
+        transHeaderTooltipAttrs(surface, dict);
+        transHeaderTooltipTextRoot(surface, dict);
+        surface.querySelectorAll?.('*').forEach(child => transHeaderTooltipAttrs(child, dict));
+
+        if (surface.shadowRoot) {
+            transHeaderTooltipTextRoot(surface.shadowRoot, dict);
+            surface.shadowRoot.querySelectorAll?.('*').forEach(child => transHeaderTooltipAttrs(child, dict));
+        }
+        return normalizeHeaderTooltipText(surface.textContent) !== before;
     }
 
     function setupRepositoryBranchesPageInteractions() {
@@ -38455,8 +38689,540 @@ I18N["zh-TW"]["repository/agents"] = {
         });
     }
 
+    function scheduleRepositoryDevcontainerConfigPageTrans() {
+        if (!isRepositoryDevcontainerConfigPage() || State.repositoryDevcontainerConfigPagePending) return;
+        State.repositoryDevcontainerConfigPagePending = true;
+
+        [0, 120, 400, 1000, 2500].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositoryDevcontainerConfigPageDynamicText, '開發容器配置頁補翻')();
+                if (delay === 2500) State.repositoryDevcontainerConfigPagePending = false;
+            }, delay);
+        });
+    }
+
+    function scheduleRepositoryDevcontainerConfigInteractionTrans() {
+        if (!isRepositoryDevcontainerConfigPage() || State.repositoryDevcontainerConfigInteractionPending) return;
+        State.repositoryDevcontainerConfigInteractionPending = true;
+
+        [0, 50, 150, 350].forEach(delay => {
+            setTimeout(() => {
+                safe(transRepositoryDevcontainerConfigPageDynamicText, '開發容器配置頁互動補翻')();
+                if (delay === 350) State.repositoryDevcontainerConfigInteractionPending = false;
+            }, delay);
+        });
+    }
+
+    function getRepositoryDevcontainerConfigFixedDict() {
+        return {
+            ...(I18N?.[CONFIG.LANG]?.['repository/new']?.static || {}),
+            "Cancel changes": "取消更改",
+            "Cancel Changes": "取消更改",
+            "Commit changes...": "提交更改…",
+            "Commit changes…": "提交更改…",
+            "Commit changes": "提交更改",
+            "Commit Changes": "提交更改",
+            "Loading preview...": "載入預覽…",
+            "Loading preview…": "載入預覽…",
+            "Indent mode": "縮進模式",
+            "Spaces": "空格",
+            "Tabs": "Tab",
+            "Indent size": "縮進大小",
+            "Line wrap mode": "換行模式",
+            "No wrap": "不換行",
+            "Soft wrap": "軟換行",
+            "Search for features": "搜尋功能",
+            "Featured": "精選",
+            "Documentation": "說明文件",
+            "Market": "市場",
+            "Marketplace": "市場",
+            "Files": "文件樹",
+            "File tree": "文件樹",
+            "Go to file": "轉到文件",
+            "Switch branches/tags": "切換分支／標籤",
+            "Find or create a branch...": "尋找或創建分支…",
+            "Find or create a branch…": "尋找或創建分支…",
+            "Branches": "分支",
+            "Tags": "標籤",
+            "View all branches": "查看所有分支",
+            "default": "預設",
+            "Add file": "新增文件",
+            "Search this repository": "搜尋此倉庫",
+            "Dismiss banner": "關閉提示",
+            "About": "關於",
+            "by": "由",
+            "See the devcontainer.json reference for more information": "請參閱 devcontainer.json 參考文件以瞭解更多訊息",
+            "See the": "請參閱",
+            "reference for more information": "參考文件以瞭解更多訊息"
+        };
+    }
+
+    function transRepositoryDevcontainerConfigPageDynamicText() {
+        if (!isRepositoryDevcontainerConfigPage() || !document.body) return false;
+        const dict = getRepositoryDevcontainerConfigFixedDict();
+        let translated = false;
+
+        const controls = document.querySelectorAll([
+            'button',
+            'main button',
+            '[role="main"] button',
+            'main select',
+            '[role="main"] select',
+            'main option',
+            '[role="main"] option',
+            'main [role="button"]',
+            '[role="main"] [role="button"]'
+        ].join(', '));
+        controls.forEach(control => {
+            if (control.closest?.('.cm-editor, .cm-content, [role="banner"], .AppHeader, .Header, qbsearch-input, query-builder')) return;
+            const source = normalizeHeaderTooltipText(control.textContent);
+            if (!dict[source]) return;
+            translated = transRepositoryDevcontainerConfigExactElement(control, dict) || translated;
+        });
+
+        document.querySelectorAll('optgroup[label]').forEach(optgroup => {
+            const source = normalizeHeaderTooltipText(optgroup.getAttribute('label'));
+            const result = dict[source];
+            if (!result || result === source) return;
+            optgroup.setAttribute('label', result);
+            translated = true;
+        });
+
+        document.querySelectorAll([
+            '[role="menu"]',
+            '[role="listbox"]',
+            '[popover]',
+            'anchored-position',
+            '.Overlay',
+            '.Popover',
+            '.ActionList',
+            '[class*="Overlay"]',
+            '[class*="Popover"]',
+            '[class*="ActionList"]'
+        ].join(', ')).forEach(surface => {
+            if (!isRepositoryDevcontainerConfigSurface(surface, dict)) return;
+            translated = transRepositoryDevcontainerConfigRoot(surface, dict) || translated;
+        });
+
+        translated = transRepositoryDevcontainerConfigBottomHints(dict) || translated;
+        translated = transRepositoryDevcontainerConfigFileTree(dict) || translated;
+        translated = transRepositoryDevcontainerConfigPanelLabels(dict) || translated;
+        translated = transRepositoryDevcontainerConfigTooltips(dict) || translated;
+        translated = transRepositoryDevcontainerConfigAlerts(dict) || translated;
+        translated = transRepositoryDevcontainerConfigPreviewStatus(dict) || translated;
+        return translated;
+    }
+
+    function isRepositoryDevcontainerConfigSurface(surface, dict) {
+        if (!surface || surface.nodeType !== Node.ELEMENT_NODE) return false;
+        if (surface.closest?.('header, [role="banner"], .AppHeader, qbsearch-input, query-builder, react-app[app-name="command-palette"]')) return false;
+        const text = normalizeHeaderTooltipText(surface.textContent);
+        if (!text || text.length > 600) return false;
+
+        return [
+            'Indent mode', 'Spaces', 'Tabs', 'Indent size', 'Line wrap mode',
+            'No wrap', 'Soft wrap', '縮進模式', '空格', '縮進大小', '換行模式',
+            '不換行', '軟換行', 'Switch branches/tags', 'Find or create a branch',
+            'Branches', 'Tags', 'View all branches'
+        ].some(source => text.includes(source) || (dict[source] && text.includes(dict[source])));
+    }
+
+    function transRepositoryDevcontainerConfigRoot(root, dict) {
+        if (!root) return false;
+        let translated = false;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+
+        while ((node = walker.nextNode())) {
+            if (shouldSkipRepositoryDevcontainerConfigNode(node)) continue;
+            const result = getRepositoryDevcontainerConfigTranslation(node.data, dict);
+            if (!result || result === node.data) continue;
+            node.data = result;
+            translated = true;
+        }
+
+        root.querySelectorAll?.('[aria-label], [title], [data-tooltip], [data-tooltip-text], [data-content], [placeholder]').forEach(element => {
+            if (shouldSkipRepositoryDevcontainerConfigNode(element)) return;
+            ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text', 'data-content', 'placeholder'].forEach(attr => {
+                const value = element.getAttribute?.(attr);
+                const result = getRepositoryDevcontainerConfigTranslation(value, dict);
+                if (!result || result === value) return;
+                element.setAttribute(attr, result);
+                translated = true;
+            });
+        });
+        root.querySelectorAll?.('optgroup[label]').forEach(optgroup => {
+            const source = normalizeHeaderTooltipText(optgroup.getAttribute('label'));
+            const result = dict[source];
+            if (!result || result === source) return;
+            optgroup.setAttribute('label', result);
+            translated = true;
+        });
+        return translated;
+    }
+
+    function transRepositoryDevcontainerConfigExactElement(root, dict) {
+        if (!root) return false;
+        let translated = false;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+            const source = normalizeHeaderTooltipText(node.data);
+            const result = dict[source];
+            if (!result || result === source) continue;
+            node.data = node.data.replace(node.data.trim(), result);
+            translated = true;
+        }
+
+        ['aria-label', 'title', 'data-tooltip', 'data-tooltip-text', 'data-content', 'placeholder'].forEach(attr => {
+            const value = root.getAttribute?.(attr);
+            const result = dict[normalizeHeaderTooltipText(value)];
+            if (!result || result === value) return;
+            root.setAttribute(attr, result);
+            translated = true;
+        });
+        return translated;
+    }
+
+    function transRepositoryDevcontainerConfigBottomHints(dict) {
+        let translated = false;
+        const roots = new Set();
+
+        document.querySelectorAll('main a, main button, main span, [role="main"] a, [role="main"] button, [role="main"] span').forEach(anchor => {
+            const text = normalizeHeaderTooltipText(anchor.textContent);
+            const href = anchor.getAttribute?.('href') || '';
+            if (text !== 'devcontainer.json' && !/devcontainer\.json/i.test(href)) return;
+            const root = findRepositoryDevcontainerConfigHintRoot(anchor, 'reference for more information');
+            if (root) roots.add(root);
+        });
+
+        document.querySelectorAll('main kbd, main code, [role="main"] kbd, [role="main"] code').forEach(kbd => {
+            if (!/^(?:Control\s*\+\s*Shift\s*\+\s*m|esc|tab)$/i.test(normalizeHeaderTooltipText(kbd.textContent))) return;
+            const root = findRepositoryDevcontainerConfigHintRoot(kbd, 'moving focus');
+            if (root) roots.add(root);
+        });
+
+        const editor = document.querySelector('.cm-editor');
+        let current = editor?.parentElement;
+        let movingFocusRoot = null;
+        for (let depth = 0; current && depth < 8; depth += 1, current = current.parentElement) {
+            const text = normalizeHeaderTooltipText(current.textContent);
+            if (text.length > 5000) break;
+            if (text.includes('reference for more information')) {
+                roots.add(current);
+                break;
+            }
+            if (!movingFocusRoot && text.includes('moving focus')) movingFocusRoot = current;
+        }
+        if (movingFocusRoot) roots.add(movingFocusRoot);
+
+        roots.forEach(root => {
+            translated = transRepositoryDevcontainerConfigHintRoot(root, dict) || translated;
+        });
+        return translated;
+    }
+
+    function transRepositoryDevcontainerConfigHintRoot(root, dict) {
+        if (!root) return false;
+        let translated = false;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+            const element = getNodeElement(node);
+            if (element?.closest?.('kbd, code, pre, .cm-content, .cm-line')) continue;
+            const result = getRepositoryDevcontainerConfigTranslation(node.data, dict);
+            if (!result || result === node.data) continue;
+            node.data = result;
+            translated = true;
+        }
+        return translated;
+    }
+
+    function transRepositoryDevcontainerConfigFileTree(dict) {
+        let translated = false;
+        document.querySelectorAll([
+            'aside',
+            '[data-testid*="file-tree"]',
+            '[data-testid*="FileTree"]',
+            '[aria-label="Files"]',
+            '[aria-label="File tree"]',
+            'nav[aria-label="Files"]',
+            'nav[aria-label="File tree"]'
+        ].join(', ')).forEach(root => {
+            const text = normalizeHeaderTooltipText(root.textContent);
+            if (!text || text.length > 3000) return;
+            if (!['Files', 'Go to file', 'Switch branches/tags', 'Find or create a branch', 'Branches', 'Tags', 'View all branches'].some(source => text.includes(source) || text.includes(dict[source]))) return;
+            translated = transRepositoryDevcontainerConfigRoot(root, dict) || translated;
+        });
+        return translated;
+    }
+
+    function findRepositoryDevcontainerConfigHintRoot(element, expectedText) {
+        let current = element?.parentElement;
+        for (let depth = 0; current && depth < 5; depth += 1, current = current.parentElement) {
+            const text = normalizeHeaderTooltipText(current.textContent);
+            if (text.length > 500) break;
+            if (text.toLowerCase().includes(expectedText.toLowerCase())) return current;
+        }
+        return null;
+    }
+
+    function transRepositoryDevcontainerConfigPanelLabels(dict) {
+        let translated = false;
+        const elements = document.querySelectorAll([
+            'button', 'a', '[role="tab"]',
+            'aside h1', 'aside h2', 'aside h3', 'aside h4', 'aside h5', 'aside h6', 'aside label',
+            'aside [role="tab"]', '[role="main"] [role="tab"]',
+            'main h1', 'main h2', 'main h3', 'main h4', 'main h5', 'main h6',
+            '[role="heading"]', '.h1', '.h2', '.h3', '.h4', '.h5', '.h6',
+            'input[placeholder]', 'input[aria-label]'
+        ].join(', '));
+        elements.forEach(element => {
+            if (element.matches?.('input')) {
+                ['placeholder', 'aria-label'].forEach(attr => {
+                    const value = element.getAttribute(attr);
+                    const result = getRepositoryDevcontainerConfigTranslation(value, dict);
+                    if (!result || result === value) return;
+                    element.setAttribute(attr, result);
+                    translated = true;
+                });
+                const currentText = normalizeHeaderTooltipText(element.getAttribute('placeholder') || element.getAttribute('aria-label'));
+                if (['Search for features', dict['Search for features']].includes(currentText)) {
+                    bindRepositoryDevcontainerConfigFixedElementObserver(element, dict);
+                }
+                return;
+            }
+            const source = normalizeHeaderTooltipText(element.textContent);
+            if (!dict[source]) return;
+            translated = transRepositoryDevcontainerConfigExactElement(element, dict) || translated;
+            if (['Featured', dict.Featured].includes(source)) {
+                bindRepositoryDevcontainerConfigFixedElementObserver(element, dict);
+            }
+        });
+
+        Array.from(elements).forEach(element => {
+            const source = normalizeHeaderTooltipText(element.textContent);
+            if (!['Market', 'Marketplace', '市場', 'Documentation', '說明文件'].includes(source)) return;
+            const panel = findRepositoryDevcontainerConfigPanelRoot(element);
+            if (panel) bindRepositoryDevcontainerConfigPanelObserver(panel, dict);
+        });
+        return translated;
+    }
+
+    function findRepositoryDevcontainerConfigPanelRoot(element) {
+        let current = element?.parentElement;
+        let fallback = null;
+        for (let depth = 0; current && depth < 6; depth += 1, current = current.parentElement) {
+            const text = normalizeHeaderTooltipText(current.textContent);
+            const hasMarket = text.includes('Marketplace') || text.includes('Market') || text.includes('市場');
+            const hasDocumentation = text.includes('Documentation') || text.includes('說明文件');
+            if (!hasMarket || !hasDocumentation) continue;
+            fallback = current;
+            if (current.querySelector?.('input[placeholder], [role="tabpanel"], h1, h2, h3, h4, h5, h6, [role="heading"]')) {
+                return current;
+            }
+        }
+        return fallback;
+    }
+
+    function bindRepositoryDevcontainerConfigPanelObserver(panel, dict) {
+        if (!panel || panel.__ghchtDevcontainerPanelObserver) return;
+        panel.__ghchtDevcontainerPanelObserver = new MutationObserver(
+            safe(() => {
+                if (State.repositoryDevcontainerConfigPanelPending) return;
+                State.repositoryDevcontainerConfigPanelPending = true;
+                requestAnimationFrame(() => {
+                    State.repositoryDevcontainerConfigPanelPending = false;
+                    transRepositoryDevcontainerConfigPanelLabels(dict);
+                });
+            }, '開發容器配置頁右側面板觀察')
+        );
+        panel.__ghchtDevcontainerPanelObserver.observe(panel, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    function transRepositoryDevcontainerConfigAlerts(dict) {
+        let translated = false;
+        const sourceText = 'You have unsaved changes on this file that can be restored.';
+        const translatedText = dict[sourceText];
+        document.querySelectorAll('[role="alert"], [aria-live], .flash, .flash-message, .js-flash-alert, #js-flash-container').forEach(alert => {
+            const text = normalizeHeaderTooltipText(alert.textContent);
+            if (!text.includes(sourceText) && !text.includes(translatedText)) return;
+            translated = transRepositoryDevcontainerConfigRoot(alert, dict) || translated;
+        });
+
+        if (!translated && translatedText && document.body) {
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                if (normalizeHeaderTooltipText(node.data) !== sourceText) continue;
+                node.data = node.data.replace(node.data.trim(), translatedText);
+                translated = true;
+                const messageElement = getNodeElement(node);
+                let banner = messageElement;
+                for (let depth = 0; banner && depth < 5; depth += 1, banner = banner.parentElement) {
+                    if (!banner.querySelector?.('button, [role="button"]')) continue;
+                    transRepositoryDevcontainerConfigRoot(banner, dict);
+                    break;
+                }
+                bindRepositoryDevcontainerConfigFixedElementObserver(messageElement, dict);
+                break;
+            }
+        }
+        return translated;
+    }
+
+    function transRepositoryDevcontainerConfigPreviewStatus(dict) {
+        const sources = ['Loading preview...', 'Loading preview…'];
+        let translated = false;
+
+        document.querySelectorAll([
+            '[role="status"]',
+            '[aria-live]',
+            '[data-testid*="preview"]',
+            '[data-testid*="Preview"]',
+            '[class*="Preview"]',
+            '[class*="preview"]'
+        ].join(', ')).forEach(surface => {
+            const text = normalizeHeaderTooltipText(surface.textContent);
+            if (!sources.includes(text)) return;
+            translated = transRepositoryDevcontainerConfigExactElement(surface, dict) || translated;
+        });
+
+        if (!translated && document.body) {
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+            let node;
+            while ((node = walker.nextNode())) {
+                if (!sources.includes(normalizeHeaderTooltipText(node.data))) continue;
+                const result = getRepositoryDevcontainerConfigTranslation(node.data, dict);
+                if (result && result !== node.data) {
+                    node.data = result;
+                    translated = true;
+                }
+                break;
+            }
+        }
+        return translated;
+    }
+
+    function bindRepositoryDevcontainerSearchOverlayObservers() {
+        if (!isRepositoryDevcontainerConfigPage()) return false;
+        let bound = false;
+
+        forEachSearchOverlayRoot(root => {
+            if (!root || root.__ghchtDevcontainerSearchObserver) return;
+            transSearchOverlayRoot(root);
+            root.__ghchtDevcontainerSearchObserver = new MutationObserver(
+                safe(mutations => {
+                    mutations.forEach(transSearchOverlayMutation);
+                    transSearchOverlayRoot(root);
+                }, '開發容器配置頁主搜尋浮層內容觀察')
+            );
+            root.__ghchtDevcontainerSearchObserver.observe(root, {
+                childList: true,
+                subtree: true,
+                characterData: true,
+                attributes: true,
+                attributeFilter: ['placeholder', 'aria-label', 'aria-hidden']
+            });
+            bound = true;
+        });
+
+        return bound;
+    }
+
+    function transRepositoryDevcontainerConfigTooltips(dict = getRepositoryDevcontainerConfigFixedDict()) {
+        let translated = false;
+        document.querySelectorAll('tool-tip, [role="tooltip"], [data-testid*="tooltip"], [class*="Tooltip"], [class*="tooltip"]').forEach(tooltip => {
+            translated = transRepositoryDevcontainerConfigExactElement(tooltip, dict) || translated;
+            if (tooltip.shadowRoot) {
+                translated = transRepositoryDevcontainerConfigExactElement(tooltip.shadowRoot, dict) || translated;
+            }
+        });
+        return translated;
+    }
+
+    function transRepositoryDevcontainerConfigTooltipTrigger(element, dict) {
+        const trigger = element?.closest?.('button, [role="button"], summary') || element;
+        if (!trigger) return false;
+        let translated = transRepositoryDevcontainerConfigExactElement(trigger, dict);
+
+        const id = trigger.id;
+        if (id) {
+            document.querySelectorAll(`tool-tip[for="${CSS.escape(id)}"], [role="tooltip"][data-for="${CSS.escape(id)}"]`).forEach(tooltip => {
+                translated = transRepositoryDevcontainerConfigExactElement(tooltip, dict) || translated;
+            });
+        }
+        (trigger.getAttribute?.('aria-describedby') || '').split(/\s+/).filter(Boolean).forEach(describedId => {
+            const tooltip = document.getElementById(describedId);
+            if (tooltip) translated = transRepositoryDevcontainerConfigExactElement(tooltip, dict) || translated;
+        });
+        return translated;
+    }
+
+    function bindRepositoryDevcontainerConfigFixedElementObserver(element, dict) {
+        if (!element || element.__ghchtDevcontainerFixedObserver) return;
+        element.__ghchtDevcontainerFixedObserver = new MutationObserver(
+            safe(() => {
+                transRepositoryDevcontainerConfigExactElement(element, dict);
+                if (element.matches?.('input')) {
+                    ['placeholder', 'aria-label'].forEach(attr => {
+                        const value = element.getAttribute(attr);
+                        const result = getRepositoryDevcontainerConfigTranslation(value, dict);
+                        if (result && result !== value) element.setAttribute(attr, result);
+                    });
+                }
+            }, '開發容器配置頁固定文字觀察')
+        );
+        element.__ghchtDevcontainerFixedObserver.observe(element, {
+            childList: true,
+            subtree: true,
+            characterData: true,
+            attributes: true,
+            attributeFilter: ['placeholder', 'aria-label']
+        });
+    }
+
+    function shouldSkipRepositoryDevcontainerConfigNode(node) {
+        const element = getNodeElement(node);
+        if (!element) return true;
+        try {
+            return !!element.closest?.([
+                'script', 'style', 'template', 'noscript', 'code', 'pre', 'kbd',
+                'textarea', '[contenteditable="true"]', '.cm-editor', '.cm-content',
+                '.cm-line', '.cm-scroller', '[role="banner"]', '.AppHeader', '.Header',
+                'qbsearch-input', 'query-builder', 'react-app[app-name="command-palette"]'
+            ].join(', '));
+        } catch (e) {
+            return true;
+        }
+    }
+
+    function getRepositoryDevcontainerConfigTranslation(text, dict) {
+        if (!text) return false;
+        const source = normalizeHeaderTooltipText(text);
+        if (!source) return false;
+        if (dict[source]) return text.replace(text.trim(), dict[source]);
+
+        const replacements = [
+            [/^See the\s*$/, '請參閱 '],
+            [/^\s*reference for more information$/, ' 參考文件以瞭解更多訊息'],
+            [/^Use\s*$/, '使用 '],
+            [/^\s*to toggle the\s*$/, ' 切換 '],
+            [/^\s*key moving focus\. Alternatively, use\s*$/, ' 鍵移動焦點。或者使用 '],
+            [/^\s*then\s*$/, '，然後按 '],
+            [/^\s*to move to the next interactive element on the page\.$/, ' 移動到頁面上的下一個互動元素。']
+        ];
+        for (const [pattern, replacement] of replacements) {
+            if (pattern.test(text)) return text.replace(pattern, replacement);
+        }
+        return false;
+    }
+
     function scheduleRepositoryNewFilePageTrans() {
-        if (!isRepositoryNewFilePage()) return;
+        if (!isRepositoryNewFilePage() || isRepositoryDevcontainerConfigPage()) return;
         if (State.repositoryNewFilePagePending) return;
         State.repositoryNewFilePagePending = true;
 
@@ -38471,7 +39237,7 @@ I18N["zh-TW"]["repository/agents"] = {
     }
 
     function scheduleRepositoryNewFileInteractionTrans() {
-        if (!isRepositoryNewFilePage()) return;
+        if (!isRepositoryNewFilePage() || isRepositoryDevcontainerConfigPage()) return;
         if (State.repositoryNewFileInteractionPending) return;
         State.repositoryNewFileInteractionPending = true;
 
@@ -39214,7 +39980,7 @@ I18N["zh-TW"]["repository/agents"] = {
     }
 
     function transRepositoryNewFilePageDynamicText() {
-        if (!isRepositoryNewFilePage() || !document.body) return false;
+        if (!isRepositoryNewFilePage() || isRepositoryDevcontainerConfigPage() || !document.body) return false;
 
         const dict = getRepositoryNewFilePageFixedDict();
         const roots = new Set();
@@ -39490,6 +40256,7 @@ I18N["zh-TW"]["repository/agents"] = {
             "Clone": "複製",
             "Use Web URL clone.": "使用 Web URL 複製。",
             "Copy URL to clipboard": "將 URL 複製到剪貼簿",
+            "Copy to clipboard": "複製到剪貼簿",
             "Open in GitHub Copilot app": "在 GitHub Copilot app 中打開",
             "Open with GitHub Desktop": "在 GitHub Desktop 中打開",
             "Download ZIP": "下載 ZIP 壓縮包",
@@ -39671,6 +40438,7 @@ I18N["zh-TW"]["repository/agents"] = {
             "Clone",
             "Use Web URL clone.",
             "Copy URL to clipboard",
+            "Copy to clipboard",
             "Open in GitHub Copilot app",
             "Open with GitHub Desktop",
             "Download ZIP",
@@ -43611,10 +44379,11 @@ I18N["zh-TW"]["repository/agents"] = {
      * 右上角 tooltip 是 hover 後動態插入的節點，因此使用獨立 observer 觸發小範圍掃描。
      */
     function setupHeaderTooltipObserver() {
-        if (State.headerTooltipObserver || !document.body) return;
+        if (State.headerTooltipObserver || !document.body || isRepositoryDevcontainerConfigPage()) return;
 
         State.headerTooltipObserver = new MutationObserver(
             safe((mutations) => {
+                if (isRepositoryDevcontainerConfigPage()) return;
                 if (mutations.some(isPotentialHeaderTooltipMutation)) {
                     scheduleHeaderTooltipTrans();
                 }
@@ -43628,6 +44397,15 @@ I18N["zh-TW"]["repository/agents"] = {
             attributes: true,
             attributeFilter: ['class', 'hidden', 'open', 'popover', 'style', 'aria-hidden', 'placeholder']
         });
+    }
+
+    function syncHeaderTooltipObserverForPage() {
+        if (isRepositoryDevcontainerConfigPage()) {
+            State.headerTooltipObserver?.disconnect();
+            State.headerTooltipObserver = null;
+            return;
+        }
+        setupHeaderTooltipObserver();
     }
 
     function isPotentialHeaderTooltipMutation(mutation) {
