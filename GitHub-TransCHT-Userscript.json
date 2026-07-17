@@ -4,7 +4,7 @@
 // @description  基於 maboloshi/github-chinese 修改的繁體中文單檔版。原作者為樓教主與沙漠之子，由 Elias Lee 進行單檔合併、繁體字詞習慣優化與持續維護。
 // @copyright    2016-2021 樓教主, 2021-2024 沙漠之子, 2026-當前 Elias Lee (https://github.com/Elias-Lee-SC)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.13.76
+// @version      local.13.79
 // @author       Elias Lee (基於 沙漠之子 & 樓教主 的原創專案)
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -9758,8 +9758,11 @@ I18N["zh-TW"]["repository/pull_issue_public"] = { // 倉庫 - 議題和合併請
                 "Assignees": "受理人",
                     "No one assigned": "無人受理",
                     "No one—": "無人 - ",
+                    "No one": "無人",
+                    "Assign yourself": "受理自己",
                     "assign yourself": " 受理自己",
                     // 下拉框
+                    "Select assignees": "選擇受理人",
                     "Assign up to 10 people to this issue": "最多指定 10 人", // 議題
                     "Assign up to 10 people to this pull request": "最多指定 10 人", // 合併請求
                     "Clear assignees": "清除受理人",
@@ -9767,6 +9770,7 @@ I18N["zh-TW"]["repository/pull_issue_public"] = { // 倉庫 - 議題和合併請
                     "Suggestions": "建議",
 
                 // "Labels": "標籤",
+                    "No labels": "無標籤",
                     "None yet": "暫無",
                     // 下拉
                     "bug": "BUG",
@@ -9800,14 +9804,27 @@ I18N["zh-TW"]["repository/pull_issue_public"] = { // 倉庫 - 議題和合併請
 
                 // 專案
                     "Recent": "最近",
+                    "Repository": "倉庫",
+                    "Organization": "組織",
                     "User": "用戶",
                     "No projects": "無專案",
+                    "Select projects": "選擇專案",
 
                 "Milestone": "里程碑",
                     "No milestone": "無里程碑",
                     //下拉
                     "Set milestone": "設置里程碑",
+                        "No milestones were found": "未找到任何里程碑",
+                        "Try searching with a different query for results.": "請嘗試使用其他查詢來搜尋結果。",
                         "Nothing to show": "暫無",
+
+                // 新建議題頁的第三方 AI Reply 停用對話框
+                    "Disable AI Reply": "禁用 AI Reply",
+                    "Close this time until the next visit": "本次關閉，直到下次訪問",
+                    "Disable the current website": "禁用目前網站",
+                    "Can be activated in": "可在",
+                    "Settings Page": "設置頁面",
+                    "Permanently disable": "永久禁用",
 
                 "Development": "進展",
                     "Successfully merging this pull request may close these issues.": "成功合併此合併請求可能會關閉這些議題。",
@@ -30487,6 +30504,16 @@ I18N["zh-TW"]["repository/agents"] = {
                 font-weight: 400 !important;
                 line-height: 1.5 !important;
             }
+            html.ghcht-repository-new-issue-page [data-ghcht-issue-preview-empty="true"] {
+                font-size: 0 !important;
+            }
+            html.ghcht-repository-new-issue-page [data-ghcht-issue-preview-empty="true"]::before {
+                content: "沒有可預覽的內容。";
+                color: inherit !important;
+                font-size: 14px !important;
+                font-weight: 400 !important;
+                line-height: 1.5 !important;
+            }
             [data-ghcht-project-updated-translation] {
                 font-size: 0 !important;
             }
@@ -31023,6 +31050,7 @@ I18N["zh-TW"]["repository/agents"] = {
         syncRepositoryNewFilePageClass();
         syncRepositoryBranchesPageClass();
         syncRepositoryReleasesTagsPageClass();
+        syncRepositoryNewIssuePageClass();
         console.log(`【Debug】${trigger}觸發, 頁面類型為 ${State.pageConfig?.currentPageType}`);
     }
 
@@ -31661,6 +31689,10 @@ I18N["zh-TW"]["repository/agents"] = {
         return /^\/[^\/]+\/[^\/]+\/issues\/views\/?$/.test(window.location.pathname);
     }
 
+    function isRepositoryNewIssuePage() {
+        return /^\/[^\/]+\/[^\/]+\/issues\/new\/?$/.test(window.location.pathname);
+    }
+
     function isRepositoryProjectsPage() {
         return /^\/[^\/]+\/[^\/]+\/projects\/?$/.test(window.location.pathname);
     }
@@ -31874,6 +31906,7 @@ I18N["zh-TW"]["repository/agents"] = {
             State.pageConfig?.currentPageType === 'issues' ||
             /^\/issues(?:\/|$)/.test(pathname) ||
             /^\/[^\/]+\/[^\/]+\/issues\/?$/.test(pathname) ||
+            isRepositoryNewIssuePage() ||
             isRepositoryIssuesViewsPage() ||
             isRepositoryProjectsPage() ||
             isRepositoryMilestonesPage() ||
@@ -32092,16 +32125,40 @@ I18N["zh-TW"]["repository/agents"] = {
             "Add a title *": "新增標題 *",
             "Write": "撰寫",
             "Preview": "預覽",
-            "Nothing to preview": "沒有可預覽的內容。",
             "Type your description here…": "在此輸入描述…",
             "Type your description here...": "在此輸入描述…",
             "Paste, drop, or click to add files": "貼上、拖放或點擊新增文件",
             "Write with Copilot": "使用 Copilot 撰寫",
+            "No one": "無人",
+            "Assign yourself": "受理自己",
             "Assignee": "受理人",
             "Assignees": "受理人",
+            "Select assignees": "選擇受理人",
             "Label": "標籤",
+            "No labels": "無標籤",
+            "Apply labels to this issue": "應用標籤",
+            "Edit labels": "編輯標籤",
             "Project": "專案",
+            "No projects": "無專案",
+            "Select projects": "選擇專案",
+            "Recent": "最近",
+            "Organization": "組織",
             "Milestone": "里程碑",
+            "No milestone": "無里程碑",
+            "Set milestone": "設置里程碑",
+            "No milestones were found": "未找到任何里程碑",
+            "Try searching with a different query for results.": "請嘗試使用其他查詢來搜尋結果。",
+            "Disable AI Reply": "禁用 AI Reply",
+            "Close this time until the next visit": "本次關閉，直到下次訪問",
+            "Disable the current website": "禁用目前網站",
+            "Disable the current website(": "禁用目前網站（",
+            "Disable the current website (": "禁用目前網站（",
+            "Can be activated in": "可在",
+            "(Can be activated in": "（可在",
+            "Settings Page": "設置頁面",
+            "Permanently disable": "永久禁用",
+            "Permanently disable(": "永久禁用（",
+            "Permanently disable (": "永久禁用（",
             "Author": "作者",
             "Filter by author": "按作者篩選",
             "Filter authors": "篩選作者",
@@ -32213,6 +32270,13 @@ I18N["zh-TW"]["repository/agents"] = {
             "question", "Further information is requested",
             "wontfix", "This will not be worked on"
         ]);
+        const newIssuePickerUiTextSources = new Set([
+            ...defaultLabelTextSources,
+            "Edit labels", "編輯標籤",
+            "Recent", "最近",
+            "Repository", "倉庫",
+            "Organization", "組織"
+        ]);
         const projectUpdatedUnitDict = {
             second: "秒",
             minute: "分鐘",
@@ -32231,17 +32295,27 @@ I18N["zh-TW"]["repository/agents"] = {
             if (!element) return false;
 
             const isRepositoryIssuesListPage = /^\/[^\/]+\/[^\/]+\/issues\/?$/.test(window.location.pathname);
+            const isRepositoryNewIssueCreatePage = isRepositoryNewIssuePage();
             const isRepositoryViewsPage = isRepositoryIssuesViewsPage();
             const isRepositoryProjectsListPage = isRepositoryProjectsPage();
             const isRepositoryMilestonesListPage = isRepositoryMilestonesPage();
             const isRepositoryLabelsListPage = isRepositoryLabelsPage();
             if (
                 !isRepositoryIssuesListPage &&
+                !isRepositoryNewIssueCreatePage &&
                 !isRepositoryViewsPage &&
                 !isRepositoryProjectsListPage &&
                 !isRepositoryMilestonesListPage &&
                 !isRepositoryLabelsListPage
             ) return false;
+
+            if (isRepositoryNewIssueCreatePage) {
+                const source = normalizeHeaderTooltipText(element.textContent);
+                if (newIssuePickerUiTextSources.has(source)) return false;
+                if (element.closest?.('[role="option"], [role="menuitem"], [role="listitem"], li')) {
+                    return true;
+                }
+            }
 
             if (isRepositoryLabelsListPage) {
                 const directLabelLink = element.closest?.([
@@ -32460,6 +32534,9 @@ I18N["zh-TW"]["repository/agents"] = {
         }
 
         translated = transIssuesSidebarAssignedToMe() || translated;
+        translated = transRepositoryNewIssuePreviewEmptyState() || translated;
+        translated = transRepositoryNewIssueAiReplyDialog() || translated;
+        translated = transNewIssueScopedTooltips() || translated;
 
         if (isRepositoryProjectsPage()) {
             const projectsMain = document.querySelector('main');
@@ -32602,6 +32679,195 @@ I18N["zh-TW"]["repository/agents"] = {
         }
 
         return translated;
+    }
+
+    function transRepositoryNewIssuePreviewEmptyState() {
+        if (!isRepositoryNewIssuePage()) return false;
+
+        const main = document.querySelector('main, [role="main"]');
+        if (!main) return false;
+
+        let translated = false;
+        main.querySelectorAll('[data-ghcht-issue-preview-empty="true"]').forEach(element => {
+            if (normalizeHeaderTooltipText(element.textContent) === 'Nothing to preview') return;
+            element.removeAttribute('data-ghcht-issue-preview-empty');
+            translated = true;
+        });
+
+        const selector = [
+            '.js-preview-body',
+            '[data-target*="preview"]',
+            '[data-targets*="preview"]',
+            '[class*="Preview"]',
+            '[class*="preview"]',
+            '[id*="preview"]'
+        ].join(', ');
+
+        main.querySelectorAll(selector).forEach(root => {
+            if (root.closest?.('header, [role="banner"], .AppHeader, .Header, qbsearch-input, query-builder, react-app[app-name="command-palette"]')) return;
+
+            const elements = [root, ...(root.querySelectorAll?.('p, div, span, h1, h2, h3') || [])];
+            elements.forEach(element => {
+                const source = normalizeHeaderTooltipText(element.textContent);
+                if (source !== 'Nothing to preview') return;
+                if (element.childElementCount > 0) return;
+                element.setAttribute('data-ghcht-issue-preview-empty', 'true');
+                translated = true;
+            });
+        });
+
+        return translated;
+    }
+
+    function transRepositoryNewIssueAiReplyDialog() {
+        if (!isRepositoryNewIssuePage() || !document.body) return false;
+
+        const titleSources = new Set(['Disable AI Reply', '禁用 AI Reply']);
+        const findTitleNodeInOpenRoots = root => {
+            if (!root) return null;
+
+            const walker = document.createTreeWalker(
+                root,
+                NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT
+            );
+            let node;
+            while ((node = walker.nextNode())) {
+                if (
+                    node.nodeType === Node.TEXT_NODE &&
+                    titleSources.has(normalizeHeaderTooltipText(node.data))
+                ) {
+                    return node;
+                }
+
+                if (node.nodeType === Node.ELEMENT_NODE && node.shadowRoot) {
+                    const shadowMatch = findTitleNodeInOpenRoots(node.shadowRoot);
+                    if (shadowMatch) return shadowMatch;
+                }
+            }
+
+            return null;
+        };
+        const titleNode = findTitleNodeInOpenRoots(document.body);
+        if (!titleNode) return false;
+
+        const titleElement = getNodeElement(titleNode);
+        let root = titleElement?.closest?.([
+            '[role="dialog"]',
+            '[aria-modal="true"]',
+            'dialog',
+            'modal-dialog'
+        ].join(', '));
+
+        if (!root) {
+            let candidate = titleElement;
+            for (let depth = 0; candidate && depth < 8; depth += 1) {
+                const text = normalizeHeaderTooltipText(candidate.textContent);
+                if (
+                    (
+                        text.includes('Close this time until the next visit') ||
+                        text.includes('本次關閉，直到下次訪問')
+                    ) &&
+                    (
+                        text.includes('Permanently disable') ||
+                        text.includes('永久禁用')
+                    )
+                ) {
+                    root = candidate;
+                    break;
+                }
+                candidate = candidate.parentElement;
+            }
+        }
+        if (!root) return false;
+
+        const dict = {
+            "Disable AI Reply": "禁用 AI Reply",
+            "Close this time until the next visit": "本次關閉，直到下次訪問",
+            "Disable the current website": "禁用目前網站",
+            "Disable the current website(": "禁用目前網站（",
+            "Disable the current website (": "禁用目前網站（",
+            "Disable the current website(Can be activated in Settings Page)": "禁用目前網站（可在設置頁面啟用）",
+            "Disable the current website (Can be activated in Settings Page)": "禁用目前網站（可在設置頁面啟用）",
+            "Can be activated in": "可在",
+            "(Can be activated in": "（可在",
+            "Settings Page": "設置頁面",
+            "Permanently disable": "永久禁用",
+            "Permanently disable(": "永久禁用（",
+            "Permanently disable (": "永久禁用（",
+            "Permanently disable(Can be activated in Settings Page)": "永久禁用（可在設置頁面啟用）",
+            "Permanently disable (Can be activated in Settings Page)": "永久禁用（可在設置頁面啟用）",
+            "Cancel": "取消",
+            "Save": "保存"
+        };
+        let translated = transExactTextInRoot(root, dict, () => false);
+
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+            if (normalizeHeaderTooltipText(node.data) !== ')') continue;
+            node.data = node.data.replace(')', '）');
+            translated = true;
+        }
+
+        return translated;
+    }
+
+    function transNewIssueScopedTooltips() {
+        if (!isRepositoryNewIssuePage()) return false;
+
+        const dict = {
+            "Close menu": "關閉選單",
+            "Search for repositories": "搜尋倉庫"
+        };
+        const attrs = [
+            'aria-label',
+            'title',
+            'data-tooltip',
+            'data-tooltip-text',
+            'data-original-title',
+            'data-content'
+        ];
+        const triggerSelectors = Object.keys(dict).flatMap(source => (
+            attrs.map(attr => `[${attr}="${source}"]`)
+        )).join(', ');
+        let translated = false;
+
+        document.querySelectorAll(triggerSelectors).forEach(trigger => {
+            attrs.forEach(attr => {
+                const source = normalizeHeaderTooltipText(trigger.getAttribute?.(attr));
+                const result = dict[source];
+                if (!result || result === source) return;
+                trigger.setAttribute(attr, result);
+                translated = true;
+            });
+        });
+
+        const tooltipSurfaces = [
+            'tool-tip',
+            '[role="tooltip"]',
+            '[data-testid*="tooltip"]',
+            '[class*="Tooltip"]',
+            '[class*="tooltip"]'
+        ].join(', ');
+        document.querySelectorAll(tooltipSurfaces).forEach(surface => {
+            const roots = [surface];
+            if (surface.shadowRoot) roots.push(surface.shadowRoot);
+            roots.forEach(root => {
+                translated = transExactTextInRoot(root, dict, () => false) || translated;
+            });
+        });
+
+        return translated;
+    }
+
+    function scheduleNewIssueScopedTooltipTrans() {
+        if (!isRepositoryNewIssuePage()) return;
+
+        [0, 1, 5, 15, 35, 75, 150, 300, 600, 1000, 1600, 2400].forEach(delay => {
+            setTimeout(() => {
+                safe(transNewIssueScopedTooltips, '新建議題頁小表面 tooltip 補翻')();
+            }, delay);
+        });
     }
 
     function transProjectsScopedTooltips() {
@@ -32862,6 +33128,30 @@ I18N["zh-TW"]["repository/agents"] = {
                 'Change icon and color', '更改圖示與顏色',
                 'Back to templates', '返回範本選擇'
             ];
+            const isNewIssueHeaderTooltip = (
+                isRepositoryNewIssuePage() &&
+                labels.some(label => [
+                    'Close menu',
+                    '關閉選單',
+                    'Search for repositories',
+                    '搜尋倉庫'
+                ].includes(label))
+            );
+            const isNewIssueHeaderSurfaceControl = (
+                isRepositoryNewIssuePage() &&
+                control.closest?.([
+                    '[role="banner"]',
+                    '.AppHeader',
+                    '.Header',
+                    'body > header',
+                    '[role="dialog"]',
+                    '[aria-modal="true"]'
+                ].join(', '))
+            );
+            if (isNewIssueHeaderTooltip || isNewIssueHeaderSurfaceControl) {
+                scheduleNewIssueScopedTooltipTrans();
+                return;
+            }
             const isProjectMoreActions = (
                 isRepositoryProjectsPage() &&
                 labels.some(label => /^More [Aa]ctions for .+$/.test(label))
@@ -38838,6 +39128,13 @@ I18N["zh-TW"]["repository/agents"] = {
         document.documentElement.classList.toggle(
             'ghcht-repository-releases-tags-page',
             isRepositoryReleasesTagsPath()
+        );
+    }
+
+    function syncRepositoryNewIssuePageClass() {
+        document.documentElement.classList.toggle(
+            'ghcht-repository-new-issue-page',
+            isRepositoryNewIssuePage()
         );
     }
 
