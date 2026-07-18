@@ -4,7 +4,7 @@
 // @description  基於 maboloshi/github-chinese 修改的繁體中文單檔版。原作者為樓教主與沙漠之子，由 Elias Lee 進行單檔合併、繁體字詞習慣優化與持續維護。
 // @copyright    2016-2021 樓教主, 2021-2024 沙漠之子, 2026-當前 Elias Lee (https://github.com/Elias-Lee-SC)
 // @icon         https://github.githubassets.com/pinned-octocat.svg
-// @version      local.13.79
+// @version      local.13.85
 // @author       Elias Lee (基於 沙漠之子 & 樓教主 的原創專案)
 // @license      GPL-3.0
 // @match        https://github.com/*
@@ -21560,6 +21560,7 @@ I18N["zh-TW"]["issues"] = { // 議題頁面
             "Untitled view": "未命名視圖",
             "All views": "所有視圖",
             "Create view": "新建視圖",
+                "Back to views": "返回視圖",
                 "Build powerful views to keep track of work": "建立強大的視圖來追蹤工作",
                 "Create your own views to quickly find and access your work.": "建立您自己的視圖，以快速尋找並存取您的工作。",
                 "You have unsaved changes": "您有未保存的更改",
@@ -21568,8 +21569,11 @@ I18N["zh-TW"]["issues"] = { // 議題頁面
             "Saved views menu": "保存的視圖選單",
             "Edit view": "編輯視圖",
                 "Icon": "圖示",
+                "Title *": "標題 *",
                 "Description": "描述",
                 "Query": "查詢",
+                "Query *": "查詢 *",
+                "Anyone with repository access can see this view.": "任何擁有倉庫訪問權限的人都可以查看此視圖。",
                 "Save view": "保存視圖",
                 "Save": "保存",
             "Delete": "刪除",
@@ -31608,12 +31612,18 @@ I18N["zh-TW"]["repository/agents"] = {
             element.__ghchtTimeObserver = new MutationObserver(
                 safe(() => {
                     transTimeElement(element);
+                    if (isRepositoryProjectsPage()) {
+                        shortenRepositoryProjectRelativeTime(element);
+                    }
                     if (isDiscussionsPage()) {
                         shortenDiscussionsRelativeTime(element);
                         transDiscussionsTimeAttributes(element);
                     }
                     if (element.shadowRoot) {
                         transTimeElement(element.shadowRoot);
+                        if (isRepositoryProjectsPage()) {
+                            shortenRepositoryProjectRelativeTime(element.shadowRoot);
+                        }
                         if (isDiscussionsPage()) {
                             shortenDiscussionsRelativeTime(element.shadowRoot);
                         }
@@ -31634,6 +31644,9 @@ I18N["zh-TW"]["repository/agents"] = {
             element.__ghchtShadowTimeObserver = new MutationObserver(
                 safe(() => {
                     transTimeElement(element.shadowRoot);
+                    if (isRepositoryProjectsPage()) {
+                        shortenRepositoryProjectRelativeTime(element.shadowRoot);
+                    }
                     if (isDiscussionsPage()) {
                         shortenDiscussionsRelativeTime(element.shadowRoot);
                     }
@@ -31689,8 +31702,91 @@ I18N["zh-TW"]["repository/agents"] = {
         return /^\/[^\/]+\/[^\/]+\/issues\/views\/?$/.test(window.location.pathname);
     }
 
+    function isRepositoryIssuesNewViewPage() {
+        return /^\/[^\/]+\/[^\/]+\/issues\/views\/new\/?$/.test(window.location.pathname);
+    }
+
     function isRepositoryNewIssuePage() {
         return /^\/[^\/]+\/[^\/]+\/issues\/new\/?$/.test(window.location.pathname);
+    }
+
+    function isRepositoryIssuesListPage() {
+        return /^\/[^\/]+\/[^\/]+\/issues\/?$/.test(window.location.pathname);
+    }
+
+    /**
+     * 判斷元素是否位於 GitHub 全域主搜尋／命令面板。
+     * Issues runtime 會掃描較大的 React 表面；這些區域必須永久退出文字與屬性改寫，
+     * 否則新建議題頁加入的短詞可能在搜尋面板中誤命中並破壞元件狀態。
+     * @param {Element|null} element - 要檢查的元素
+     * @returns {boolean}
+     */
+    function isIssuesProtectedGlobalSearchElement(element) {
+        if (!element) return false;
+
+        const protectedSelectors = [
+            '.AppHeader',
+            '.AppHeader-globalBar',
+            '.AppHeader-search',
+            '.AppHeader-searchButton',
+            '.header-search',
+            '.js-site-search-form',
+            'form[action="/search"]',
+            'qbsearch-input',
+            'query-builder',
+            '[data-target^="qbsearch-input."]',
+            '[data-target*="qbsearch-input"]',
+            '[data-target^="query-builder."]',
+            '[data-target*="query-builder"]',
+            '[class*="QueryBuilder"]',
+            '[class*="Search-module"]',
+            'react-app[app-name="command-palette"]',
+            '#command-palette-pjax-container',
+            '.js-command-palette',
+            '[data-hotkey="/"]'
+        ].join(', ');
+
+        try {
+            return !!(
+                element.matches?.(protectedSelectors) ||
+                element.closest?.(protectedSelectors)
+            );
+        } catch (e) {
+            return true;
+        }
+    }
+
+    /**
+     * 倉庫 Issues 列表的頁首浮層不屬於議題內容。
+     * SPA 首次切入時，全域搜尋可能尚未掛上穩定的 AppHeader／Search class，
+     * 因此再以「內容區之外且起點位於頁首」作為不依賴水合狀態的保護邊界。
+     * @param {Element|null} element - 要檢查的浮層或 query builder
+     * @returns {boolean}
+     */
+    function isRepositoryIssuesListHeaderSurface(element) {
+        if (!isRepositoryIssuesListPage() || !element) return false;
+
+        const contentRoot = element.closest?.([
+            '.application-main',
+            'main',
+            '[role="main"]',
+            'aside'
+        ].join(', '));
+        if (contentRoot) return false;
+        if (isIssuesProtectedGlobalSearchElement(element)) return true;
+
+        try {
+            const rect = element.getBoundingClientRect?.();
+            return !!(
+                rect &&
+                rect.width > 0 &&
+                rect.height > 0 &&
+                rect.top >= 0 &&
+                rect.top < 240
+            );
+        } catch (e) {
+            return true;
+        }
     }
 
     function isRepositoryProjectsPage() {
@@ -31830,16 +31926,29 @@ I18N["zh-TW"]["repository/agents"] = {
 
         let translated = false;
 
-        // 遞迴處理根節點與 open shadow DOM 的文字流
-        function walkTextStream(root) {
+        // 遞迴處理根節點與 open shadow DOM 的文字流。
+        // recentTexts 必須跨 shadow root 共用，否則 SPA 入口把相對時間移入
+        // relative-time shadow DOM 時，時間節點會失去前方的「#編號 updated」上下文。
+        function walkTextStream(root, recentTexts = []) {
             const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
             let node;
-            const recentTexts = [];
 
             while ((node = walker.nextNode())) {
                 if (node.nodeType === Node.ELEMENT_NODE) {
+                    if (
+                        node.matches?.('relative-time, time-ago, time[datetime]') &&
+                        /#\d+\s*(?:updated|更新於)\s*$/i.test(recentTexts.join(''))
+                    ) {
+                        transTimeElement(node);
+                        bindRelativeTimeElementObserver(node);
+                        translated = shortenRepositoryProjectRelativeTime(node) || translated;
+                        if (node.shadowRoot) {
+                            transTimeElement(node.shadowRoot);
+                            translated = shortenRepositoryProjectRelativeTime(node.shadowRoot) || translated;
+                        }
+                    }
                     if (node.shadowRoot) {
-                        walkTextStream(node.shadowRoot);
+                        walkTextStream(node.shadowRoot, recentTexts);
                     }
                     continue;
                 }
@@ -31847,6 +31956,39 @@ I18N["zh-TW"]["repository/agents"] = {
                 if (node.nodeType === Node.TEXT_NODE) {
                     const text = normalizeHeaderTooltipText(node.data);
                     if (!text) continue;
+
+                    const fullSummary = getRepositoryProjectUpdatedTranslation(text);
+                    if (fullSummary) {
+                        node.data = node.data.replace(node.data.trim(), fullSummary);
+                        recentTexts.push(fullSummary);
+                        if (recentTexts.length > 5) recentTexts.shift();
+                        translated = true;
+                        continue;
+                    }
+
+                    const previousContext = recentTexts.join('');
+                    if (
+                        /#\d+\s*(?:updated|更新於)\s*$/i.test(previousContext) &&
+                        /^[\d,]+\s+(?:秒|分鐘|小時|天|週|周|個月|年)之前$/.test(text)
+                    ) {
+                        node.data = node.data.replace(/之前(?=\s*$)/, '前');
+                        recentTexts.push(normalizeHeaderTooltipText(node.data));
+                        if (recentTexts.length > 5) recentTexts.shift();
+                        translated = true;
+                        continue;
+                    }
+
+                    const relativeTime = transRelativeTimeText(node.data);
+                    if (
+                        relativeTime &&
+                        /#\d+\s*(?:updated|更新於)\s*$/i.test(previousContext)
+                    ) {
+                        node.data = relativeTime.replace(/之前(?=\s*$)/, '前');
+                        recentTexts.push(normalizeHeaderTooltipText(node.data));
+                        if (recentTexts.length > 5) recentTexts.shift();
+                        translated = true;
+                        continue;
+                    }
 
                     recentTexts.push(text);
                     if (recentTexts.length > 5) recentTexts.shift();
@@ -31860,6 +32002,7 @@ I18N["zh-TW"]["repository/agents"] = {
 
                         if (/#\d+\s*$/.test(contextString)) {
                             node.data = node.data.replace(/\bupdated\b/i, '更新於');
+                            recentTexts[recentTexts.length - 1] = normalizeHeaderTooltipText(node.data);
                             translated = true;
                         }
                     }
@@ -31908,6 +32051,7 @@ I18N["zh-TW"]["repository/agents"] = {
             /^\/[^\/]+\/[^\/]+\/issues\/?$/.test(pathname) ||
             isRepositoryNewIssuePage() ||
             isRepositoryIssuesViewsPage() ||
+            isRepositoryIssuesNewViewPage() ||
             isRepositoryProjectsPage() ||
             isRepositoryMilestonesPage() ||
             isRepositoryNewMilestonePage() ||
@@ -32129,36 +32273,11 @@ I18N["zh-TW"]["repository/agents"] = {
             "Type your description here...": "在此輸入描述…",
             "Paste, drop, or click to add files": "貼上、拖放或點擊新增文件",
             "Write with Copilot": "使用 Copilot 撰寫",
-            "No one": "無人",
-            "Assign yourself": "受理自己",
             "Assignee": "受理人",
             "Assignees": "受理人",
-            "Select assignees": "選擇受理人",
             "Label": "標籤",
-            "No labels": "無標籤",
-            "Apply labels to this issue": "應用標籤",
-            "Edit labels": "編輯標籤",
             "Project": "專案",
-            "No projects": "無專案",
-            "Select projects": "選擇專案",
-            "Recent": "最近",
-            "Organization": "組織",
             "Milestone": "里程碑",
-            "No milestone": "無里程碑",
-            "Set milestone": "設置里程碑",
-            "No milestones were found": "未找到任何里程碑",
-            "Try searching with a different query for results.": "請嘗試使用其他查詢來搜尋結果。",
-            "Disable AI Reply": "禁用 AI Reply",
-            "Close this time until the next visit": "本次關閉，直到下次訪問",
-            "Disable the current website": "禁用目前網站",
-            "Disable the current website(": "禁用目前網站（",
-            "Disable the current website (": "禁用目前網站（",
-            "Can be activated in": "可在",
-            "(Can be activated in": "（可在",
-            "Settings Page": "設置頁面",
-            "Permanently disable": "永久禁用",
-            "Permanently disable(": "永久禁用（",
-            "Permanently disable (": "永久禁用（",
             "Author": "作者",
             "Filter by author": "按作者篩選",
             "Filter authors": "篩選作者",
@@ -32235,6 +32354,53 @@ I18N["zh-TW"]["repository/agents"] = {
             "Please try a different search query.": "請嘗試其他搜尋查詢。",
             "Try adjusting your search filters.": "請嘗試調整搜尋篩選條件。"
         };
+        const newIssueDict = {
+            "No one": "無人",
+            "Assign yourself": "受理自己",
+            "Select assignees": "選擇受理人",
+            "No labels": "無標籤",
+            "Apply labels to this issue": "應用標籤",
+            "Edit labels": "編輯標籤",
+            "No projects": "無專案",
+            "Select projects": "選擇專案",
+            "Recent": "最近",
+            "Organization": "組織",
+            "No milestone": "無里程碑",
+            "Set milestone": "設置里程碑",
+            "No milestones were found": "未找到任何里程碑",
+            "Try searching with a different query for results.": "請嘗試使用其他查詢來搜尋結果。",
+            "Disable AI Reply": "禁用 AI Reply",
+            "Close this time until the next visit": "本次關閉，直到下次訪問",
+            "Disable the current website": "禁用目前網站",
+            "Disable the current website(": "禁用目前網站（",
+            "Disable the current website (": "禁用目前網站（",
+            "Can be activated in": "可在",
+            "(Can be activated in": "（可在",
+            "Settings Page": "設置頁面",
+            "Permanently disable": "永久禁用",
+            "Permanently disable(": "永久禁用（",
+            "Permanently disable (": "永久禁用（"
+        };
+        const newViewDict = {
+            "Back to views": "返回視圖",
+            "Title *": "標題 *",
+            "Query *": "查詢 *",
+            "Anyone with repository access can see this view.": "任何擁有倉庫訪問權限的人都可以查看此視圖。",
+            "Clear filter": "清除篩選",
+            "Change icon": "更改圖示",
+            "No labels": "無標籤",
+            "Recent": "最近",
+            "Organization": "組織",
+            "No milestone": "無里程碑",
+            "No assignees": "無人受理",
+            "Comments": "評論",
+            "Most commented": "最多評論",
+            "Least commented": "最少評論",
+            "Most reactions": "最多回應",
+            "Least reactions": "最少回應",
+            "Ascending": "升序",
+            "Descending": "降序"
+        };
         const queryBuilderDict = {
             ...(I18N["zh-TW"]["issues"]?.["static"] || {}),
             "Repository": "倉庫",
@@ -32277,6 +32443,11 @@ I18N["zh-TW"]["repository/agents"] = {
             "Repository", "倉庫",
             "Organization", "組織"
         ]);
+        const newViewPickerUiTextSources = new Set([
+            ...defaultLabelTextSources,
+            ...Object.keys(newViewDict),
+            ...Object.values(newViewDict)
+        ]);
         const projectUpdatedUnitDict = {
             second: "秒",
             minute: "分鐘",
@@ -32294,16 +32465,18 @@ I18N["zh-TW"]["repository/agents"] = {
         const isRepositoryIssueUserContentElement = element => {
             if (!element) return false;
 
-            const isRepositoryIssuesListPage = /^\/[^\/]+\/[^\/]+\/issues\/?$/.test(window.location.pathname);
+            const isRepositoryIssuesIndexPage = isRepositoryIssuesListPage();
             const isRepositoryNewIssueCreatePage = isRepositoryNewIssuePage();
             const isRepositoryViewsPage = isRepositoryIssuesViewsPage();
+            const isRepositoryNewViewCreatePage = isRepositoryIssuesNewViewPage();
             const isRepositoryProjectsListPage = isRepositoryProjectsPage();
             const isRepositoryMilestonesListPage = isRepositoryMilestonesPage();
             const isRepositoryLabelsListPage = isRepositoryLabelsPage();
             if (
-                !isRepositoryIssuesListPage &&
+                !isRepositoryIssuesIndexPage &&
                 !isRepositoryNewIssueCreatePage &&
                 !isRepositoryViewsPage &&
+                !isRepositoryNewViewCreatePage &&
                 !isRepositoryProjectsListPage &&
                 !isRepositoryMilestonesListPage &&
                 !isRepositoryLabelsListPage
@@ -32313,6 +32486,37 @@ I18N["zh-TW"]["repository/agents"] = {
                 const source = normalizeHeaderTooltipText(element.textContent);
                 if (newIssuePickerUiTextSources.has(source)) return false;
                 if (element.closest?.('[role="option"], [role="menuitem"], [role="listitem"], li')) {
+                    return true;
+                }
+            }
+
+            if (isRepositoryNewViewCreatePage) {
+                const picker = element.closest?.([
+                    '[role="dialog"]',
+                    '[aria-modal="true"]',
+                    '[role="listbox"]',
+                    '[role="menu"]',
+                    '[popover]',
+                    'anchored-position',
+                    '.Overlay',
+                    '.Popover-message',
+                    '.ActionList'
+                ].join(', '));
+                const pickerText = normalizeHeaderTooltipText(picker?.textContent);
+                const isDataFilterPicker = [
+                    'Filter by author', '按作者篩選',
+                    'Filter by label', '按標籤篩選',
+                    'Filter by project', '按專案篩選',
+                    'Filter by milestone', '按里程碑篩選',
+                    'Filter by assignees', '按受理人篩選'
+                ].some(title => pickerText.includes(title));
+
+                if (
+                    isDataFilterPicker &&
+                    element.closest?.('[role="option"], [role="menuitem"], [role="listitem"], li')
+                ) {
+                    const source = normalizeHeaderTooltipText(element.textContent);
+                    if (newViewPickerUiTextSources.has(source)) return false;
                     return true;
                 }
             }
@@ -32395,7 +32599,9 @@ I18N["zh-TW"]["repository/agents"] = {
                 }
             }
             if (shouldSkipNotificationPatchTextNode(node)) return true;
-            return isRepositoryIssueUserContentElement(getNodeElement(node));
+            const element = getNodeElement(node);
+            if (isIssuesProtectedGlobalSearchElement(element)) return true;
+            return isRepositoryIssueUserContentElement(element);
         };
 
         const transIssuesDynamicPhrase = source => {
@@ -32482,11 +32688,16 @@ I18N["zh-TW"]["repository/agents"] = {
 
         const visit = (root, activeDict = dict) => {
             if (!root || visited.has(root)) return;
+            const rootElement = root.nodeType === Node.DOCUMENT_FRAGMENT_NODE
+                ? root.host
+                : getNodeElement(root);
+            if (isIssuesProtectedGlobalSearchElement(rootElement)) return;
             visited.add(root);
             translated = transExactTextInRoot(root, activeDict, shouldSkipIssuesPatchTextNode) || translated;
             translated = transPatternTextInRoot(root) || translated;
 
             root.querySelectorAll?.('*').forEach(element => {
+                if (isIssuesProtectedGlobalSearchElement(element)) return;
                 if (isRepositoryIssueUserContentElement(element)) return;
 
                 ['aria-label', 'aria-placeholder', 'title', 'placeholder', 'data-placeholder', 'data-tooltip', 'data-tooltip-text'].forEach(attr => {
@@ -32513,7 +32724,11 @@ I18N["zh-TW"]["repository/agents"] = {
             });
         };
 
-        if (isRepositoryProjectsPage() || isRepositoryLabelsPage()) {
+        if (
+            isRepositoryProjectsPage() ||
+            isRepositoryLabelsPage() ||
+            isRepositoryIssuesListPage()
+        ) {
             const protectedIssuesPageRoots = new Set(document.querySelectorAll([
                 '.application-main',
                 'main',
@@ -32527,7 +32742,11 @@ I18N["zh-TW"]["repository/agents"] = {
         } else {
             visit(
                 document.body,
-                isRepositoryNewMilestonePage()
+                isRepositoryNewIssuePage()
+                    ? { ...dict, ...newIssueDict }
+                    : isRepositoryIssuesNewViewPage()
+                    ? { ...dict, ...newViewDict }
+                    : isRepositoryNewMilestonePage()
                     ? { ...dict, ...newMilestoneCalendarDict }
                     : dict
             );
@@ -32638,7 +32857,10 @@ I18N["zh-TW"]["repository/agents"] = {
 
         translated = transRepositoryListSortControls() || translated;
 
-        if (!isRepositoryProjectsPage() && !isRepositoryLabelsPage()) {
+        if (
+            !isRepositoryProjectsPage() &&
+            !isRepositoryLabelsPage()
+        ) {
             const queryBuilderRoots = [
                 'query-builder',
                 '[data-target^="query-builder."]',
@@ -32648,6 +32870,7 @@ I18N["zh-TW"]["repository/agents"] = {
             ].join(', ');
             document.querySelectorAll(queryBuilderRoots).forEach(root => {
                 if (root.closest?.('header, [role="banner"], .AppHeader, .Header')) return;
+                if (isRepositoryIssuesListHeaderSurface(root)) return;
                 visit(root, queryBuilderDict);
             });
 
@@ -32668,6 +32891,7 @@ I18N["zh-TW"]["repository/agents"] = {
             ].join(', '));
             document.querySelectorAll(dynamicSurfaces).forEach(surface => {
                 if (surface.closest?.('header, [role="banner"], .AppHeader, .Header')) return;
+                if (isRepositoryIssuesListHeaderSurface(surface)) return;
                 const hasQueryBuilderItem = Array.from(surface.querySelectorAll('*')).some(element => {
                     if (element.children.length > 0) return false;
                     return queryBuilderSourceHints.has(normalizeHeaderTooltipText(element.textContent));
@@ -32683,12 +32907,10 @@ I18N["zh-TW"]["repository/agents"] = {
 
     function transRepositoryNewIssuePreviewEmptyState() {
         if (!isRepositoryNewIssuePage()) return false;
-
-        const main = document.querySelector('main, [role="main"]');
-        if (!main) return false;
+        syncRepositoryNewIssuePageClass();
 
         let translated = false;
-        main.querySelectorAll('[data-ghcht-issue-preview-empty="true"]').forEach(element => {
+        document.querySelectorAll('[data-ghcht-issue-preview-empty="true"]').forEach(element => {
             if (normalizeHeaderTooltipText(element.textContent) === 'Nothing to preview') return;
             element.removeAttribute('data-ghcht-issue-preview-empty');
             translated = true;
@@ -32703,7 +32925,10 @@ I18N["zh-TW"]["repository/agents"] = {
             '[id*="preview"]'
         ].join(', ');
 
-        main.querySelectorAll(selector).forEach(root => {
+        // SPA 從 Projects 等 Issues 子頁進入新建議題時，文件中可能保留舊 main，
+        // 真正的表單則掛在後續的 issues-react root。精確路由下直接掃所有 Preview
+        // 表面，避免 document.querySelector('main') 永遠只命中舊殼層。
+        document.querySelectorAll(selector).forEach(root => {
             if (root.closest?.('header, [role="banner"], .AppHeader, .Header, qbsearch-input, query-builder, react-app[app-name="command-palette"]')) return;
 
             const elements = [root, ...(root.querySelectorAll?.('p, div, span, h1, h2, h3') || [])];
@@ -33125,6 +33350,8 @@ I18N["zh-TW"]["repository/agents"] = {
             const sources = [
                 'Create view', '新建視圖',
                 'Reactions', '回應',
+                'Clear filter', '清除篩選',
+                'Change icon', '更改圖示',
                 'Change icon and color', '更改圖示與顏色',
                 'Back to templates', '返回範本選擇'
             ];
@@ -33225,6 +33452,7 @@ I18N["zh-TW"]["repository/agents"] = {
         const scheduleDynamicSurface = event => {
             if (!isIssuesPage()) return;
             const element = getNodeElement(event.target);
+            if (isIssuesProtectedGlobalSearchElement(element)) return;
             const interactionControl = element?.closest?.(
                 'button, [role="button"], [role="menuitem"], [aria-label], [title]'
             );
